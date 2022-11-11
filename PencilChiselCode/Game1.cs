@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Screens;
 using PencilChiselCode.Source;
 
 namespace PencilChiselCode;
@@ -15,9 +16,12 @@ public class Game1 : Game
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     private Button _button;
     public static Game1 Instance { get; private set; }
+    public ScreenManager _ScreenManager;
 
     public Game1()
     {
+        _ScreenManager = new ScreenManager();
+        Components.Add(_ScreenManager);
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
@@ -29,6 +33,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
         base.Initialize();
+        _ScreenManager.LoadScreen(new MenuState(this));
         _graphics.IsFullScreen = false;
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 800;
@@ -48,31 +53,18 @@ public class Game1 : Game
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
-
-        _button = new Button(TextureMap["start_button_normal"], TextureMap["start_button_hover"],
-            TextureMap["start_button_pressed"]);
     }
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
-
-        _button.Update(gameTime);
+        _ScreenManager.Update(gameTime);
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Crimson);
-
-        _spriteBatch.Begin();
-
-        _button.Draw(_spriteBatch);
-
-        _spriteBatch.End();
-
+        _ScreenManager.Draw(gameTime);
         base.Draw(gameTime);
     }
 
