@@ -25,6 +25,18 @@
 /processorParam:Quality=Best
 /build:Resources/Sounds/button_release.wav
 
+#begin Resources/Textures/Entity/player.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/Entity/player.png
+
 #begin Resources/Textures/GUI/Buttons/exit_button_hover.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -1,15 +1,14 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace PencilChiselCode.Source;
 
-public class Button : IDrawable
+public class Button
 {
-    public Vector2 Size { get; set; } = new();
-    public Vector2 Position { get; set; }
-    private Texture2D _texture;
+    public Vector2 Position;
+    public Vector2 Size => new(Texture.Width, Texture.Height);
+    public Texture2D Texture { get; set; }
     private readonly Texture2D _normalTexture;
     private readonly Texture2D _hoveredTexture;
     private readonly Texture2D _pressedTexture;
@@ -19,53 +18,51 @@ public class Button : IDrawable
         _normalTexture = normal;
         _hoveredTexture = hovered;
         _pressedTexture = pressed;
-        _texture = normal;
-        Size = new Vector2(_normalTexture.Width, _normalTexture.Height);
+        Texture = normal;
         Position = Utils.GetCenterStartCoords(Size, Game1.Instance.GetWindowDimensions());
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_texture, Position, Color.White);
+        spriteBatch.Draw(Texture, Position, Color.White);
     }
 
     public void Update(GameTime gameTime)
     {
-        var inside = Utils.IsPointInRectangle(Mouse.GetState().Position.ToVector2(),
-            new Rectangle(Position.ToPoint(), Size.ToPoint()));
-        var pressed = Mouse.GetState().LeftButton == ButtonState.Pressed;
-        var released = Mouse.GetState().LeftButton == ButtonState.Released;
-
-        var _pressSound = Game1.Instance.SoundMap["button_press"];
-        var _releaseSound = Game1.Instance.SoundMap["button_release"];
-
         var mouseState = Mouse.GetState();
+        var inside = Utils.IsPointInRectangle(mouseState.Position.ToVector2(),
+            new Rectangle(Position.ToPoint(), Size.ToPoint()));
+        var released = mouseState.LeftButton == ButtonState.Released;
+
+        var pressSound = Game1.Instance.SoundMap["button_press"];
+        var releaseSound = Game1.Instance.SoundMap["button_release"];
+
         if (inside)
         {
-            if (mouseState.LeftButton == ButtonState.Released)
+            if (released)
             {
-                if (_texture == _pressedTexture)
+                if (Texture == _pressedTexture)
                 {
-                    _releaseSound.Play();
+                    releaseSound.Play();
                     Click();
                 }
 
-                _texture = _hoveredTexture;
+                Texture = _hoveredTexture;
             }
-            else if (_texture == _hoveredTexture)
+            else if (Texture == _hoveredTexture)
             {
-                _pressSound.Play();
-                _texture = _pressedTexture;
+                pressSound.Play();
+                Texture = _pressedTexture;
             }
         }
         else
         {
-            if (_texture == _pressedTexture)
+            if (Texture == _pressedTexture)
             {
-                _releaseSound.Play();
+                releaseSound.Play();
             }
 
-            _texture = _normalTexture;
+            Texture = _normalTexture;
         }
     }
 
