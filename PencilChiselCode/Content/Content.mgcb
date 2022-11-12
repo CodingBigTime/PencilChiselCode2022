@@ -14,17 +14,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Resources/Fonts/lunchds.fnt
+#begin Resources/Fonts/lunchds_12.fnt
 /importer:BitmapFontImporter
 /processor:BitmapFontProcessor
-/build:Resources/Fonts/lunchds.fnt
+/build:Resources/Fonts/lunchds_12.fnt
 
-#begin Resources/Fonts/lunchds.fnt
-/importer:BitmapFontImporter
-/processor:BitmapFontProcessor
-/build:Resources/Fonts/lunchds.fnt
-
-#begin Resources/Fonts/lunchds_0.png
+#begin Resources/Fonts/lunchds_12_0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -34,7 +29,58 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Resources/Fonts/lunchds_0.png
+/build:Resources/Fonts/lunchds_12_0.png
+
+#begin Resources/Fonts/lunchds_16.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:Resources/Fonts/lunchds_16.fnt
+
+#begin Resources/Fonts/lunchds_16_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Fonts/lunchds_16_0.png
+
+#begin Resources/Fonts/lunchds_24.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:Resources/Fonts/lunchds_24.fnt
+
+#begin Resources/Fonts/lunchds_24_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Fonts/lunchds_24_0.png
+
+#begin Resources/Fonts/lunchds_32.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:Resources/Fonts/lunchds_32.fnt
+
+#begin Resources/Fonts/lunchds_32_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Fonts/lunchds_32_0.png
 
 #begin Resources/Sounds/button_press.wav
 /importer:WavImporter

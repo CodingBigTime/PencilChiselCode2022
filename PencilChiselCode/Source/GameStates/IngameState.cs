@@ -11,9 +11,9 @@ namespace PencilChiselCode.Source;
 public class IngameState : GameScreen
 {
     private static readonly Color _bgColor = Color.Green;
-    private Game1 _game => (Game1)base.Game;
+    private Game1 _game => (Game1)Game;
     private Player _player;
-    private bool _showDebug = false;
+    private bool _showDebug;
     private HashSet<Keys> _previousPressedKeys = new();
     private static float _cameraSpeed = 10.0F;
     private AttributeGroup _followerAttributes;
@@ -78,9 +78,10 @@ public class IngameState : GameScreen
         _followerAttributes.Draw(Game1.Instance.SpriteBatch);
         if (_showDebug)
         {
-            _game.SpriteBatch.DrawString(_game.BitmapFont, $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}",
+            _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}",
                 new Vector2(16, 16), Color.Black);
         }
+
         _game.SpriteBatch.End();
     }
 }

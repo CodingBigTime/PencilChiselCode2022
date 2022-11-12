@@ -19,9 +19,9 @@ public class Game1 : Game
     public SpriteBatch SpriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
+    public Dictionary<string, BitmapFont> FontMap { get; } = new();
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
-    public BitmapFont BitmapFont;
     public OrthographicCamera Camera;
 
     public Game1()
@@ -66,7 +66,10 @@ public class Game1 : Game
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
         
-        BitmapFont = Content.Load<BitmapFont>("Fonts/lunchds");
+        FontMap.Add("12", Content.Load<BitmapFont>("Fonts/lunchds_12"));
+        FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));
+        FontMap.Add("24", Content.Load<BitmapFont>("Fonts/lunchds_24"));
+        FontMap.Add("32", Content.Load<BitmapFont>("Fonts/lunchds_32"));
     }
 
     protected override void Update(GameTime gameTime)
