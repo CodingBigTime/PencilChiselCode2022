@@ -18,6 +18,8 @@ public class IngameState : GameScreen
     private HashSet<Keys> _previousPressedKeys = new();
     private static float _cameraSpeed = 10.0F;
     private AttributeGroup _followerAttributes;
+    private int _fps;
+    private TimeSpan _fpsCounterGameTime;
     private static bool _pauseState;
     public Button PauseButton;
 
@@ -33,10 +35,7 @@ public class IngameState : GameScreen
         PauseButton = new Button(Game1.Instance.TextureMap["start_button_normal"],
             Game1.Instance.TextureMap["start_button_hover"],
             Game1.Instance.TextureMap["start_button_pressed"],
-            () =>
-            {
-                _pauseState = false;
-            }
+            () => { _pauseState = false; }
         );
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300),
             0.5F));
@@ -57,6 +56,7 @@ public class IngameState : GameScreen
         {
             _pauseState = !_pauseState;
         }
+
         if (_pauseState)
         {
             PauseButton.Update(gameTime);
@@ -66,12 +66,14 @@ public class IngameState : GameScreen
             _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
             _player.Update(this, gameTime);
             _followerAttributes.Update(gameTime);
-            Pickupables.ForEach(pickupable => pickupable.Update(gameTime));   
+            Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
         }
+
         if (keyState.IsKeyDown(Keys.F3) && !_previousPressedKeys.Contains(Keys.F3))
         {
             _showDebug = !_showDebug;
         }
+
         _previousPressedKeys.Clear();
         _previousPressedKeys.UnionWith(keyState.GetPressedKeys());
     }
@@ -94,16 +96,23 @@ public class IngameState : GameScreen
     {
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _followerAttributes.Draw(Game1.Instance.SpriteBatch);
+        if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
+        {
+            _fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
+            _fpsCounterGameTime = gameTime.TotalGameTime;
+        }
 
         if (_pauseState)
         {
             PauseButton.Draw(Game1.Instance.SpriteBatch);
         }
+
         if (_showDebug)
         {
-            _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}",
+            _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {_fps}",
                 new Vector2(16, 16), Color.Black);
         }
+
         _game.SpriteBatch.End();
     }
 }
