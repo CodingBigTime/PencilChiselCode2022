@@ -25,7 +25,7 @@ public class Player
     private const float PI = (float)Math.PI;
     private Game1 _game;
     private Vector2 _speed;
-    private readonly static int _lightRadius = 200;
+    private readonly static int _lightScale = 200;
     private readonly static float _scale = 2F;
     private readonly static float _maxSpeed = 80F;
     private readonly static float _acceleration = 1000F;
@@ -44,14 +44,14 @@ public class Player
 
     public Light PointLight { get; } = new PointLight
     {
-        Scale = new Vector2(_lightRadius),
+        Scale = new Vector2(_lightScale),
         Color = Color.White,
         ShadowType = ShadowType.Occluded
     };
 
     public Light Spotlight { get; } = new Spotlight
     {
-        Scale = new Vector2(_lightRadius * 2),
+        Scale = new Vector2(_lightScale * 2),
         Color = Color.White,
         ShadowType = ShadowType.Occluded,
         ConeDecay = 2.5F
