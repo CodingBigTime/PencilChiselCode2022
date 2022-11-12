@@ -56,8 +56,8 @@ public class Player
 
         if (!keyState.IsKeyDown(Keys.E)) return;
         var pickupable = state.Pickupables.Find(pickupable =>
-            Utils.CreateCircle(Position, Size.GetAverageSize()).Expand(16)
-                .Intersects(Utils.CreateCircle(pickupable.Position, pickupable.Size.GetAverageSize()).Expand(16)));
+            Utils.CreateCircle(Position, Size.GetAverageSize()).Expand(8)
+                .Intersects(Utils.CreateCircle(pickupable.Position, pickupable.Size.GetAverageSize()).Expand(8)));
         if (pickupable == null) return;
         switch (pickupable.Type)
         {
