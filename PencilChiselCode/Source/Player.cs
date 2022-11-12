@@ -28,8 +28,8 @@ public class Player
     private readonly static int _lightRadius = 200;
     private readonly static float _scale = 2F;
     private readonly static float _maxSpeed = 80F;
-    private readonly static float _acceleration = 16F;
-    private readonly static float _friction = 0.95F;
+    private readonly static float _acceleration = 1000F;
+    private readonly static float _friction = 2.75F;
     private uint _twigs = 0;
     private PopupButton _popupButton;
 
@@ -102,12 +102,15 @@ public class Player
             my *= sqrt1_2;
         }
 
-        var ax = _acceleration * mx;
-        var ay = _acceleration * my;
+        var ax = _acceleration * mx * delta;
+        var ay = _acceleration * my * delta;
 
         _speed += new Vector2(ax, ay);
-        _speed *= _friction;
-        _speed = Utils.Clamp(_speed, -_maxSpeed, _maxSpeed);
+        _speed += -(_speed * _friction * delta);
+        var biasX = Math.Abs(_speed.X) / (float) Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+        var biasY = Math.Abs(_speed.Y) / (float) Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+        _speed.X = Math.Clamp(_speed.X, -_maxSpeed * biasX, _maxSpeed * biasX);
+        _speed.Y = Math.Clamp(_speed.Y, -_maxSpeed * biasY, _maxSpeed * biasY);
         Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
 
         if (Position.X >= _game.Camera.Center.X + _game.Width / 2F - Size.X / 2F)
