@@ -17,7 +17,7 @@ public class IngameState : GameScreen
     private AttributeGroup _followerAttributes;
     private static Boolean _pauseState;
     public Button PauseButton;
-    private Boolean _waspPressed = false;
+    private Boolean _waspPressed;
 
     public IngameState(Game game) : base(game)
     {
@@ -29,6 +29,7 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
+        _waspPressed = false;
         _pauseState = false;
         PauseButton = new Button(Game1.Instance.TextureMap["start_button_normal"],
             Game1.Instance.TextureMap["start_button_hover"],
@@ -56,7 +57,6 @@ public class IngameState : GameScreen
         {
             _pauseState = !_pauseState;
         }
-        
         if (_pauseState)
         {
             PauseButton.Update(gameTime);
@@ -68,7 +68,6 @@ public class IngameState : GameScreen
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));   
         }
-
         _waspPressed = keyState.IsKeyDown(Keys.P);
     }
 
@@ -80,7 +79,6 @@ public class IngameState : GameScreen
         Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance.SpriteBatch));
         _player.Draw(Game1.Instance.SpriteBatch);
         _game.SpriteBatch.End();
-
         DrawUI();
     }
 
