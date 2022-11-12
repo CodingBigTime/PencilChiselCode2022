@@ -13,7 +13,6 @@ public class Game1 : Game
     public SpriteBatch SpriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
-    public Player Player;
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
 
@@ -31,12 +30,12 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        base.Initialize();
-        ScreenManager.LoadScreen(new MenuState(this));
         Graphics.IsFullScreen = false;
         Graphics.PreferredBackBufferWidth = 800;
         Graphics.PreferredBackBufferHeight = 800;
         Graphics.ApplyChanges();
+        base.Initialize();
+        ScreenManager.LoadScreen(new MenuState(this));
     }
 
     protected override void LoadContent()
@@ -54,8 +53,6 @@ public class Game1 : Game
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
-
-        Player = new Player(TextureMap["player"], new Vector2(150, 150));
     }
 
     protected override void Update(GameTime gameTime)
