@@ -41,6 +41,8 @@ public class IngameState : GameScreen
             _game.SoundMap["pickup_branches"], new Vector2(300, 300),
             0.5F));
         _player = new Player(_game, new Vector2(150, 150));
+        _game.Penumbra.Lights.Add(_player.PointLight);
+        _game.Penumbra.Lights.Add(_player.Spotlight);
         _followerAttributes = new AttributeGroup(new List<Attribute>
         {
             new(new Vector2(10, 10), null, Color.Brown, 100, -0.5F),
@@ -81,6 +83,9 @@ public class IngameState : GameScreen
 
     public override void Draw(GameTime gameTime)
     {
+        _game.Penumbra.BeginDraw();
+
+        _game.Penumbra.Transform = Matrix.CreateTranslation(-_game.Camera.Position.X, -_game.Camera.Position.Y, 0);
         _game.GraphicsDevice.Clear(_bgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
@@ -90,6 +95,9 @@ public class IngameState : GameScreen
         _player.Draw(_game.SpriteBatch);
 
         _game.SpriteBatch.End();
+
+        _game.Penumbra.Draw(gameTime);
+
         DrawUI(gameTime);
     }
 

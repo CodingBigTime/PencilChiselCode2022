@@ -7,6 +7,7 @@ using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source.GameStates;
+using Penumbra;
 
 namespace PencilChiselCode;
 
@@ -15,6 +16,7 @@ public class Game1 : Game
     public readonly int Width = 800;
     public readonly int Height = 800;
     public readonly GraphicsDeviceManager Graphics;
+    public PenumbraComponent Penumbra;
     public SpriteBatch SpriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
@@ -27,6 +29,8 @@ public class Game1 : Game
     {
         ScreenManager = new ScreenManager();
         Components.Add(ScreenManager);
+        Penumbra = new PenumbraComponent(this);
+        Penumbra.AmbientColor = Color.Black;
         Instance = this;
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
@@ -45,6 +49,7 @@ public class Game1 : Game
         Graphics.ApplyChanges();
         var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Width, Height);
         Camera = new OrthographicCamera(viewportAdapter);
+        Penumbra.Initialize();
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }
@@ -85,8 +90,8 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Crimson);
         ScreenManager.Draw(gameTime);
+
         base.Draw(gameTime);
     }
 
