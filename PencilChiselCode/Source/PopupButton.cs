@@ -8,7 +8,7 @@ namespace PencilChiselCode.Source;
 
 public class PopupButton
 {
-    private Game1 _game;
+    private readonly Game1 _game;
     private readonly Tweener _scaleTweener;
     private readonly Tweener _rotationTweener;
     public float scale = 0.75F;
@@ -55,5 +55,4 @@ public class PopupButton
         _scaleTweener.Update(gameTime.GetElapsedSeconds());
         _rotationTweener.Update(gameTime.GetElapsedSeconds());
     }
-
 }

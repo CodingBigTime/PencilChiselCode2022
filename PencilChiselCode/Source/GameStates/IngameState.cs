@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,12 +32,13 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
-        _pauseButton = new Button(Game1.Instance.TextureMap["start_button_normal"],
-            Game1.Instance.TextureMap["start_button_hover"],
-            Game1.Instance.TextureMap["start_button_pressed"],
+        _pauseButton = new Button(_game.TextureMap["start_button_normal"],
+            _game.TextureMap["start_button_hover"],
+            _game.TextureMap["start_button_pressed"],
             () => { _pauseState = false; }
         );
-        Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300),
+        Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
+            _game.SoundMap["pickup_branches"], new Vector2(300, 300),
             0.5F));
         _player = new Player(_game, new Vector2(150, 150));
         _followerAttributes = new AttributeGroup(new List<Attribute>
@@ -82,10 +84,10 @@ public class IngameState : GameScreen
         _game.GraphicsDevice.Clear(_bgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
-        Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance.SpriteBatch));
+        Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
 
 
-        _player.Draw(Game1.Instance.SpriteBatch);
+        _player.Draw(_game.SpriteBatch);
 
         _game.SpriteBatch.End();
         DrawUI(gameTime);
@@ -94,7 +96,7 @@ public class IngameState : GameScreen
     private void DrawUI(GameTime gameTime)
     {
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        _followerAttributes.Draw(Game1.Instance.SpriteBatch);
+        _followerAttributes.Draw(_game.SpriteBatch);
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
         {
             _fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
@@ -103,7 +105,7 @@ public class IngameState : GameScreen
 
         if (_pauseState)
         {
-            _pauseButton.Draw(Game1.Instance.SpriteBatch);
+            _pauseButton.Draw(_game.SpriteBatch);
         }
 
         if (_showDebug)
