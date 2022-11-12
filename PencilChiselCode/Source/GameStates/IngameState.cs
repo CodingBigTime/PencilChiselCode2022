@@ -1,17 +1,21 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Screens;
-using MonoGame.Extended;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.BitmapFonts;
+using MonoGame.Extended.Screens;
 
 namespace PencilChiselCode.Source;
 
 public class IngameState : GameScreen
 {
     private static readonly Color _bgColor = Color.Green;
-    private static float _cameraSpeed = 10.0F;
-    private Game1 _game => (Game1)base.Game;
+    private Game1 _game => (Game1)Game;
     private Player _player;
+    private bool _showDebug;
+    private HashSet<Keys> _previousPressedKeys = new();
+    private static float _cameraSpeed = 10.0F;
     private AttributeGroup _followerAttributes;
 
     public IngameState(Game game) : base(game)
@@ -20,18 +24,18 @@ public class IngameState : GameScreen
 
     public List<Pickupable> Pickupables { get; } = new();
 
-
     public override void LoadContent()
     {
         base.LoadContent();
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300),
             0.5F));
         _player = new Player(_game, new Vector2(150, 150));
-        _followerAttributes = new AttributeGroup(new List<Attribute> {
-            new Attribute(new Vector2(10, 10), null, Color.Brown, 100, -0.5F),
-            new Attribute(new Vector2(10, 30), null, Color.LightBlue, 100, -1F),
-            new Attribute(new Vector2(10, 50), null, Color.Orange, 100, -5F),
-            new Attribute(new Vector2(10, 70), null, Color.Blue, 100, -2F)
+        _followerAttributes = new AttributeGroup(new List<Attribute>
+        {
+            new(new Vector2(10, 10), null, Color.Brown, 100, -0.5F),
+            new(new Vector2(10, 30), null, Color.LightBlue, 100, -1F),
+            new(new Vector2(10, 50), null, Color.Orange, 100, -5F),
+            new(new Vector2(10, 70), null, Color.Blue, 100, -2F)
         });
     }
 
@@ -41,6 +45,15 @@ public class IngameState : GameScreen
         _player.Update(this, gameTime);
         _followerAttributes.Update(gameTime);
         Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
+        var keyState = Keyboard.GetState();
+
+        if (keyState.IsKeyDown(Keys.F3) && !_previousPressedKeys.Contains(Keys.F3))
+        {
+            _showDebug = !_showDebug;
+        }
+
+        _previousPressedKeys.Clear();
+        _previousPressedKeys.UnionWith(keyState.GetPressedKeys());
     }
 
     public override void Draw(GameTime gameTime)
@@ -50,16 +63,25 @@ public class IngameState : GameScreen
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance.SpriteBatch));
+
+
         _player.Draw(Game1.Instance.SpriteBatch);
+
         _game.SpriteBatch.End();
 
-        DrawUI();
+        DrawUI(gameTime);
     }
 
-    private void DrawUI()
+    private void DrawUI(GameTime gameTime)
     {
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _followerAttributes.Draw(Game1.Instance.SpriteBatch);
+        if (_showDebug)
+        {
+            _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}",
+                new Vector2(16, 16), Color.Black);
+        }
+
         _game.SpriteBatch.End();
     }
 }
