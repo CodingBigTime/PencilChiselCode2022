@@ -13,8 +13,8 @@ namespace PencilChiselCode;
 
 public class Game1 : Game
 {
-    public readonly int Width = 800;
-    public readonly int Height = 800;
+    public readonly int Width = 1366;
+    public readonly int Height = 768;
     public readonly GraphicsDeviceManager Graphics;
     public PenumbraComponent Penumbra;
     public SpriteBatch SpriteBatch;
