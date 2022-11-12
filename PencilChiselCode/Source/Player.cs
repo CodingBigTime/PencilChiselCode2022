@@ -78,6 +78,10 @@ public class Player
             effects: spriteEffect,
             layerDepth: 0
         );
+    }
+
+    public void DrawPopupButton(SpriteBatch spriteBatch)
+    {
         _popupButton?.Draw(spriteBatch, Position, Size);
     }
 
