@@ -120,6 +120,7 @@ public class Player
                     break;
             }
 
+            pickupable.PickupSound.Play();
             state.Pickupables.Remove(pickupable);
         }
     }

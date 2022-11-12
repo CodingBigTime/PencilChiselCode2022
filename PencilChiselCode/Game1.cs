@@ -2,11 +2,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended;
+using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.ViewportAdapters;
-using PencilChiselCode.Source;
 using PencilChiselCode.Source.GameStates;
 
 namespace PencilChiselCode;
@@ -70,6 +69,7 @@ public class Game1 : Game
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
+        SoundMap.Add("pickup_branches", Content.Load<SoundEffect>("Sounds/pickup_branches"));
         
         FontMap.Add("12", Content.Load<BitmapFont>("Fonts/lunchds_12"));
         FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));

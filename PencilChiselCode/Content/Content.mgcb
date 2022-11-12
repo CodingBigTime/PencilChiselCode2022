@@ -94,6 +94,12 @@
 /processorParam:Quality=Best
 /build:Resources/Sounds/button_release.wav
 
+#begin Resources/Sounds/pickup_branches.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Resources/Sounds/pickup_branches.wav
+
 #begin Resources/Textures/Entity/follower.png
 /importer:TextureImporter
 /processor:TextureProcessor
