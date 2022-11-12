@@ -24,7 +24,7 @@ public class IngameState : GameScreen
         base.LoadContent();
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300),
             0.5F));
-        _player = new Player(_game.TextureMap["player"], new Vector2(150, 150));
+        _player = new Player(_game, _game.TextureMap["player"], new Vector2(150, 150));
     }
 
     public override void Update(GameTime gameTime)
