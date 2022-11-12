@@ -19,18 +19,20 @@ public class Player
     private readonly float _acceleration = 16F;
     private readonly float _friction = 0.95F;
     private uint _twigs = 0;
+    private PopupButton _popupButton;
 
     public Player(Game1 game, Vector2 position)
     {
         _game = game;
         Position = position;
+        _popupButton = new(game);
         var texturePlayerDown = _game.TextureMap["player_down"];
         Size = new(texturePlayerDown.Width * _scale, texturePlayerDown.Height * _scale);
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        float angle = (float)Math.Atan2(_speed.Y, _speed.X);
+        var angle = (float)Math.Atan2(_speed.Y, _speed.X);
         var (texture, spriteEffect) = angle switch {
             >= -PI / 4 and <= PI / 4 => (_game.TextureMap["player_left"], SpriteEffects.FlipHorizontally),
             > PI / 4 and < 3 * PI / 4 => (_game.TextureMap["player_down"], SpriteEffects.None),
@@ -40,15 +42,16 @@ public class Player
         };
         spriteBatch.Draw(
             texture: texture, 
-            position: Position - new Vector2(Size.X / 2F, Size.Y / 2),
+            position: Position - Size/2,
             sourceRectangle: null,
             color: Color.White,
             rotation: 0,
-            origin: new(0, 0),
+            origin: Vector2.Zero,
             scale: _scale,
             effects: spriteEffect,
             layerDepth: 0
         );
+        _popupButton?.Draw(spriteBatch, Position, Size);
     }
 
     public void Update(IngameState state, GameTime gameTime)
@@ -91,12 +94,25 @@ public class Player
         }
 
 
+        var pickupable = state.Pickupables.Find(pickupable =>
+            Utils.CreateCircle(Position, Size.GetAverageSize()).Expand(8)
+                .Intersects(Utils.CreateCircle(pickupable.Position, pickupable.Size.GetAverageSize()).Expand(8)));
+        var canPickup = pickupable != null;
+        if (canPickup)
+        {
+            if (_popupButton == null)
+            {
+                _popupButton = new PopupButton(_game);
+            }
+            _popupButton.Update(state, gameTime);
+        }
+        else
+        {
+            _popupButton = null;
+        }
         if (keyState.IsKeyDown(Keys.E))
         {
-            var pickupable = state.Pickupables.Find(pickupable =>
-                Utils.CreateCircle(Position, Size.GetAverageSize()).Expand(8)
-                    .Intersects(Utils.CreateCircle(pickupable.Position, pickupable.Size.GetAverageSize()).Expand(8)));
-            if (pickupable == null) return;
+            if (!canPickup) return;
             switch (pickupable.Type)
             {
                 case PickupableTypes.Twig:

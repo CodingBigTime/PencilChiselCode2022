@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,13 +14,13 @@ public class IngameState : GameScreen
     private Game1 _game => (Game1)Game;
     private Player _player;
     private bool _showDebug;
-    private HashSet<Keys> _previousPressedKeys = new();
+    private readonly HashSet<Keys> _previousPressedKeys = new();
     private static float _cameraSpeed = 10.0F;
     private AttributeGroup _followerAttributes;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private static bool _pauseState;
-    public Button PauseButton;
+    private Button _pauseButton;
 
     public IngameState(Game game) : base(game)
     {
@@ -32,7 +31,7 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
-        PauseButton = new Button(Game1.Instance.TextureMap["start_button_normal"],
+        _pauseButton = new Button(Game1.Instance.TextureMap["start_button_normal"],
             Game1.Instance.TextureMap["start_button_hover"],
             Game1.Instance.TextureMap["start_button_pressed"],
             () => { _pauseState = false; }
@@ -59,7 +58,7 @@ public class IngameState : GameScreen
 
         if (_pauseState)
         {
-            PauseButton.Update(gameTime);
+            _pauseButton.Update(gameTime);
         }
         else
         {
@@ -104,7 +103,7 @@ public class IngameState : GameScreen
 
         if (_pauseState)
         {
-            PauseButton.Draw(Game1.Instance.SpriteBatch);
+            _pauseButton.Draw(Game1.Instance.SpriteBatch);
         }
 
         if (_showDebug)
