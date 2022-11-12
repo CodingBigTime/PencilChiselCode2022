@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PencilChiselCode.Source.GameStates;
@@ -9,19 +10,22 @@ public class Companion
 {
     public Vector2 Size;
     public Vector2 Position;
-    public Vector2 PlayerPosition;
     private const float sqrt1_2 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
-    private readonly float _scale = 0.5F;
+    private readonly float _scale = 1F;
     private Game1 _game;
     private Vector2 _speed;
+    private Vector2 _movement_speed;
     private readonly float _maxSpeed = 80F;
     private readonly float _acceleration = 16F;
     private readonly float _friction = 0.95F;
     private uint _twigs = 0;
+    private float _minimumDistance = 50F;
     
-    public Companion(Game1 game, Vector2 position)
+    public Companion(Game1 game, Vector2 position,float speed)
     {
+        _movement_speed.X = speed;
+        _movement_speed.Y = speed;
         _game = game;
         Position = position;
         var textureCompanionDown = _game.TextureMap["follower"];
@@ -53,9 +57,37 @@ public class Companion
 
     public void Update(IngameState state,GameTime gameTime,Vector2 playerPosition)
     {
-        PlayerPosition = playerPosition;
-        Position.X = PlayerPosition.X - 25;
-        Position.Y = PlayerPosition.Y - 25;
+
+        var (playerPosX, playerPosY) = playerPosition;
+        var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var width = Math.Abs(Position.X - playerPosX);
+        var height = Math.Abs(Position.Y - playerPosY);
+        var h = (float) Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
+
+        if (width > _minimumDistance || height > _minimumDistance)
+        {
+            _movement_speed.X = _movement_speed.Y;
+        }
+        else
+        {
+            _movement_speed.X = 0;
+        }
+        if (playerPosX > Position.X)
+        {
+            Position.X += _movement_speed.X * (width / h) * delta;
+        }
+        else if (playerPosX < Position.X)
+        {
+            Position.X -= _movement_speed.X * (width / h) * delta;
+        }
+        if (playerPosY > Position.Y)
+        {
+            Position.Y += _movement_speed.X * (height / h) * delta;
+        }
+        else if (playerPosY < Position.Y)
+        {
+            Position.Y -= _movement_speed.X * (height / h) * delta;
+        }
         
 
     }
