@@ -42,11 +42,11 @@ public class Player
         };
         spriteBatch.Draw(
             texture: texture, 
-            position: Position,
+            position: Position - Size/2,
             sourceRectangle: null,
             color: Color.White,
             rotation: 0,
-            origin: Size/4,
+            origin: Vector2.Zero,
             scale: _scale,
             effects: spriteEffect,
             layerDepth: 0

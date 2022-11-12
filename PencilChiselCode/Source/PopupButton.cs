@@ -39,11 +39,11 @@ public class PopupButton
     {
         spriteBatch.Draw(
             texture: _texture,
-            position: position + new Vector2(size.X * 0.5F, -size.Y * 1.75F) - _size * 0.5F * scale,
+            position: position + new Vector2(size.X, -size.Y * 1.75F),
             sourceRectangle: null,
             color: Color.White,
             rotation: rotation,
-            origin: _size * scale/4,
+            origin: _size * scale * 0.5F,
             scale: 2F * scale,
             effects: SpriteEffects.None,
             layerDepth: 0
