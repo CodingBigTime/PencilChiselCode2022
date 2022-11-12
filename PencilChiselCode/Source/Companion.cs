@@ -64,7 +64,7 @@ public class Companion
         var height = Math.Abs(Position.Y - playerPosY);
         var h = (float) Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
 
-        if (width > _minimumDistance || height > _minimumDistance)
+        if (Math.Sqrt(width * width + height * height) > _minimumDistance)
         {
             _movement_speed.X = _movement_speed.Y;
         }
