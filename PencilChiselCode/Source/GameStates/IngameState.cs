@@ -6,12 +6,13 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 
 namespace PencilChiselCode.Source.GameStates;
 
 public class IngameState : GameScreen
 {
-    private static readonly Color _bgColor = Color.Green;
+    public static readonly Color BgColor = Color.Green;
     private Game1 _game => (Game1)Game;
     private Player _player;
     private bool _showDebug;
@@ -22,6 +23,7 @@ public class IngameState : GameScreen
     private TimeSpan _fpsCounterGameTime;
     private static bool _pauseState;
     private Button _pauseButton;
+    private Button _menuButton;
 
     public IngameState(Game game) : base(game)
     {
@@ -32,10 +34,25 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
-        _pauseButton = new Button(_game.TextureMap["start_button_normal"],
-            _game.TextureMap["start_button_hover"],
-            _game.TextureMap["start_button_pressed"],
+        var resumeButton = _game.TextureMap["resume_button_normal"];
+        var resumeButtonSize = new Size2(resumeButton.Width, resumeButton.Height);
+        _pauseButton = new Button(resumeButton,
+            _game.TextureMap["resume_button_hover"],
+            _game.TextureMap["resume_button_pressed"],
+            Utils.GetCenterStartCoords(resumeButtonSize, Game1.Instance.GetWindowDimensions()),
             () => { _pauseState = false; }
+        );
+        var menuButton = _game.TextureMap["menu_button_normal"];
+        var menuButtonSize = new Size2(menuButton.Width, menuButton.Height);
+        _menuButton = new Button(menuButton,
+            _game.TextureMap["menu_button_hover"],
+            _game.TextureMap["menu_button_pressed"],
+            Utils.GetCenterStartCoords(menuButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
+            () =>
+            {
+                Game1.Instance.ScreenManager.LoadScreen(new MenuState(_game),
+                    new FadeTransition(Game1.Instance.GraphicsDevice, MenuState.BgColor));
+            }
         );
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
             _game.SoundMap["pickup_branches"], new Vector2(300, 300),
@@ -55,7 +72,7 @@ public class IngameState : GameScreen
     public override void Update(GameTime gameTime)
     {
         var keyState = Keyboard.GetState();
-        if (keyState.IsKeyDown(Keys.P) && !_previousPressedKeys.Contains(Keys.P))
+        if (keyState.IsKeyDown(Keys.Escape) && !_previousPressedKeys.Contains(Keys.Escape))
         {
             _pauseState = !_pauseState;
         }
@@ -63,6 +80,7 @@ public class IngameState : GameScreen
         if (_pauseState)
         {
             _pauseButton.Update(gameTime);
+            _menuButton.Update(gameTime);
         }
         else
         {
@@ -86,7 +104,7 @@ public class IngameState : GameScreen
         _game.Penumbra.BeginDraw();
 
         _game.Penumbra.Transform = Matrix.CreateTranslation(-_game.Camera.Position.X, -_game.Camera.Position.Y, 0);
-        _game.GraphicsDevice.Clear(_bgColor);
+        _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
@@ -119,6 +137,7 @@ public class IngameState : GameScreen
         if (_pauseState)
         {
             _pauseButton.Draw(_game.SpriteBatch);
+            _menuButton.Draw(_game.SpriteBatch);
         }
 
         if (_showDebug)

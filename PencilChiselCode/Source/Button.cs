@@ -15,13 +15,13 @@ public class Button
     private readonly Texture2D _pressedTexture;
     private readonly Action _action;
 
-    public Button(Texture2D normal, Texture2D hovered, Texture2D pressed,Action action)
+    public Button(Texture2D normal, Texture2D hovered, Texture2D pressed, Vector2 position, Action action)
     {
         _normalTexture = normal;
         _hoveredTexture = hovered;
         _pressedTexture = pressed;
         Texture = normal;
-        Position = Utils.GetCenterStartCoords(Size, Game1.Instance.GetWindowDimensions());
+        Position = position;
         _action = action;
     }
 

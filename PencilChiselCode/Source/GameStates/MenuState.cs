@@ -9,11 +9,10 @@ namespace PencilChiselCode.Source.GameStates;
 
 public class MenuState : GameScreen
 {
-    private new Game1 Game => (Game1)base.Game;
-    private static readonly Color BgColor = new(9F / 255F, 10F / 255F, 20F / 255F);
+    private Game1 _game => (Game1)Game;
+    public static readonly Color BgColor = new(9F / 255F, 10F / 255F, 20F / 255F);
     private readonly List<Button> _buttons = new();
     private static Song _song;
-    private Dictionary<string, Texture2D> _texture;
 
     public MenuState(Game1 game) : base(game)
     {
@@ -22,15 +21,26 @@ public class MenuState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
-        _texture = Game1.Instance.TextureMap;
-        _buttons.Add(new Button(_texture["start_button_normal"],
-            _texture["start_button_hover"],
-            _texture["start_button_pressed"],
+        var textureMap = Game1.Instance.TextureMap;
+        var startButton = textureMap["start_button_normal"];
+        var startButtonSize = new Vector2(startButton.Width, startButton.Height);
+        _buttons.Add(new Button(startButton,
+            textureMap["start_button_hover"],
+            textureMap["start_button_pressed"],
+            Utils.GetCenterStartCoords(startButtonSize, Game1.Instance.GetWindowDimensions()),
             () =>
             {
-                Game1.Instance.ScreenManager.LoadScreen(new IngameState(Game),
-                    new FadeTransition(Game1.Instance.GraphicsDevice, Color.Khaki));
+                Game1.Instance.ScreenManager.LoadScreen(new IngameState(_game),
+                    new FadeTransition(Game1.Instance.GraphicsDevice, Color.Black));
             }
+        ));
+        var exitButton = textureMap["exit_button_normal"];
+        var exitButtonSize = new Vector2(exitButton.Width, exitButton.Height);
+        _buttons.Add(new Button(exitButton,
+            textureMap["exit_button_hover"],
+            textureMap["exit_button_pressed"],
+            Utils.GetCenterStartCoords(exitButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
+            () => _game.Exit()
         ));
     }
 
