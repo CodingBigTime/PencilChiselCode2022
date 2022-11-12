@@ -58,6 +58,9 @@ public class Game1 : Game
         TextureMap.Add("exit_button_normal", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_normal"));
         TextureMap.Add("exit_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_hover"));
         TextureMap.Add("exit_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_pressed"));
+
+        TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
+        
         TextureMap.Add("player_down", Content.Load<Texture2D>("Textures/Entity/player_01"));
         TextureMap.Add("player_up", Content.Load<Texture2D>("Textures/Entity/player_02"));
         TextureMap.Add("player_left", Content.Load<Texture2D>("Textures/Entity/player_03"));

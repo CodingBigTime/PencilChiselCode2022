@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,11 +14,11 @@ public class IngameState : GameScreen
     private Game1 _game => (Game1)Game;
     private Player _player;
     private bool _showDebug;
-    private HashSet<Keys> _previousPressedKeys = new();
+    private readonly HashSet<Keys> _previousPressedKeys = new();
     private static float _cameraSpeed = 10.0F;
     private AttributeGroup _followerAttributes;
     private static bool _pauseState;
-    public Button PauseButton;
+    private Button _pauseButton;
 
     public IngameState(Game game) : base(game)
     {
@@ -30,13 +29,10 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
-        PauseButton = new Button(Game1.Instance.TextureMap["start_button_normal"],
+        _pauseButton = new Button(Game1.Instance.TextureMap["start_button_normal"],
             Game1.Instance.TextureMap["start_button_hover"],
             Game1.Instance.TextureMap["start_button_pressed"],
-            () =>
-            {
-                _pauseState = false;
-            }
+            () => { _pauseState = false; }
         );
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300),
             0.5F));
@@ -57,21 +53,24 @@ public class IngameState : GameScreen
         {
             _pauseState = !_pauseState;
         }
+
         if (_pauseState)
         {
-            PauseButton.Update(gameTime);
+            _pauseButton.Update(gameTime);
         }
         else
         {
             _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
             _player.Update(this, gameTime);
             _followerAttributes.Update(gameTime);
-            Pickupables.ForEach(pickupable => pickupable.Update(gameTime));   
+            Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
         }
+
         if (keyState.IsKeyDown(Keys.F3) && !_previousPressedKeys.Contains(Keys.F3))
         {
             _showDebug = !_showDebug;
         }
+
         _previousPressedKeys.Clear();
         _previousPressedKeys.UnionWith(keyState.GetPressedKeys());
     }
@@ -97,13 +96,15 @@ public class IngameState : GameScreen
 
         if (_pauseState)
         {
-            PauseButton.Draw(Game1.Instance.SpriteBatch);
+            _pauseButton.Draw(Game1.Instance.SpriteBatch);
         }
+
         if (_showDebug)
         {
             _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}",
                 new Vector2(16, 16), Color.Black);
         }
+
         _game.SpriteBatch.End();
     }
 }
