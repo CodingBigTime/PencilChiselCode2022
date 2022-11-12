@@ -103,6 +103,11 @@ public class IngameState : GameScreen
 
     private void DrawUI(GameTime gameTime)
     {
+        var transformMatrix = _game.Camera.GetViewMatrix();
+        _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        _player.DrawPopupButton(_game.SpriteBatch);
+        _game.SpriteBatch.End();
+
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _followerAttributes.Draw(_game.SpriteBatch);
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
