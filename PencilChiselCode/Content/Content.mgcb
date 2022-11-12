@@ -94,7 +94,7 @@
 /processorParam:Quality=Best
 /build:Resources/Sounds/button_release.wav
 
-#begin Resources/Textures/Entity/player.png
+#begin Resources/Textures/Entity/follower.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -104,7 +104,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Resources/Textures/Entity/player.png
+/build:Resources/Textures/Entity/follower.png
 
 #begin Resources/Textures/Entity/player_01.png
 /importer:TextureImporter

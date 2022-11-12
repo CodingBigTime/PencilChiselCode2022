@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,7 +7,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
 
-namespace PencilChiselCode.Source;
+namespace PencilChiselCode.Source.GameStates;
 
 public class IngameState : GameScreen
 {
@@ -22,6 +20,8 @@ public class IngameState : GameScreen
     private AttributeGroup _followerAttributes;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
+    private static bool _pauseState;
+    public Button PauseButton;
 
     public IngameState(Game game) : base(game)
     {
@@ -32,6 +32,11 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
+        PauseButton = new Button(Game1.Instance.TextureMap["start_button_normal"],
+            Game1.Instance.TextureMap["start_button_hover"],
+            Game1.Instance.TextureMap["start_button_pressed"],
+            () => { _pauseState = false; }
+        );
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300),
             0.5F));
         _player = new Player(_game, new Vector2(150, 150));
@@ -46,11 +51,23 @@ public class IngameState : GameScreen
 
     public override void Update(GameTime gameTime)
     {
-        _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
-        _player.Update(this, gameTime);
-        _followerAttributes.Update(gameTime);
-        Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
         var keyState = Keyboard.GetState();
+        if (keyState.IsKeyDown(Keys.P) && !_previousPressedKeys.Contains(Keys.P))
+        {
+            _pauseState = !_pauseState;
+        }
+
+        if (_pauseState)
+        {
+            PauseButton.Update(gameTime);
+        }
+        else
+        {
+            _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+            _player.Update(this, gameTime);
+            _followerAttributes.Update(gameTime);
+            Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
+        }
 
         if (keyState.IsKeyDown(Keys.F3) && !_previousPressedKeys.Contains(Keys.F3))
         {
@@ -64,7 +81,6 @@ public class IngameState : GameScreen
     public override void Draw(GameTime gameTime)
     {
         _game.GraphicsDevice.Clear(_bgColor);
-
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance.SpriteBatch));
@@ -73,7 +89,6 @@ public class IngameState : GameScreen
         _player.Draw(Game1.Instance.SpriteBatch);
 
         _game.SpriteBatch.End();
-
         DrawUI(gameTime);
     }
 
@@ -86,6 +101,12 @@ public class IngameState : GameScreen
             _fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
             _fpsCounterGameTime = gameTime.TotalGameTime;
         }
+
+        if (_pauseState)
+        {
+            PauseButton.Draw(Game1.Instance.SpriteBatch);
+        }
+
         if (_showDebug)
         {
             _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {_fps}",
