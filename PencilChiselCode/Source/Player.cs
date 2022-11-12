@@ -3,21 +3,33 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PencilChiselCode.Source.GameStates;
+using Penumbra;
 
 namespace PencilChiselCode.Source;
 
 public class Player
 {
     public Vector2 Size;
-    public Vector2 Position;
+    public Vector2 Position
+        {
+            get { return position; }
+            set
+            {
+                position = value;
+                PointLight.Position = new Vector2(value.X, value.Y);
+                Spotlight.Position = new Vector2(value.X, value.Y);
+            }
+        }
+        Vector2 position;
     private const float sqrt1_2 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
-    private readonly float _scale = 2F;
     private Game1 _game;
     private Vector2 _speed;
-    private readonly float _maxSpeed = 80F;
-    private readonly float _acceleration = 16F;
-    private readonly float _friction = 0.95F;
+    private readonly static int _lightRadius = 200;
+    private readonly static float _scale = 2F;
+    private readonly static float _maxSpeed = 80F;
+    private readonly static float _acceleration = 16F;
+    private readonly static float _friction = 0.95F;
     private uint _twigs = 0;
     private PopupButton _popupButton;
 
@@ -29,6 +41,21 @@ public class Player
         var texturePlayerDown = _game.TextureMap["player_down"];
         Size = new(texturePlayerDown.Width * _scale, texturePlayerDown.Height * _scale);
     }
+
+    public Light PointLight { get; } = new PointLight
+    {
+        Scale = new Vector2(_lightRadius),
+        Color = Color.White,
+        ShadowType = ShadowType.Occluded
+    };
+
+    public Light Spotlight { get; } = new Spotlight
+    {
+        Scale = new Vector2(_lightRadius * 2),
+        Color = Color.White,
+        ShadowType = ShadowType.Occluded,
+        ConeDecay = 2.5F
+    };
 
     public void Draw(SpriteBatch spriteBatch)
     {
@@ -64,6 +91,9 @@ public class Player
         var right = keyState.IsKeyDown(Keys.D) || keyState.IsKeyDown(Keys.Right);
         var mx = Convert.ToSingle(right) - Convert.ToSingle(left);
         var my = Convert.ToSingle(down) - Convert.ToSingle(up);
+        var angle = (float)Math.Atan2(_speed.Y, _speed.X);
+        
+        Spotlight.Rotation = angle;
 
         if (mx != 0 && my != 0)
         {
@@ -78,19 +108,18 @@ public class Player
         _speed += new Vector2(ax, ay);
         _speed *= _friction;
         _speed = Utils.Clamp(_speed, -_maxSpeed, _maxSpeed);
-        Position.X += _speed.X * delta;
-        Position.Y += _speed.Y * delta;
+        Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
 
         if (Position.X >= _game.Camera.Center.X + _game.Width / 2F - Size.X / 2F)
         {
             _speed.X = 0;
-            Position.X = Math.Min(Position.X, _game.Camera.Center.X + _game.Width / 2F - Size.X / 2F);
+            Position = new(Math.Min(Position.X, _game.Camera.Center.X + _game.Width / 2F - Size.X / 2F), Position.Y);
         }
 
         if (Position.Y <= Size.Y / 2F || Position.Y >= _game.Height - Size.Y / 2F)
         {
             _speed.Y = 0;
-            Position.Y = Math.Clamp(Position.Y, Size.Y / 2F, _game.Height - Size.Y / 2F);
+            Position = new(Position.X, Math.Clamp(Position.Y, Size.Y / 2F, _game.Height - Size.Y / 2F));
         }
 
 
