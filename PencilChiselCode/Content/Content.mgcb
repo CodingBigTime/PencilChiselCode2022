@@ -14,6 +14,42 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Resources/Animations/fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Animations/fire.png
+
+#begin Resources/Animations/fire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Animations/fire.png
+
+#begin Resources/Animations/fire.sf
+/importer:SpriteFactoryContentImporter
+/processor:SpriteFactoryContentProcessor
+/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
+/build:Resources/Animations/fire.sf
+
+#begin Resources/Animations/fire.sf
+/importer:SpriteFactoryContentImporter
+/processor:SpriteFactoryContentProcessor
+/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
+/build:Resources/Animations/fire.sf
+
 #begin Resources/Fonts/lunchds_12.fnt
 /importer:BitmapFontImporter
 /processor:BitmapFontProcessor
@@ -364,18 +400,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/berry_01.png
 
-#begin Resources/Textures/Tiles/berry_01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/berry_01.png
-
 #begin Resources/Textures/Tiles/bush_01.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -387,30 +411,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/bush_01.png
-
-#begin Resources/Textures/Tiles/bush_01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/bush_01.png
-
-#begin Resources/Textures/Tiles/bush_02.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/bush_02.png
 
 #begin Resources/Textures/Tiles/bush_02.png
 /importer:TextureImporter
@@ -436,18 +436,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/dirt_01.png
 
-#begin Resources/Textures/Tiles/dirt_01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/dirt_01.png
-
 #begin Resources/Textures/Tiles/fire_01.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -459,30 +447,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/fire_01.png
-
-#begin Resources/Textures/Tiles/fire_01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/fire_01.png
-
-#begin Resources/Textures/Tiles/fire_02.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/fire_02.png
 
 #begin Resources/Textures/Tiles/fire_02.png
 /importer:TextureImporter
@@ -508,18 +472,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/fire_03.png
 
-#begin Resources/Textures/Tiles/fire_03.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/fire_03.png
-
 #begin Resources/Textures/Tiles/fire_04.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -531,30 +483,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/fire_04.png
-
-#begin Resources/Textures/Tiles/fire_04.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/fire_04.png
-
-#begin Resources/Textures/Tiles/flower_lamp_01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/flower_lamp_01.png
 
 #begin Resources/Textures/Tiles/flower_lamp_01.png
 /importer:TextureImporter
@@ -580,30 +508,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/grass_01.png
 
-#begin Resources/Textures/Tiles/grass_01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/grass_01.png
-
-#begin Resources/Textures/Tiles/grass_02.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/grass_02.png
-
 #begin Resources/Textures/Tiles/grass_02.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -628,18 +532,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/grass_03.png
 
-#begin Resources/Textures/Tiles/grass_03.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/grass_03.png
-
 #begin Resources/Textures/Tiles/grass_04.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -651,30 +543,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/grass_04.png
-
-#begin Resources/Textures/Tiles/grass_04.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/grass_04.png
-
-#begin Resources/Textures/Tiles/grass_05.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/grass_05.png
 
 #begin Resources/Textures/Tiles/grass_05.png
 /importer:TextureImporter
@@ -831,18 +699,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/grass_small_corner_top_right.png
-
-#begin Resources/Textures/Tiles/tree_01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/Tiles/tree_01.png
 
 #begin Resources/Textures/Tiles/tree_01.png
 /importer:TextureImporter
