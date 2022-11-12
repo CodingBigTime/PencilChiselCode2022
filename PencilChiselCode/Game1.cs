@@ -71,6 +71,7 @@ public class Game1 : Game
         TextureMap.Add("player_up", Content.Load<Texture2D>("Textures/Entity/player_02"));
         TextureMap.Add("player_left", Content.Load<Texture2D>("Textures/Entity/player_03"));
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
+        TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
