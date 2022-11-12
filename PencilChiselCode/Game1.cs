@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Screens;
 using PencilChiselCode.Source;
 
 namespace PencilChiselCode;
@@ -10,15 +11,18 @@ namespace PencilChiselCode;
 public class Game1 : Game
 {
     public readonly GraphicsDeviceManager Graphics;
-    public SpriteBatch SpriteBatch;
+    public SpriteBatch _spriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     private Button _button;
-    private Player _player;
+    public Player Player;
     public static Game1 Instance { get; private set; }
+    public ScreenManager _screenManager;
 
     public Game1()
     {
+        _screenManager = new ScreenManager();
+        Components.Add(_screenManager);
         Instance = this;
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
@@ -30,6 +34,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
         base.Initialize();
+        _screenManager.LoadScreen(new MenuState(this));
         Graphics.IsFullScreen = false;
         Graphics.PreferredBackBufferWidth = 800;
         Graphics.PreferredBackBufferHeight = 800;
@@ -38,7 +43,7 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
-        SpriteBatch = new SpriteBatch(GraphicsDevice);
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         TextureMap.Add("start_button_normal", Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_normal"));
         TextureMap.Add("start_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_hover"));
@@ -51,33 +56,20 @@ public class Game1 : Game
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
 
-        _button = new Button(TextureMap["start_button_normal"], TextureMap["start_button_hover"],
-            TextureMap["start_button_pressed"]);
-        _player = new Player(TextureMap["player"], new Vector2(150, 150));
+        Player = new Player(TextureMap["player"], new Vector2(150, 150));
+
     }
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
-
-        _button.Update(gameTime);
-        _player.Update(gameTime);
+        _screenManager.Update(gameTime);
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Crimson);
-
-        SpriteBatch.Begin();
-
-        _button.Draw(SpriteBatch);
-        _player.Draw(SpriteBatch);
-
-        SpriteBatch.End();
-
+        _screenManager.Draw(gameTime);
         base.Draw(gameTime);
     }
 
