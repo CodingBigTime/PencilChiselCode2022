@@ -3,13 +3,18 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.BitmapFonts;
+using MonoGame.Extended;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source;
+using PencilChiselCode.Source.GameStates;
 
 namespace PencilChiselCode;
 
 public class Game1 : Game
 {
+    public readonly int Width = 800;
+    public readonly int Height = 800;
     public readonly GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
@@ -17,6 +22,7 @@ public class Game1 : Game
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
     public BitmapFont BitmapFont;
+    public OrthographicCamera Camera;
 
     public Game1()
     {
@@ -33,9 +39,11 @@ public class Game1 : Game
     protected override void Initialize()
     {
         Graphics.IsFullScreen = false;
-        Graphics.PreferredBackBufferWidth = 800;
-        Graphics.PreferredBackBufferHeight = 800;
+        Graphics.PreferredBackBufferWidth = Width;
+        Graphics.PreferredBackBufferHeight = Height;
         Graphics.ApplyChanges();
+        var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Width, Height);
+        Camera = new OrthographicCamera(viewportAdapter);
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }
@@ -50,7 +58,9 @@ public class Game1 : Game
         TextureMap.Add("exit_button_normal", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_normal"));
         TextureMap.Add("exit_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_hover"));
         TextureMap.Add("exit_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_pressed"));
-        TextureMap.Add("player", Content.Load<Texture2D>("Textures/Entity/player"));
+        TextureMap.Add("player_down", Content.Load<Texture2D>("Textures/Entity/player_01"));
+        TextureMap.Add("player_up", Content.Load<Texture2D>("Textures/Entity/player_02"));
+        TextureMap.Add("player_left", Content.Load<Texture2D>("Textures/Entity/player_03"));
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
