@@ -33,12 +33,12 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        base.Initialize();
-        _screenManager.LoadScreen(new MenuState(this));
         Graphics.IsFullScreen = false;
         Graphics.PreferredBackBufferWidth = 800;
         Graphics.PreferredBackBufferHeight = 800;
         Graphics.ApplyChanges();
+        base.Initialize();
+        _screenManager.LoadScreen(new MenuState(this));
     }
 
     protected override void LoadContent()
