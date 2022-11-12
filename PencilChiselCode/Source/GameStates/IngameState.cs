@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,6 +20,8 @@ public class IngameState : GameScreen
     private HashSet<Keys> _previousPressedKeys = new();
     private static float _cameraSpeed = 10.0F;
     private AttributeGroup _followerAttributes;
+    private int _fps;
+    private TimeSpan _fpsCounterGameTime;
 
     public IngameState(Game game) : base(game)
     {
@@ -76,9 +81,14 @@ public class IngameState : GameScreen
     {
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _followerAttributes.Draw(Game1.Instance.SpriteBatch);
+        if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
+        {
+            _fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
+            _fpsCounterGameTime = gameTime.TotalGameTime;
+        }
         if (_showDebug)
         {
-            _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}",
+            _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {_fps}",
                 new Vector2(16, 16), Color.Black);
         }
 

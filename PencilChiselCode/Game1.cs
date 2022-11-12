@@ -34,6 +34,8 @@ public class Game1 : Game
         IsMouseVisible = true;
         Window.AllowUserResizing = false;
         Window.Title = "PCC";
+        Graphics.SynchronizeWithVerticalRetrace = false;
+        IsFixedTimeStep = false;
     }
 
     protected override void Initialize()
