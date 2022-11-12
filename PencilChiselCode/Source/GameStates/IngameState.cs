@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended;
 
 namespace PencilChiselCode.Source;
 
 public class IngameState : GameScreen
 {
-    private static readonly Color BgColor = Color.Green;
-    private new Game1 Game => (Game1)base.Game;
-    private Player Player;
+    private static readonly Color _bgColor = Color.Green;
+    private static float _cameraSpeed = 10.0F;
+    private Game1 _game => (Game1)base.Game;
+    private Player _player;
 
     public IngameState(Game game) : base(game)
     {
@@ -22,21 +24,23 @@ public class IngameState : GameScreen
         base.LoadContent();
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300),
             0.5F));
-        Player = new Player(Game.TextureMap["player"], new Vector2(150, 150));
+        _player = new Player(_game.TextureMap["player"], new Vector2(150, 150));
     }
 
     public override void Update(GameTime gameTime)
     {
-        Player.Update(this, gameTime);
+        _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+        _player.Update(this, gameTime);
         Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
     }
 
     public override void Draw(GameTime gameTime)
     {
-        Game.GraphicsDevice.Clear(BgColor);
-        Game.SpriteBatch.Begin();
+        var transformMatrix = _game.Camera.GetViewMatrix();
+        _game.GraphicsDevice.Clear(_bgColor);
+        _game.SpriteBatch.Begin(transformMatrix: transformMatrix);
         Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance.SpriteBatch));
-        Player.Draw(Game1.Instance.SpriteBatch);
-        Game.SpriteBatch.End();
+        _player.Draw(Game1.Instance.SpriteBatch);
+        _game.SpriteBatch.End();
     }
 }

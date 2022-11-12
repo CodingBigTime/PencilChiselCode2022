@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source;
 
 namespace PencilChiselCode;
@@ -15,6 +17,7 @@ public class Game1 : Game
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
+    public OrthographicCamera Camera;
 
     public Game1()
     {
@@ -34,6 +37,8 @@ public class Game1 : Game
         Graphics.PreferredBackBufferWidth = 800;
         Graphics.PreferredBackBufferHeight = 800;
         Graphics.ApplyChanges();
+        var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 800);
+        Camera = new OrthographicCamera(viewportAdapter);
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }
