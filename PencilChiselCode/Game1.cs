@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
 using PencilChiselCode.Source;
 
@@ -15,6 +16,7 @@ public class Game1 : Game
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
+    public BitmapFont BitmapFont;
 
     public Game1()
     {
@@ -53,6 +55,8 @@ public class Game1 : Game
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
+        
+        BitmapFont = Content.Load<BitmapFont>("Fonts/lunchds");
     }
 
     protected override void Update(GameTime gameTime)
