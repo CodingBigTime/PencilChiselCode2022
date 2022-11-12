@@ -7,26 +7,26 @@ namespace PencilChiselCode.Source
 {
     public class AttributeGroup
     {
-        private List<Attribute> _attributes { get; }
+        public List<Attribute> Attributes { get; }
         
         public AttributeGroup(List<Attribute> attributes)
         {
-            _attributes = attributes;
+            Attributes = attributes;
         }
 
         public bool IsEmptyAny()
         {
-            return _attributes.Any(attribute => attribute.IsEmpty());
+            return Attributes.Any(attribute => attribute.IsEmpty());
         }
 
         public void Update(GameTime gameTime)
         {
-            _attributes.ForEach(attribute => attribute.Update(gameTime));
+            Attributes.ForEach(attribute => attribute.Update(gameTime));
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            _attributes.ForEach(attribute => attribute.Draw(spriteBatch));
+            Attributes.ForEach(attribute => attribute.Draw(spriteBatch));
         }
     }
 }
