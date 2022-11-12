@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 
-namespace PencilChiselCode.Source;
+namespace PencilChiselCode.Source.GameStates;
 
 public class MenuState : GameScreen
 {
