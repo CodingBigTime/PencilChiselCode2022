@@ -23,4 +23,14 @@ public static class Utils
 
     public static Vector2 Clamp(Vector2 vector, float min, float max) =>
         new(Math.Clamp(vector.X, min, max), Math.Clamp(vector.Y, min, max));
+
+    public static Rectangle CreateRectangle(Vector2 position, Vector2 size) =>
+        new(position.ToPoint(), size.ToPoint());
+
+    public static Rectangle Expand(this Rectangle rectangle, int radius)
+    {
+        var position = rectangle.Location.ToVector2() - new Vector2(radius);
+        var size = rectangle.Size.ToVector2() + new Vector2(radius * 2);
+        return CreateRectangle(position, size);
+    }
 }

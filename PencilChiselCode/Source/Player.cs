@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -28,7 +27,7 @@ public class Player
         spriteBatch.Draw(Texture, Position, Color.White);
     }
 
-    public void Update(GameTime gameTime)
+    public void Update(IngameState state, GameTime gameTime)
     {
         var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
         var keyState = Keyboard.GetState();
@@ -54,5 +53,13 @@ public class Player
         _speed = Utils.Clamp(_speed, -_maxSpeed, _maxSpeed);
         Position.X += _speed.X * delta;
         Position.Y += _speed.Y * delta;
+
+        if (!keyState.IsKeyDown(Keys.E)) return;
+        var twig = state.Pickupables.Find(pickupable =>
+            Utils.CreateRectangle(Position, Size).Expand(16)
+                .Intersects(Utils.CreateRectangle(pickupable.Position, pickupable.Size).Expand(16)));
+        if (twig == null) return;
+        _twigs++;
+        state.Pickupables.Remove(twig);
     }
 }

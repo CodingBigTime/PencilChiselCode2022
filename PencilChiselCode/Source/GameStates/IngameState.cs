@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Screens;
 
-namespace PencilChiselCode.Source.GameStates;
+namespace PencilChiselCode.Source;
 
 public class IngameState : GameScreen
 {
@@ -13,26 +13,26 @@ public class IngameState : GameScreen
     {
     }
 
-    private List<Pickupable> _pickupables = new();
+    public List<Pickupable> Pickupables { get; } = new();
 
 
     public override void LoadContent()
     {
         base.LoadContent();
-        _pickupables.Add(new Pickupable(Game1.Instance.TextureMap["twigs"], new Vector2(300, 300), 0.5F));
+        Pickupables.Add(new Pickupable(Game1.Instance.TextureMap["twigs"], new Vector2(300, 300), 0.5F));
     }
 
     public override void Update(GameTime gameTime)
     {
-        Game1.Instance.Player.Update(gameTime);
-        _pickupables.ForEach(pickupable => pickupable.Update(gameTime));
+        Game1.Instance.Player.Update(this, gameTime);
+        Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
     }
 
     public override void Draw(GameTime gameTime)
     {
         Game1.Instance.GraphicsDevice.Clear(BgColor);
         Game1.Instance._spriteBatch.Begin();
-        _pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance._spriteBatch));
+        Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance._spriteBatch));
         Game1.Instance.Player.Draw(Game1.Instance._spriteBatch);
         Game1.Instance._spriteBatch.End();
     }
