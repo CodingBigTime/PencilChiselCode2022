@@ -19,7 +19,7 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
-        Pickupables.Add(new Pickupable(Game1.Instance.TextureMap["twigs"], new Vector2(300, 300), 0.5F));
+        Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300), 0.5F));
     }
 
     public override void Update(GameTime gameTime)
@@ -31,9 +31,9 @@ public class IngameState : GameScreen
     public override void Draw(GameTime gameTime)
     {
         Game1.Instance.GraphicsDevice.Clear(BgColor);
-        Game1.Instance._spriteBatch.Begin();
-        Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance._spriteBatch));
-        Game1.Instance.Player.Draw(Game1.Instance._spriteBatch);
-        Game1.Instance._spriteBatch.End();
+        Game1.Instance.SpriteBatch.Begin();
+        Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance.SpriteBatch));
+        Game1.Instance.Player.Draw(Game1.Instance.SpriteBatch);
+        Game1.Instance.SpriteBatch.End();
     }
 }

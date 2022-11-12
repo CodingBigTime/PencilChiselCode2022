@@ -55,11 +55,17 @@ public class Player
         Position.Y += _speed.Y * delta;
 
         if (!keyState.IsKeyDown(Keys.E)) return;
-        var twig = state.Pickupables.Find(pickupable =>
+        var pickupable = state.Pickupables.Find(pickupable =>
             Utils.CreateRectangle(Position, Size).Expand(16)
                 .Intersects(Utils.CreateRectangle(pickupable.Position, pickupable.Size).Expand(16)));
-        if (twig == null) return;
-        _twigs++;
-        state.Pickupables.Remove(twig);
+        if (pickupable == null) return;
+        switch (pickupable.Type)
+        {
+            case PickupableTypes.Twig:
+                ++_twigs;
+                break;
+        }
+
+        state.Pickupables.Remove(pickupable);
     }
 }

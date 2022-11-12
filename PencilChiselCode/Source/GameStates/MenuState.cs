@@ -29,7 +29,7 @@ public class MenuState : GameScreen
             _texture["start_button_pressed"],
             () =>
             {
-                Game1.Instance._screenManager.LoadScreen(new IngameState(Game),
+                Game1.Instance.ScreenManager.LoadScreen(new IngameState(Game),
                     new FadeTransition(Game1.Instance.GraphicsDevice, Color.Khaki));
             }
         ));
@@ -38,15 +38,14 @@ public class MenuState : GameScreen
 
     public override void Draw(GameTime gameTime)
     {
-        Debug.WriteLine("3");
-        Game1.Instance._spriteBatch.Begin();
+        Game1.Instance.SpriteBatch.Begin();
         Game1.Instance.GraphicsDevice.Clear(BgColor);
         foreach (var button in _buttons)
         {
-            button.Draw(Game1.Instance._spriteBatch);
+            button.Draw(Game1.Instance.SpriteBatch);
         }
 
-        Game1.Instance._spriteBatch.End();
+        Game1.Instance.SpriteBatch.End();
     }
 
     public override void Update(GameTime gameTime)

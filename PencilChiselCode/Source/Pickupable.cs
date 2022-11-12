@@ -9,12 +9,14 @@ public class Pickupable
     public Vector2 Size => new(Texture.Width, Texture.Height);
     public Vector2 Position;
     public float Rotation;
+    public PickupableTypes Type { get; set; }
 
-    public Pickupable(Texture2D texture, Vector2 position, float rotation)
+    public Pickupable(PickupableTypes type, Texture2D texture, Vector2 position, float rotation)
     {
         Texture = texture;
         Position = position;
         Rotation = rotation;
+        Type = type;
     }
 
     public void Draw(SpriteBatch spriteBatch)

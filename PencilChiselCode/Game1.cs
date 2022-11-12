@@ -10,17 +10,17 @@ namespace PencilChiselCode;
 public class Game1 : Game
 {
     public readonly GraphicsDeviceManager Graphics;
-    public SpriteBatch _spriteBatch;
+    public SpriteBatch SpriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     public Player Player;
     public static Game1 Instance { get; private set; }
-    public ScreenManager _screenManager;
+    public readonly ScreenManager ScreenManager;
 
     public Game1()
     {
-        _screenManager = new ScreenManager();
-        Components.Add(_screenManager);
+        ScreenManager = new ScreenManager();
+        Components.Add(ScreenManager);
         Instance = this;
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
@@ -32,7 +32,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
         base.Initialize();
-        _screenManager.LoadScreen(new MenuState(this));
+        ScreenManager.LoadScreen(new MenuState(this));
         Graphics.IsFullScreen = false;
         Graphics.PreferredBackBufferWidth = 800;
         Graphics.PreferredBackBufferHeight = 800;
@@ -41,7 +41,7 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        SpriteBatch = new SpriteBatch(GraphicsDevice);
 
         TextureMap.Add("start_button_normal", Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_normal"));
         TextureMap.Add("start_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_hover"));
@@ -60,14 +60,14 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
-        _screenManager.Update(gameTime);
+        ScreenManager.Update(gameTime);
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Crimson);
-        _screenManager.Draw(gameTime);
+        ScreenManager.Draw(gameTime);
         base.Draw(gameTime);
     }
 
