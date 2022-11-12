@@ -15,6 +15,7 @@ public class IngameState : GameScreen
     public static readonly Color BgColor = Color.Green;
     private Game1 _game => (Game1)Game;
     private Player _player;
+    private Companion _companion;
     private bool _showDebug;
     private readonly HashSet<Keys> _previousPressedKeys = new();
     private static float _cameraSpeed = 10.0F;
@@ -57,9 +58,13 @@ public class IngameState : GameScreen
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
             _game.SoundMap["pickup_branches"], new Vector2(300, 300),
             0.5F));
+        _companion = new Companion(_game, new Vector2(100, 100),50F);
         _player = new Player(_game, new Vector2(150, 150));
+
+
         _game.Penumbra.Lights.Add(_player.PointLight);
         _game.Penumbra.Lights.Add(_player.Spotlight);
+
         _followerAttributes = new AttributeGroup(new List<Attribute>
         {
             new(new Vector2(10, 10), null, Color.Brown, 100, -0.5F),
@@ -85,6 +90,7 @@ public class IngameState : GameScreen
         else
         {
             _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+            _companion.Update(this,gameTime,_player.Position);
             _player.Update(this, gameTime);
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
@@ -109,11 +115,10 @@ public class IngameState : GameScreen
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
 
-
+        _companion.Draw(_game.SpriteBatch);
         _player.Draw(_game.SpriteBatch);
 
         _game.SpriteBatch.End();
-
         _game.Penumbra.Draw(gameTime);
 
         DrawUI(gameTime);
