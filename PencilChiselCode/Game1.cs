@@ -2,8 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source;
 
 namespace PencilChiselCode;
@@ -11,18 +12,17 @@ namespace PencilChiselCode;
 public class Game1 : Game
 {
     public readonly GraphicsDeviceManager Graphics;
-    public SpriteBatch _spriteBatch;
+    public SpriteBatch SpriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
-    private Button _button;
-    public Player Player;
     public static Game1 Instance { get; private set; }
-    public ScreenManager _screenManager;
+    public readonly ScreenManager ScreenManager;
+    public OrthographicCamera Camera;
 
     public Game1()
     {
-        _screenManager = new ScreenManager();
-        Components.Add(_screenManager);
+        ScreenManager = new ScreenManager();
+        Components.Add(ScreenManager);
         Instance = this;
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
@@ -33,17 +33,19 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        base.Initialize();
-        _screenManager.LoadScreen(new MenuState(this));
         Graphics.IsFullScreen = false;
         Graphics.PreferredBackBufferWidth = 800;
         Graphics.PreferredBackBufferHeight = 800;
         Graphics.ApplyChanges();
+        var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 800);
+        Camera = new OrthographicCamera(viewportAdapter);
+        base.Initialize();
+        ScreenManager.LoadScreen(new MenuState(this));
     }
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        SpriteBatch = new SpriteBatch(GraphicsDevice);
 
         TextureMap.Add("start_button_normal", Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_normal"));
         TextureMap.Add("start_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_hover"));
@@ -52,24 +54,22 @@ public class Game1 : Game
         TextureMap.Add("exit_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_hover"));
         TextureMap.Add("exit_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_pressed"));
         TextureMap.Add("player", Content.Load<Texture2D>("Textures/Entity/player"));
+        TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
-
-        Player = new Player(TextureMap["player"], new Vector2(150, 150));
-
     }
 
     protected override void Update(GameTime gameTime)
     {
-        _screenManager.Update(gameTime);
+        ScreenManager.Update(gameTime);
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Crimson);
-        _screenManager.Draw(gameTime);
+        ScreenManager.Draw(gameTime);
         base.Draw(gameTime);
     }
 

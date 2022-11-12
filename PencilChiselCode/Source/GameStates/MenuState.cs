@@ -1,6 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -16,31 +14,37 @@ public class MenuState : GameScreen
     private readonly List<Button> _buttons = new();
     private static Song _song;
     private Dictionary<string, Texture2D> _texture;
-    
-    public MenuState(Game1 game) : base(game) { }
-    
+
+    public MenuState(Game1 game) : base(game)
+    {
+    }
+
     public override void LoadContent()
     {
         base.LoadContent();
         _texture = Game1.Instance.TextureMap;
-        _buttons.Add(new Button(_texture["start_button_normal"], 
-            _texture["start_button_hover"], 
+        _buttons.Add(new Button(_texture["start_button_normal"],
+            _texture["start_button_hover"],
             _texture["start_button_pressed"],
-            () => {Game1.Instance._screenManager.LoadScreen(new IngameState(Game),new FadeTransition(Game1.Instance.GraphicsDevice,Color.Khaki));}
+            () =>
+            {
+                Game1.Instance.ScreenManager.LoadScreen(new IngameState(Game),
+                    new FadeTransition(Game1.Instance.GraphicsDevice, Color.Khaki));
+            }
         ));
     }
 
 
     public override void Draw(GameTime gameTime)
     {
-        Debug.WriteLine("3");
-        Game1.Instance._spriteBatch.Begin();
+        Game1.Instance.SpriteBatch.Begin();
         Game1.Instance.GraphicsDevice.Clear(BgColor);
         foreach (var button in _buttons)
         {
-            button.Draw(Game1.Instance._spriteBatch);
+            button.Draw(Game1.Instance.SpriteBatch);
         }
-        Game1.Instance._spriteBatch.End();
+
+        Game1.Instance.SpriteBatch.End();
     }
 
     public override void Update(GameTime gameTime)
@@ -48,6 +52,6 @@ public class MenuState : GameScreen
         foreach (var button in _buttons)
         {
             button.Update(gameTime);
-        }   
+        }
     }
 }
