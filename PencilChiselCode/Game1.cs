@@ -11,6 +11,8 @@ namespace PencilChiselCode;
 
 public class Game1 : Game
 {
+    public readonly int Width = 800;
+    public readonly int Height = 800;
     public readonly GraphicsDeviceManager Graphics;
     public SpriteBatch SpriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
@@ -34,10 +36,10 @@ public class Game1 : Game
     protected override void Initialize()
     {
         Graphics.IsFullScreen = false;
-        Graphics.PreferredBackBufferWidth = 800;
-        Graphics.PreferredBackBufferHeight = 800;
+        Graphics.PreferredBackBufferWidth = Width;
+        Graphics.PreferredBackBufferHeight = Height;
         Graphics.ApplyChanges();
-        var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 800);
+        var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Width, Height);
         Camera = new OrthographicCamera(viewportAdapter);
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
