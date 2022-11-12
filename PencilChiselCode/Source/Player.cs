@@ -15,6 +15,7 @@ public class Player
     private readonly float _maxSpeed = 255F;
     private readonly float _acceleration = 33F;
     private readonly float _friction = 0.95F;
+    private uint _twigs = 0;
 
     public Player(Texture2D texture, Vector2 position)
     {
@@ -44,7 +45,7 @@ public class Player
             mx *= 0.70710678118654752440084436210485F;
             my *= 0.70710678118654752440084436210485F;
         }
-        Debug.WriteLine(mx + " " + my);
+
         var ax = _acceleration * mx;
         var ay = _acceleration * my;
 

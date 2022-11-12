@@ -16,6 +16,7 @@ public class Game1 : Game
     private Button _button;
     private Player _player;
     public static Game1 Instance { get; private set; }
+    private List<Pickupable> _pickupables = new();
 
     public Game1()
     {
@@ -47,6 +48,7 @@ public class Game1 : Game
         TextureMap.Add("exit_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_hover"));
         TextureMap.Add("exit_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_pressed"));
         TextureMap.Add("player", Content.Load<Texture2D>("Textures/Entity/player"));
+        TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
@@ -54,6 +56,7 @@ public class Game1 : Game
         _button = new Button(TextureMap["start_button_normal"], TextureMap["start_button_hover"],
             TextureMap["start_button_pressed"]);
         _player = new Player(TextureMap["player"], new Vector2(150, 150));
+        _pickupables.Add(new Pickupable(TextureMap["twigs"], new Vector2(300, 300), 0.5F));
     }
 
     protected override void Update(GameTime gameTime)
@@ -64,6 +67,7 @@ public class Game1 : Game
 
         _button.Update(gameTime);
         _player.Update(gameTime);
+        _pickupables.ForEach(pickupable => pickupable.Update(gameTime));
         base.Update(gameTime);
     }
 
@@ -74,6 +78,7 @@ public class Game1 : Game
         SpriteBatch.Begin();
 
         _button.Draw(SpriteBatch);
+        _pickupables.ForEach(pickupable => pickupable.Draw(SpriteBatch));
         _player.Draw(SpriteBatch);
 
         SpriteBatch.End();
