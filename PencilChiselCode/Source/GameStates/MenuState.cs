@@ -26,7 +26,7 @@ public class MenuState : GameScreen
         _buttons.Add(new Button(_texture["start_button_normal"], 
             _texture["start_button_hover"], 
             _texture["start_button_pressed"],
-            () => {Game1.Instance._ScreenManager.LoadScreen(new IngameState(Game),new FadeTransition(Game1.Instance.GraphicsDevice,Color.Khaki));}
+            () => {Game1.Instance._screenManager.LoadScreen(new IngameState(Game),new FadeTransition(Game1.Instance.GraphicsDevice,Color.Khaki));}
         ));
     }
 

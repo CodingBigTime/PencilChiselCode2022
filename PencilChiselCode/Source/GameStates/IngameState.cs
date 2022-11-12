@@ -19,13 +19,14 @@ public class IngameState : GameScreen
 
     public override void Update(GameTime gameTime)
     {
-        
+        Game1.Instance.Player.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime)
     {
         Game1.Instance._spriteBatch.Begin();
         Game1.Instance.GraphicsDevice.Clear(BgColor);
+        Game1.Instance.Player.Draw(Game1.Instance._spriteBatch);
         Game1.Instance._spriteBatch.End();
     }
     

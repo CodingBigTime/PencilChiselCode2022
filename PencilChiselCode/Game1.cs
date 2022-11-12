@@ -11,18 +11,18 @@ namespace PencilChiselCode;
 public class Game1 : Game
 {
     public readonly GraphicsDeviceManager Graphics;
-    public SpriteBatch SpriteBatch;
+    public SpriteBatch _spriteBatch;
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     private Button _button;
-    private Player _player;
+    public Player Player;
     public static Game1 Instance { get; private set; }
-    public ScreenManager _ScreenManager;
+    public ScreenManager _screenManager;
 
     public Game1()
     {
-        _ScreenManager = new ScreenManager();
-        Components.Add(_ScreenManager);
+        _screenManager = new ScreenManager();
+        Components.Add(_screenManager);
         Instance = this;
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
@@ -34,7 +34,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
         base.Initialize();
-        _ScreenManager.LoadScreen(new MenuState(this));
+        _screenManager.LoadScreen(new MenuState(this));
         Graphics.IsFullScreen = false;
         Graphics.PreferredBackBufferWidth = 800;
         Graphics.PreferredBackBufferHeight = 800;
@@ -43,7 +43,7 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
-        SpriteBatch = new SpriteBatch(GraphicsDevice);
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         TextureMap.Add("start_button_normal", Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_normal"));
         TextureMap.Add("start_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_hover"));
@@ -56,21 +56,20 @@ public class Game1 : Game
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
 
-        _player = new Player(TextureMap["player"], new Vector2(150, 150));
+        Player = new Player(TextureMap["player"], new Vector2(150, 150));
 
     }
 
     protected override void Update(GameTime gameTime)
     {
-        _ScreenManager.Update(gameTime);
-        _player.Update(gameTime);
+        _screenManager.Update(gameTime);
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Crimson);
-        _ScreenManager.Draw(gameTime);
+        _screenManager.Draw(gameTime);
         base.Draw(gameTime);
     }
 
