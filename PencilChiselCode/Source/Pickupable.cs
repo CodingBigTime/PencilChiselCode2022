@@ -9,6 +9,7 @@ public class Pickupable
     public Vector2 Size => new(Texture.Width, Texture.Height);
     public Vector2 Position;
     public float Rotation;
+
     public Pickupable(Texture2D texture, Vector2 position, float rotation)
     {
         Texture = texture;
@@ -23,6 +24,6 @@ public class Pickupable
 
     public void Update(GameTime gameTime)
     {
-        Rotation += 5*(float)gameTime.ElapsedGameTime.TotalSeconds;
+        Rotation += (float)gameTime.ElapsedGameTime.TotalSeconds;
     }
 }

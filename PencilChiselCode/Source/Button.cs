@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,14 +13,16 @@ public class Button
     private readonly Texture2D _normalTexture;
     private readonly Texture2D _hoveredTexture;
     private readonly Texture2D _pressedTexture;
+    private readonly Action _action;
 
-    public Button(Texture2D normal, Texture2D hovered, Texture2D pressed)
+    public Button(Texture2D normal, Texture2D hovered, Texture2D pressed,Action action)
     {
         _normalTexture = normal;
         _hoveredTexture = hovered;
         _pressedTexture = pressed;
         Texture = normal;
         Position = Utils.GetCenterStartCoords(Size, Game1.Instance.GetWindowDimensions());
+        _action = action;
     }
 
     public void Draw(SpriteBatch spriteBatch)
@@ -68,5 +71,6 @@ public class Button
 
     private void Click()
     {
+        _action.Invoke();
     }
 }
