@@ -7,10 +7,11 @@ namespace PencilChiselCode.Source;
 
 public class Player
 {
-    public Texture2D Texture { get; set; }
-    public Vector2 Size => new(Texture.Width, Texture.Height);
+    public Vector2 Size;
     public Vector2 Position;
     private const float sqrt1_2 = 0.70710678118654752440084436210485F;
+    private const float PI = (float)Math.PI;
+    private readonly float _scale = 2F;
     private Game1 _game;
     private Vector2 _speed;
     private readonly float _maxSpeed = 80F;
@@ -18,16 +19,35 @@ public class Player
     private readonly float _friction = 0.95F;
     private uint _twigs = 0;
 
-    public Player(Game1 game, Texture2D texture, Vector2 position)
+    public Player(Game1 game, Vector2 position)
     {
         _game = game;
-        Texture = texture;
         Position = position;
+        var texturePlayerDown = _game.TextureMap["player_down"];
+        Size = new(texturePlayerDown.Width * _scale, texturePlayerDown.Height * _scale);
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(Texture, Position - new Vector2(Size.X / 2F, Size.Y / 2), Color.White);
+        float angle = (float)Math.Atan2(_speed.Y, _speed.X);
+        var (texture, spriteEffect) = angle switch {
+            >= -PI / 4 and <= PI / 4 => (_game.TextureMap["player_left"], SpriteEffects.FlipHorizontally),
+            > PI / 4 and < 3 * PI / 4 => (_game.TextureMap["player_down"], SpriteEffects.None),
+            >= 3 * PI / 4 or <= -3 * PI / 4 => (_game.TextureMap["player_left"], SpriteEffects.None),
+            > -3 * PI / 4 and < -PI / 4 => (_game.TextureMap["player_up"], SpriteEffects.None),
+            _ => (_game.TextureMap["player_down"], SpriteEffects.None)
+        };
+        spriteBatch.Draw(
+            texture: texture, 
+            position: Position - new Vector2(Size.X / 2F, Size.Y / 2),
+            sourceRectangle: null,
+            color: Color.White,
+            rotation: 0,
+            origin: new(0, 0),
+            scale: _scale,
+            effects: spriteEffect,
+            layerDepth: 0
+        );
     }
 
     public void Update(IngameState state, GameTime gameTime)

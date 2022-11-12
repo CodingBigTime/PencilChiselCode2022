@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PencilChiselCode.Source;
 
@@ -24,7 +25,7 @@ public class IngameState : GameScreen
         base.LoadContent();
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, Game1.Instance.TextureMap["twigs"], new Vector2(300, 300),
             0.5F));
-        _player = new Player(_game, _game.TextureMap["player"], new Vector2(150, 150));
+        _player = new Player(_game, new Vector2(150, 150));
     }
 
     public override void Update(GameTime gameTime)
@@ -38,7 +39,7 @@ public class IngameState : GameScreen
     {
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.GraphicsDevice.Clear(_bgColor);
-        _game.SpriteBatch.Begin(transformMatrix: transformMatrix);
+        _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         Pickupables.ForEach(pickupable => pickupable.Draw(Game1.Instance.SpriteBatch));
         _player.Draw(Game1.Instance.SpriteBatch);
         _game.SpriteBatch.End();
