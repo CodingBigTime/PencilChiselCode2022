@@ -59,3 +59,6 @@ monodroid*.msi
 # IDE
 .idea/
 .vscode/
+
+# NuGet
+.nuget/
