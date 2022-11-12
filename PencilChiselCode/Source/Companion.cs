@@ -43,7 +43,7 @@ public class Companion
             _ => (_game.TextureMap["follower"], SpriteEffects.None)
         };
         spriteBatch.Draw(
-            texture: texture, 
+            texture: texture,
             position: Position - new Vector2(Size.X / 2F, Size.Y / 2),
             sourceRectangle: null,
             color: Color.White,
