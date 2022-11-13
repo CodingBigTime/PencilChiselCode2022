@@ -71,10 +71,6 @@ public class IngameState : GameScreen
         _player = new Player(_game, new Vector2(150, 150));
 
         Campfires.Add(new CampFire(_game, new Vector2(500, 400))); // TEMP
-        Campfires.ForEach(campfire => _game.Penumbra.Lights.Add(campfire.PointLight));
-
-        _game.Penumbra.Lights.Add(_player.PointLight);
-        _game.Penumbra.Lights.Add(_player.Spotlight);
 
         _followerAttributes = new AttributeGroup(new List<Attribute>
         {

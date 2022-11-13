@@ -12,17 +12,19 @@ namespace PencilChiselCode.Source;
 public class Player
 {
     public Vector2 Size;
+
     public Vector2 Position
+    {
+        get => position;
+        set
         {
-            get { return position; }
-            set
-            {
-                position = value;
-                PointLight.Position = new Vector2(value.X, value.Y);
-                Spotlight.Position = new Vector2(value.X, value.Y);
-            }
+            position = value;
+            PointLight.Position = new Vector2(value.X, value.Y);
+            Spotlight.Position = new Vector2(value.X, value.Y);
         }
-        Vector2 position;
+    }
+
+    Vector2 position;
     private const float Sqrt12 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
     private Game1 _game;
@@ -43,6 +45,8 @@ public class Player
         _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["player"]);
         _animatedSprite.Play("right");
         Size = new(_animatedSprite.TextureRegion.Width * _scale, _animatedSprite.TextureRegion.Height * _scale);
+        _game.Penumbra.Lights.Add(PointLight);
+        _game.Penumbra.Lights.Add(Spotlight);
     }
 
     public Light PointLight { get; } = new PointLight
@@ -64,7 +68,7 @@ public class Player
     {
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
         _animatedSprite.Play(
-            angle switch 
+            angle switch
             {
                 >= -PI / 4 and <= PI / 4 => "right",
                 > PI / 4 and < 3 * PI / 4 => "down",
@@ -74,7 +78,7 @@ public class Player
             }
         );
         _animatedSprite.Draw(
-            spriteBatch: spriteBatch, 
+            spriteBatch: spriteBatch,
             position: Position,
             rotation: 0,
             scale: new(_scale)
@@ -97,7 +101,7 @@ public class Player
         var mx = Convert.ToSingle(right) - Convert.ToSingle(left);
         var my = Convert.ToSingle(down) - Convert.ToSingle(up);
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
-        
+
         Spotlight.Rotation = angle;
         _animatedSprite.Update(gameTime);
 
@@ -113,8 +117,8 @@ public class Player
 
         _speed += new Vector2(ax, ay);
         _speed += -(_speed * _friction * delta);
-        var biasX = Math.Abs(_speed.X) / (float) Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
-        var biasY = Math.Abs(_speed.Y) / (float) Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+        var biasX = Math.Abs(_speed.X) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+        var biasY = Math.Abs(_speed.Y) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
         _speed.X = Math.Clamp(_speed.X, -_maxSpeed * biasX, _maxSpeed * biasX);
         _speed.Y = Math.Clamp(_speed.Y, -_maxSpeed * biasY, _maxSpeed * biasY);
         Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
@@ -138,7 +142,9 @@ public class Player
         {
             _popupButton ??= new PopupButton(_game, _game.TextureMap["f_button"]);
         }
-        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null && _twigs > 0)
+
+        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
+            _twigs > 0)
         {
             nearestCampfire.FeedFire(10F);
             --_twigs;
@@ -151,6 +157,7 @@ public class Player
         {
             _popupButton ??= new PopupButton(_game, _game.TextureMap["e_button"]);
         }
+
         _popupButton?.Update(state, gameTime);
 
         if (!state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)
@@ -165,6 +172,7 @@ public class Player
             nearestPickupable.PickupSound.Play();
             state.Pickupables.Remove(nearestPickupable);
         }
+
         if (nearestPickupable == null && (nearestCampfire == null || _twigs <= 0))
         {
             _popupButton = null;

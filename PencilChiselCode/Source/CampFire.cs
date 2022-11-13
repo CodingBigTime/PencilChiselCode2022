@@ -36,6 +36,7 @@ namespace PencilChiselCode.Source
             );
             _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["fire"]);
             _animatedSprite.Play("burn");
+            _game.Penumbra.Lights.Add(PointLight);
         }
 
         public bool Lit()
