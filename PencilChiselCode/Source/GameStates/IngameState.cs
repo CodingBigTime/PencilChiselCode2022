@@ -23,6 +23,7 @@ public class IngameState : GameScreen
 
     private static float _cameraSpeed = 10.0F;
     private Attribute _followerAttribute;
+    private Inventory _inventory;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private TimeSpan _twigCounterGameTime;
@@ -118,6 +119,8 @@ public class IngameState : GameScreen
             new Attribute(
                 new Vector2(_game.GetWindowWidth() / 2, _game.GetWindowHeight() - attributeTexture.Height * 3F), 3F,
                 attributeTexture, comfyAttributeTexture, attributeTexture.Bounds.Center.ToVector2(), 100, -2F);
+
+        _inventory = new Inventory(_game, _player);
     }
     
     public void RandomBushSpawner()
@@ -178,6 +181,7 @@ public class IngameState : GameScreen
             {
                 _followerAttribute.ChangeValue(10F * gameTime.GetElapsedSeconds());
             }
+            _inventory.Update();
             _darknessParticles.Update(gameTime, true);
         }
 
@@ -256,6 +260,8 @@ public class IngameState : GameScreen
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _followerAttribute.Draw(_game.SpriteBatch);
+        _inventory.Draw(_game.SpriteBatch);
+
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
         {
             _fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
