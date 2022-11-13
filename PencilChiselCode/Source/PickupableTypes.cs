@@ -3,4 +3,5 @@
 public enum PickupableTypes
 {
     Twig,
+    Bush
 }
