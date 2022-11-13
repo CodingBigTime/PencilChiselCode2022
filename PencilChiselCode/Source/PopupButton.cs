@@ -13,15 +13,15 @@ public class PopupButton
     private readonly Tweener _rotationTweener;
     public float scale = 0.75F;
     public float rotation = -0.33F;
-    private Texture2D _texture;
+    public Texture2D Texture;
     private Vector2 _size;
 
     public PopupButton(Game1 game, Texture2D texture)
     {
         _game = game;
-        _texture = texture;
-        _texture = texture;
-        _size = new Vector2(_texture.Width, _texture.Height);
+        Texture = texture;
+        Texture = texture;
+        _size = new Vector2(Texture.Width, Texture.Height);
         _scaleTweener = new Tweener();
         _scaleTweener.TweenTo(target: this, expression: button => button.scale, toValue: 1.25F, duration: 1.5F,
                 delay: 0F)
@@ -39,7 +39,7 @@ public class PopupButton
     public void Draw(SpriteBatch spriteBatch, Vector2 position, Vector2 size)
     {
         spriteBatch.Draw(
-            texture: _texture,
+            texture: Texture,
             position: position + new Vector2(size.X, -size.Y * 1.75F),
             sourceRectangle: null,
             color: Color.White,

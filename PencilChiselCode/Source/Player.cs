@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,7 +40,7 @@ public class Player
     private static readonly float _friction = 2.75F;
     private uint _twigs;
     private uint _bushes;
-    private PopupButton _popupButton;
+    private readonly Dictionary<string, PopupButton> _popupButtons = new();
     private ParticleGenerator _particleGenerator;
 
     public Player(Game1 game, Vector2 position)
@@ -103,7 +104,12 @@ public class Player
 
     public void DrawPopupButton(SpriteBatch spriteBatch)
     {
-        _popupButton?.Draw(spriteBatch, Position, Size);
+        var i = 0;
+        foreach (var (_, value) in _popupButtons)
+        {
+            value?.Draw(spriteBatch, Position + new Vector2(i * (value.Texture.Width * 1.5F), 0), Size);
+            ++i;
+        }
     }
 
     public void CreateFire(uint amount)
@@ -161,9 +167,13 @@ public class Player
         var nearestCampfire = state.Campfires
             .OrderBy(campfire => Vector2.DistanceSquared(campfire.Position, Position))
             .FirstOrDefault(campfire => Vector2.DistanceSquared(campfire.Position, Position) < 100 * 100);
-        if (nearestCampfire != null)
+        if (nearestCampfire != null && !_popupButtons.ContainsKey("F"))
         {
-            _popupButton ??= new PopupButton(_game, _game.TextureMap["f_button"]);
+            _popupButtons["F"] = new PopupButton(_game, _game.TextureMap["f_button"]);
+        }
+        if (nearestCampfire == null)
+        {
+            _popupButtons.Remove("F");
         }
 
         if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
@@ -171,20 +181,23 @@ public class Player
         {
             nearestCampfire.FeedFire(10F);
             --_twigs;
-            if (_twigs <= 0) _popupButton = null;
         }
+        if (nearestCampfire == null || _twigs <= 0) _popupButtons.Remove("F");
 
         var nearestPickupable = state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
             .FirstOrDefault(pickupable =>
                 Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100 && pickupable.IsConsumable);
 
-        if (nearestPickupable != null)
+        if (nearestPickupable != null && !_popupButtons.ContainsKey("E"))
         {
-            _popupButton ??= new PopupButton(_game, _game.TextureMap["e_button"]);
+            _popupButtons["E"] = new PopupButton(_game, _game.TextureMap["e_button"]);
         }
 
-        _popupButton?.Update(state, gameTime);
+        foreach (var (_, value) in _popupButtons)
+        {
+            value.Update(state, gameTime);
+        }
 
         if (!state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)
         {
@@ -202,13 +215,13 @@ public class Player
                     break;
             }
 
-            _popupButton = null;
+            _popupButtons.Remove("E");
             nearestPickupable.IsConsumable = false;
         }
 
         if (nearestPickupable == null && (nearestCampfire == null || _twigs <= 0))
         {
-            _popupButton = null;
+            _popupButtons.Clear();
         }
 
         _particleGenerator.Update(gameTime, _speed.Length() > 1);
