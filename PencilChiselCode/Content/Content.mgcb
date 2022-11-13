@@ -124,6 +124,12 @@
 /processorParam:Quality=Best
 /build:Resources/Sounds/fuel_fire.wav
 
+#begin Resources/Sounds/light_fire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Resources/Sounds/light_fire.wav
+
 #begin Resources/Sounds/pickup_branches.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -177,18 +183,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Entity/twigs.png
-
-#begin Resources/Textures/GUI/attribute_bar.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/GUI/attribute_bar.png
 
 #begin Resources/Textures/GUI/attribute_bar.png
 /importer:TextureImporter

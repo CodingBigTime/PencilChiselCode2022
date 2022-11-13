@@ -190,11 +190,11 @@ public class IngameState : GameScreen
         {
             _companion.StopResumeFollower();
         }
-        if(keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanFireCreation())
+        if(keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanCreateFire())
         {
-            _player.FireCreation(2);
+            _player.CreateFire(2);
+            _game.SoundMap["light_fire"].Play();
             Campfires.Add(new CampFire(_game, new Vector2(_player.Position.X+20, _player.Position.Y-20)));
-            
         }
 
         if (oldMapIndex != MapIndex)
