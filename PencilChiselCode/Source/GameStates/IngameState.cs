@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +7,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
-using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
 
 namespace PencilChiselCode.Source.GameStates;
@@ -29,7 +27,7 @@ public class IngameState : GameScreen
     private TimeSpan _fpsCounterGameTime;
     private static bool _pauseState;
     private Button _pauseButton;
-    private Button _menuButton;
+    private Button _exitButton;
     private List<TiledMap> _maps;
     private readonly List<string> _debugData = new() { "", "", "" };
 
@@ -54,17 +52,13 @@ public class IngameState : GameScreen
             Utils.GetCenterStartCoords(resumeButtonSize, Game1.Instance.GetWindowDimensions()),
             () => { _pauseState = false; }
         );
-        var menuButton = _game.TextureMap["menu_button_normal"];
-        var menuButtonSize = new Size2(menuButton.Width, menuButton.Height);
-        _menuButton = new Button(menuButton,
-            _game.TextureMap["menu_button_hover"],
-            _game.TextureMap["menu_button_pressed"],
-            Utils.GetCenterStartCoords(menuButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
-            () =>
-            {
-                Game1.Instance.ScreenManager.LoadScreen(new MenuState(_game),
-                    new FadeTransition(Game1.Instance.GraphicsDevice, MenuState.BgColor));
-            }
+        var exitButton = _game.TextureMap["exit_button_normal"];
+        var exitButtonSize = new Size2(exitButton.Width, exitButton.Height);
+        _exitButton = new Button(exitButton,
+            _game.TextureMap["exit_button_hover"],
+            _game.TextureMap["exit_button_pressed"],
+            Utils.GetCenterStartCoords(exitButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
+            () => _game.Exit()
         );
         for (var i = 0; i < 10; ++i)
         {
@@ -110,7 +104,7 @@ public class IngameState : GameScreen
         if (_pauseState)
         {
             _pauseButton.Update(gameTime);
-            _menuButton.Update(gameTime);
+            _exitButton.Update(gameTime);
         }
         else
         {
@@ -198,7 +192,7 @@ public class IngameState : GameScreen
         if (_pauseState)
         {
             _pauseButton.Draw(_game.SpriteBatch);
-            _menuButton.Draw(_game.SpriteBatch);
+            _exitButton.Draw(_game.SpriteBatch);
         }
 
         if (_showDebug)
