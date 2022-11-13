@@ -244,6 +244,30 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/attribute_bar.png
 
+#begin Resources/Textures/GUI/attribute_bar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/attribute_bar.png
+
+#begin Resources/Textures/GUI/berry.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/berry.png
+
 #begin Resources/Textures/GUI/Buttons/exit_button_hover.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -388,6 +412,18 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/Buttons/start_button_pressed.png
 
+#begin Resources/Textures/GUI/campfire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/campfire.png
+
 #begin Resources/Textures/GUI/comfy_bar.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -399,6 +435,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/comfy_bar.png
+
+#begin Resources/Textures/GUI/comfy_bar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/comfy_bar.png
+
+#begin Resources/Textures/GUI/e_button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/e_button.png
 
 #begin Resources/Textures/GUI/e_button.png
 /importer:TextureImporter
@@ -424,6 +484,30 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/f_button.png
 
+#begin Resources/Textures/GUI/f_button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/f_button.png
+
+#begin Resources/Textures/GUI/fireplace_bar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/fireplace_bar.png
+
 #begin Resources/Textures/GUI/fireplace_bar.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -448,6 +532,42 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/q_button.png
 
+#begin Resources/Textures/GUI/q_button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/q_button.png
+
+#begin Resources/Textures/GUI/twig.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/twig.png
+
+#begin Resources/Textures/GUI/x_button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/x_button.png
+
 #begin Resources/Textures/GUI/x_button.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -469,6 +589,31 @@
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:Resources/Textures/Tiles/tilemap_2.tmx
+
+#begin Resources/Textures/Tiles/tilemap_3.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Resources/Textures/Tiles/tilemap_3.tmx
+
+#begin Resources/Textures/Tiles/tilemap_4.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Resources/Textures/Tiles/tilemap_4.tmx
+
+#begin Resources/Textures/Tiles/tilemap_5.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Resources/Textures/Tiles/tilemap_5.tmx
+
+#begin Resources/Textures/Tiles/tilemap_6.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Resources/Textures/Tiles/tilemap_6.tmx
+
+#begin Resources/Textures/Tiles/tilemap_7.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Resources/Textures/Tiles/tilemap_7.tmx
 
 #begin Resources/Textures/Tiles/tileset.png
 /importer:TextureImporter

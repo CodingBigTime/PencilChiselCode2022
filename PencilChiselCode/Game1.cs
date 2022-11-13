@@ -115,7 +115,7 @@ public class Game1 : Game
         var playerSpriteSheet = Content.Load<SpriteSheet>("Animations/player.spritesheet", new JsonContentLoader());
         SpriteSheetMap.Add("player", playerSpriteSheet);
 
-        for (var i = 1; i <= 2; ++i)
+        for (var i = 1; i <= 7; ++i)
         {
             TiledMaps.Add(Content.Load<TiledMap>($"Textures/Tiles/tilemap_{i}"));
         }
