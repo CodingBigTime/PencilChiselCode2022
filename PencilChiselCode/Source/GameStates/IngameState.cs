@@ -33,6 +33,7 @@ public class IngameState : GameScreen
     private int _bushCount = 10;
     private int _treeCount = 36;
     private List<TiledMap> _maps;
+    private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
     private int _glowFlowerCount = 7;
 
@@ -112,6 +113,16 @@ public class IngameState : GameScreen
             AddRandomMap();
         }
 
+        _darknessParticles = new ParticleGenerator(
+            (() => new Particle(
+                2F,
+                new(0, Utils.RANDOM.Next(0, _game.Height)),
+                new(Utils.RANDOM.Next(0, 20), Utils.RANDOM.Next(-10, 10)),
+                ((time) => 2 + time),
+                ((time) => Color.Black)
+            )),
+            100F
+        );
         var attributeTexture = _game.TextureMap["attribute_bar"];
         var comfyAttributeTexture = _game.TextureMap["comfy_bar"];
         _followerAttribute =
@@ -187,11 +198,13 @@ public class IngameState : GameScreen
             _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
             GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime));
+            Campfires.RemoveAll(campfire => !campfire.IsLit());
             Campfires.ForEach(campfire => { campfire.Update(gameTime); });
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
             {
                 _followerAttribute.ChangeValue(10F * gameTime.GetElapsedSeconds());
             }
+            _darknessParticles.Update(gameTime, true);
         }
 
         if (keyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
@@ -202,6 +215,12 @@ public class IngameState : GameScreen
         if (keyState.IsKeyDown(Keys.Space) && !PreviousPressedKeys.Contains(Keys.Space))
         {
             _companion.StopResumeFollower();
+        }
+        if(keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanFireCreation())
+        {
+            _player.FireCreation(2);
+            Campfires.Add(new CampFire(_game, new Vector2(_player.Position.X+20, _player.Position.Y-20)));
+            
         }
 
         if (oldMapIndex != MapIndex)
@@ -240,8 +259,14 @@ public class IngameState : GameScreen
         _companion.Draw(_game.SpriteBatch);
         _player.Draw(_game.SpriteBatch);
 
+        _game.SpriteBatch.End();
+
+        _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+        _darknessParticles.Draw(_game.SpriteBatch);
 
         _game.SpriteBatch.End();
+
         _game.Penumbra.Draw(gameTime);
 
         DrawUI(gameTime);
@@ -252,7 +277,7 @@ public class IngameState : GameScreen
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         _player.DrawPopupButton(_game.SpriteBatch);
-        Campfires.ForEach(campfire => campfire.DrawUI(_game.SpriteBatch)); // TEMP
+        Campfires.ForEach(campfire => campfire.DrawUI(_game.SpriteBatch));
         _game.SpriteBatch.End();
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
