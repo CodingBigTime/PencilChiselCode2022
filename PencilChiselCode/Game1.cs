@@ -108,7 +108,7 @@ public class Game1 : Game
 
         for (var i = 1; i <= 2; ++i)
         {
-            TiledMaps.Add(Content.Load<TiledMap>($"Textures/Tiles/tilemap_0{i}"));
+            TiledMaps.Add(Content.Load<TiledMap>($"Textures/Tiles/tilemap_{i}"));
         }
 
         TiledMapRenderer = new TiledMapRenderer(GraphicsDevice, TiledMaps[0]);
