@@ -245,7 +245,7 @@ public class IngameState : GameScreen
             _player.Update(this, gameTime);
             _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
-            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime));
+            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime, _player.Position));
             Campfires.RemoveAll(campfire => !campfire.IsLit());
             Campfires.ForEach(campfire => { campfire.Update(gameTime); });
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
