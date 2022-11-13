@@ -99,11 +99,20 @@ public class IngameState : GameScreen
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
             _testCampFire.Update(gameTime);  // TEMP
+            if (_testCampFire.isInRange(_companion.Position))
+            {
+                _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
+            }
         }
 
         if (keyState.IsKeyDown(Keys.F3) && !_previousPressedKeys.Contains(Keys.F3))
         {
             _showDebug = !_showDebug;
+        }
+        if (keyState.IsKeyDown(Keys.Space) && !_previousPressedKeys.Contains(Keys.Space))
+        {
+            Debug.WriteLine("STOP");
+            _companion.StopResumeFollower();
         }
 
         _previousPressedKeys.Clear();
