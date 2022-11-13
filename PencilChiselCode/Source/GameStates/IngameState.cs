@@ -231,7 +231,7 @@ public class IngameState : GameScreen
         _companion.Draw(_game.SpriteBatch);
         _player.Draw(_game.SpriteBatch);
 
-        Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch)); // TEMP
+        Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch));
 
         _game.SpriteBatch.End();
 
@@ -251,7 +251,7 @@ public class IngameState : GameScreen
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         _player.DrawPopupButton(_game.SpriteBatch);
-        Campfires.ForEach(campfire => campfire.DrawUI(_game.SpriteBatch)); // TEMP
+        Campfires.ForEach(campfire => campfire.DrawUI(_game.SpriteBatch));
         _game.SpriteBatch.End();
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
