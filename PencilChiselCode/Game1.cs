@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -84,9 +83,14 @@ public class Game1 : Game
 
         TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
         TextureMap.Add("f_button", Content.Load<Texture2D>("Textures/GUI/f_button"));
+        TextureMap.Add("q_button", Content.Load<Texture2D>("Textures/GUI/q_button"));
+        TextureMap.Add("x_button", Content.Load<Texture2D>("Textures/GUI/x_button"));
         TextureMap.Add("attribute_bar", Content.Load<Texture2D>("Textures/GUI/attribute_bar"));
         TextureMap.Add("comfy_bar", Content.Load<Texture2D>("Textures/GUI/comfy_bar"));
         TextureMap.Add("fireplace_bar", Content.Load<Texture2D>("Textures/GUI/fireplace_bar"));
+        TextureMap.Add("twig", Content.Load<Texture2D>("Textures/GUI/twig"));
+        TextureMap.Add("berry", Content.Load<Texture2D>("Textures/GUI/berry"));
+        TextureMap.Add("campfire", Content.Load<Texture2D>("Textures/GUI/campfire"));
 
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
         TextureMap.Add("bush_empty", Content.Load<Texture2D>("Textures/Entity/bush_empty"));

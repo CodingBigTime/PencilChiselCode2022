@@ -38,9 +38,9 @@ public class Player
     private static readonly float _maxSpeed = 80F;
     private static readonly float _acceleration = 1000F;
     private static readonly float _friction = 2.75F;
-    private uint _twigs;
-    private uint _bushes;
     private readonly Dictionary<string, PopupButton> _popupButtons = new();
+    public uint Twigs { get; private set; }
+    public uint Berries { get; private set; }
     private ParticleGenerator _particleGenerator;
 
     public Player(Game1 game, Vector2 position)
@@ -114,10 +114,10 @@ public class Player
 
     public void CreateFire(uint amount)
     {
-        _twigs -= amount;
+        Twigs -= amount;
     }
 
-    public bool CanCreateFire() => _twigs >= 2;
+    public bool CanCreateFire() => Twigs >= 2;
 
     public void Update(IngameState state, GameTime gameTime)
     {
@@ -176,13 +176,12 @@ public class Player
             _popupButtons.Remove("F");
         }
 
-        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
-            _twigs > 0)
+        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null && Twigs > 0)
         {
             nearestCampfire.FeedFire(10F);
-            --_twigs;
+            --Twigs;
         }
-        if (nearestCampfire == null || _twigs <= 0) _popupButtons.Remove("F");
+        if (nearestCampfire == null || Twigs <= 0) _popupButtons.Remove("F");
 
         var nearestPickupable = state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
@@ -204,12 +203,12 @@ public class Player
             switch (nearestPickupable.Type)
             {
                 case PickupableTypes.Twig:
-                    ++_twigs;
+                    ++Twigs;
                     nearestPickupable.PickupSound.Play();
                     state.Pickupables.Remove(nearestPickupable);
                     break;
                 case PickupableTypes.Bush:
-                    ++_bushes;
+                    ++Berries;
                     nearestPickupable.PickupSound.Play();
                     nearestPickupable.Texture = _game.TextureMap["bush_empty"];
                     break;
@@ -219,7 +218,7 @@ public class Player
             nearestPickupable.IsConsumable = false;
         }
 
-        if (nearestPickupable == null && (nearestCampfire == null || _twigs <= 0))
+        if (nearestPickupable == null && (nearestCampfire == null || Twigs <= 0))
         {
             _popupButtons.Clear();
         }
