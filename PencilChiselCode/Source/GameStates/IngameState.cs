@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,6 +17,7 @@ public class IngameState : GameScreen
     private Game1 _game => (Game1)Game;
     private Player _player;
     private Companion _companion;
+    private CampFire _testCampFire;
     private bool _showDebug;
     private readonly HashSet<Keys> _previousPressedKeys = new();
     private static float _cameraSpeed = 10.0F;
@@ -60,17 +62,19 @@ public class IngameState : GameScreen
             0.5F));
         _companion = new Companion(_game, new Vector2(100, 100),50F);
         _player = new Player(_game, new Vector2(150, 150));
-
+        
+        _testCampFire = new CampFire(_game, new Vector2(500, 400));  // TEMP
+        _game.Penumbra.Lights.Add(_testCampFire.PointLight);  // TEMP
 
         _game.Penumbra.Lights.Add(_player.PointLight);
         _game.Penumbra.Lights.Add(_player.Spotlight);
 
         _followerAttributes = new AttributeGroup(new List<Attribute>
         {
-            new(new Vector2(10, 10), null, Color.Brown, 100, -0.5F),
-            new(new Vector2(10, 30), null, Color.LightBlue, 100, -1F),
-            new(new Vector2(10, 50), null, Color.Orange, 100, -5F),
-            new(new Vector2(10, 70), null, Color.Blue, 100, -2F)
+            new(new(10, 10), new(100, 10), Color.Brown, 100, -0.5F),
+            new(new(10, 30), new(100, 10), Color.LightBlue, 100, -1F),
+            new(new(10, 50), new(100, 10), Color.Orange, 100, -5F),
+            new(new(10, 70), new(100, 10), Color.Blue, 100, -2F)
         });
     }
 
@@ -95,11 +99,21 @@ public class IngameState : GameScreen
             _player.Update(this, gameTime);
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
+            _testCampFire.Update(gameTime);  // TEMP
+            if (_testCampFire.isInRange(_companion.Position))
+            {
+                _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
+            }
         }
 
         if (keyState.IsKeyDown(Keys.F3) && !_previousPressedKeys.Contains(Keys.F3))
         {
             _showDebug = !_showDebug;
+        }
+        if (keyState.IsKeyDown(Keys.Space) && !_previousPressedKeys.Contains(Keys.Space))
+        {
+            Debug.WriteLine("STOP");
+            _companion.StopResumeFollower();
         }
 
         _previousPressedKeys.Clear();
@@ -113,12 +127,16 @@ public class IngameState : GameScreen
         _game.Penumbra.Transform = Matrix.CreateTranslation(-_game.Camera.Position.X, -_game.Camera.Position.Y, 0);
         _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
+
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         _game.TiledMapRenderer.Draw(transformMatrix);
+
         Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
 
         _companion.Draw(_game.SpriteBatch);
         _player.Draw(_game.SpriteBatch);
+
+        _testCampFire.Draw(_game.SpriteBatch);  // TEMP
 
         _game.SpriteBatch.End();
         _game.Penumbra.Draw(gameTime);
@@ -131,6 +149,7 @@ public class IngameState : GameScreen
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         _player.DrawPopupButton(_game.SpriteBatch);
+        _testCampFire.DrawUI(_game.SpriteBatch);  // TEMP
         _game.SpriteBatch.End();
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);

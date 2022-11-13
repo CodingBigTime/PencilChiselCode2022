@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using PencilChiselCode.Source.GameStates;
 
 namespace PencilChiselCode.Source;
@@ -21,6 +22,7 @@ public class Companion
     private readonly float _friction = 0.95F;
     private uint _twigs = 0;
     private float _minimumDistance = 50F;
+    private Boolean _isAFK = false;
     
     public Companion(Game1 game, Vector2 position,float speed)
     {
@@ -43,7 +45,7 @@ public class Companion
             _ => (_game.TextureMap["follower"], SpriteEffects.None)
         };
         spriteBatch.Draw(
-            texture: texture, 
+            texture: texture,
             position: Position - new Vector2(Size.X / 2F, Size.Y / 2),
             sourceRectangle: null,
             color: Color.White,
@@ -64,7 +66,7 @@ public class Companion
         var height = Math.Abs(Position.Y - playerPosY);
         var h = (float) Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
 
-        if (Math.Sqrt(width * width + height * height) > _minimumDistance)
+        if (Math.Sqrt(width * width + height * height) > _minimumDistance && !_isAFK)
         {
             _movement_speed.X = _movement_speed.Y;
         }
@@ -88,8 +90,10 @@ public class Companion
         {
             Position.Y -= _movement_speed.X * (height / h) * delta;
         }
-        
-
     }
-    
+
+    public void StopResumeFollower()
+    {
+        _isAFK = !_isAFK;
+    }
 }
