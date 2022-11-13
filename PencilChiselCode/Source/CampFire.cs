@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Sprites;
-using MonoGame.Extended.Animations;
 using Penumbra;
 
 namespace PencilChiselCode.Source
@@ -25,7 +24,7 @@ namespace PencilChiselCode.Source
 
         private Game1 _game;
         private Attribute _attribute;
-        private MonoGame.Extended.Sprites.AnimatedSprite _animatedSprite;
+        private AnimatedSprite _animatedSprite;
         private readonly float _maxScale = 300F;
 
         public CampFire(Game1 game, Vector2 position)

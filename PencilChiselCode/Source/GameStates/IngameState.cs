@@ -80,6 +80,7 @@ public class IngameState : GameScreen
 
     public override void Update(GameTime gameTime)
     {
+        _game.TiledMapRenderer.Update(gameTime);
         var keyState = Keyboard.GetState();
         if (keyState.IsKeyDown(Keys.Escape) && !_previousPressedKeys.Contains(Keys.Escape))
         {
@@ -99,11 +100,20 @@ public class IngameState : GameScreen
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
             _testCampFire.Update(gameTime);  // TEMP
+            if (_testCampFire.isInRange(_companion.Position))
+            {
+                _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
+            }
         }
 
         if (keyState.IsKeyDown(Keys.F3) && !_previousPressedKeys.Contains(Keys.F3))
         {
             _showDebug = !_showDebug;
+        }
+        if (keyState.IsKeyDown(Keys.Space) && !_previousPressedKeys.Contains(Keys.Space))
+        {
+            Debug.WriteLine("STOP");
+            _companion.StopResumeFollower();
         }
 
         _previousPressedKeys.Clear();
@@ -117,6 +127,9 @@ public class IngameState : GameScreen
         _game.Penumbra.Transform = Matrix.CreateTranslation(-_game.Camera.Position.X, -_game.Camera.Position.Y, 0);
         _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
+
+        _game.TiledMapRenderer.Draw(transformMatrix);
+        _game.TiledMapRenderer.Draw(transformMatrix * Matrix.CreateTranslation(768, 0, 0));
 
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
 

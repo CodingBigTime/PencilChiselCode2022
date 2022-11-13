@@ -7,6 +7,8 @@ using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Serialization;
+using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
@@ -28,6 +30,8 @@ public class Game1 : Game
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
     public OrthographicCamera Camera;
+    public TiledMap TiledMap;
+    public TiledMapRenderer TiledMapRenderer;
 
     public Game1()
     {
@@ -51,12 +55,13 @@ public class Game1 : Game
         Graphics.PreferredBackBufferWidth = Width;
         Graphics.PreferredBackBufferHeight = Height;
         Graphics.ApplyChanges();
-        var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Width, Height);
-        Camera = new OrthographicCamera(viewportAdapter);
+        Camera = new OrthographicCamera(GetViewportAdapter());
         Penumbra.Initialize();
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }
+
+    public BoxingViewportAdapter GetViewportAdapter() => new(Window, GraphicsDevice, Width, Height);
 
     protected override void LoadContent()
     {
@@ -80,6 +85,11 @@ public class Game1 : Game
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
         TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));
 
+        TextureMap.Add("fire_01", Content.Load<Texture2D>("Textures/Tiles/fire_01"));
+        TextureMap.Add("fire_02", Content.Load<Texture2D>("Textures/Tiles/fire_02"));
+        TextureMap.Add("fire_03", Content.Load<Texture2D>("Textures/Tiles/fire_03"));
+        TextureMap.Add("fire_04", Content.Load<Texture2D>("Textures/Tiles/fire_04"));
+
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
         SoundMap.Add("pickup_branches", Content.Load<SoundEffect>("Sounds/pickup_branches"));
@@ -93,6 +103,9 @@ public class Game1 : Game
         SpriteSheetMap.Add("fire", fireSpriteSheet);
         var playerSpriteSheet = Content.Load<SpriteSheet>("Animations/player.spritesheet", new JsonContentLoader());
         SpriteSheetMap.Add("player", playerSpriteSheet);
+
+        TiledMap = Content.Load<TiledMap>("Textures/Tiles/tilemap_01");
+        TiledMapRenderer = new TiledMapRenderer(GraphicsDevice, TiledMap);
     }
 
     protected override void Update(GameTime gameTime)
