@@ -22,7 +22,7 @@ public class IngameState : GameScreen
     public readonly HashSet<Keys> PreviousPressedKeys = new();
 
     private static float _cameraSpeed = 10.0F;
-    private AttributeGroup _followerAttributes;
+    private Attribute _followerAttribute;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private static bool _pauseState;
@@ -80,13 +80,12 @@ public class IngameState : GameScreen
             AddRandomMap();
         }
 
-        _followerAttributes = new AttributeGroup(new List<Attribute>
-        {
-            new(new(10, 10), new(100, 10), Color.Brown, 100, -0.5F),
-            new(new(10, 30), new(100, 10), Color.LightBlue, 100, -1F),
-            new(new(10, 50), new(100, 10), Color.Orange, 100, -5F),
-            new(new(10, 70), new(100, 10), Color.Blue, 100, -2F)
-        });
+        var attributeTexture = _game.TextureMap["attribute_bar"];
+        var comfyAttributeTexture = _game.TextureMap["comfy_bar"];
+        _followerAttribute =
+            new Attribute(
+                new Vector2(_game.GetWindowWidth() / 2, _game.GetWindowHeight() - attributeTexture.Height * 3F), 3F,
+                attributeTexture, comfyAttributeTexture, attributeTexture.Bounds.Center.ToVector2(), 100, -2F);
     }
 
     private void AddRandomMap() => _maps.Add(_game.TiledMaps[Utils.RANDOM.Next(0, _game.TiledMaps.Count)]);
@@ -111,12 +110,12 @@ public class IngameState : GameScreen
             _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
             _companion.Update(this, gameTime, _player.Position);
             _player.Update(this, gameTime);
-            _followerAttributes.Update(gameTime);
+            _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
             Campfires.ForEach(campfire => { campfire.Update(gameTime); });
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
             {
-                _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
+                _followerAttribute.ChangeValue(10F * gameTime.GetElapsedSeconds());
             }
         }
 
@@ -154,7 +153,7 @@ public class IngameState : GameScreen
         {
             _game.TiledMapRenderer.LoadMap(_maps[i]);
             _game.TiledMapRenderer.Draw(
-                transformMatrix * Matrix.CreateTranslation(_maps[i].HeightInPixels * (i + MapIndex-1), 0, 0));
+                transformMatrix * Matrix.CreateTranslation(_maps[i].HeightInPixels * (i + MapIndex - 1), 0, 0));
         }
 
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
@@ -181,7 +180,7 @@ public class IngameState : GameScreen
         _game.SpriteBatch.End();
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        _followerAttributes.Draw(_game.SpriteBatch);
+        _followerAttribute.Draw(_game.SpriteBatch);
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
         {
             _fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);

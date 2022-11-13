@@ -27,15 +27,20 @@ namespace PencilChiselCode.Source
         {
             _game = game;
             Position = position;
+            _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["fire"]);
+            _animatedSprite.Play("burn");
+            var attributeTexture = _game.TextureMap["attribute_bar"];
+            var fireplaceAttributeTexture = _game.TextureMap["fireplace_bar"];
             _attribute = new Attribute(
-                Position + Vector2.UnitY * 32 - Vector2.UnitX * 15,
-                new(30, 5),
-                Color.Red,
+                Position + new Vector2(_animatedSprite.TextureRegion.Width,
+                    _animatedSprite.TextureRegion.Height * 3 + attributeTexture.Height),
+                0.5F,
+                attributeTexture,
+                fireplaceAttributeTexture,
+                attributeTexture.Bounds.Center.ToVector2() + new Vector2(30, 5),
                 100F,
                 -5F
             );
-            _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["fire"]);
-            _animatedSprite.Play("burn");
             _game.Penumbra.Lights.Add(PointLight);
         }
 
