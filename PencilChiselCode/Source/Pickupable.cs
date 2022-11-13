@@ -10,19 +10,20 @@ public class Pickupable
     public Vector2 Size => new(Texture.Width, Texture.Height);
     public Vector2 Position;
     public float Rotation;
+    public bool IsConsumable;
     public SoundEffect PickupSound { get; set; }
     public PickupableTypes Type { get; set; }
 
     public Pickupable(PickupableTypes type, Texture2D texture, SoundEffect pickupSound, Vector2 position,
         float rotation)
     {
+        IsConsumable = true;
         Texture = texture;
         Position = position;
         Rotation = rotation;
         Type = type;
         PickupSound = pickupSound;
     }
-
 
     public void Draw(SpriteBatch spriteBatch)
     {
@@ -31,6 +32,6 @@ public class Pickupable
 
     public void Update(GameTime gameTime)
     {
-        Rotation += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        Rotation = 180F;
     }
 }

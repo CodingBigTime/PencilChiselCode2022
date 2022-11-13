@@ -38,6 +38,7 @@ public class Player
     private static readonly float _acceleration = 1000F;
     private static readonly float _friction = 2.75F;
     private uint _twigs;
+    private uint _bushes;
     private PopupButton _popupButton;
     private ParticleGenerator _particleGenerator;
 
@@ -157,16 +158,17 @@ public class Player
             _popupButton ??= new PopupButton(_game, _game.TextureMap["f_button"]);
         }
 
-        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
-            _twigs > 0)
+        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null && _twigs > 0)
         {
             nearestCampfire.FeedFire(10F);
             --_twigs;
+            if (_twigs <= 0) _popupButton = null;
         }
 
         var nearestPickupable = state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
-            .FirstOrDefault(pickupable => Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100);
+            .FirstOrDefault(pickupable => Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100 && pickupable.IsConsumable);
+        
         if (nearestPickupable != null)
         {
             _popupButton ??= new PopupButton(_game, _game.TextureMap["e_button"]);
@@ -180,11 +182,17 @@ public class Player
             {
                 case PickupableTypes.Twig:
                     ++_twigs;
+                    nearestPickupable.PickupSound.Play();
+                    state.Pickupables.Remove(nearestPickupable);
+                    break;
+                case PickupableTypes.Bush:
+                    ++_bushes;
+                    nearestPickupable.PickupSound.Play();
+                    nearestPickupable.Texture = _game.TextureMap["bush_empty"];
                     break;
             }
-
-            nearestPickupable.PickupSound.Play();
-            state.Pickupables.Remove(nearestPickupable);
+            _popupButton = null;
+            nearestPickupable.IsConsumable = false;
         }
 
         if (nearestPickupable == null && (nearestCampfire == null || _twigs <= 0))
