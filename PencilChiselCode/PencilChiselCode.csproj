@@ -13,7 +13,18 @@
     <ItemGroup>
         <None Remove="Icon.ico" />
         <None Remove="Icon.bmp" />
+        <None Remove="Content\Resources\Animations\fire-atlas.json" />
+        <None Remove="Content\Resources\Animations\fire.spritesheet" />
+        <None Remove="Content\Content.mgcb" />
     </ItemGroup>
+    <ItemGroup>
+        <Content Include="Content\Resources\Animations\fire.spritesheet">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Content\Resources\Animations\fire-atlas.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+      </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Icon.ico" />
         <EmbeddedResource Include="Icon.bmp" />
@@ -31,5 +42,6 @@
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
         <PackageReference Include="MonoGame.Penumbra.DesktopGL" Version="2.1.0" />
+        <PackageReference Include="MonoGame.Extended.Animations" Version="3.7.0" />
     </ItemGroup>
 </Project>

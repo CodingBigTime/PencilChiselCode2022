@@ -1,0 +1,12 @@
+{
+  "textureAtlas": "fire-atlas.json",
+  "cycles": {
+    "burn": {
+      "frames": [
+        "fire 1",
+        "fire 2",
+        "fire 3"
+      ]
+    }
+  }
+}
