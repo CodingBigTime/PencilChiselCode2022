@@ -28,13 +28,13 @@ namespace PencilChiselCode.Source
                     {
                         "twigCount",
                         new TextIcon("0",
-                            new Vector2(game.Width - 150, 50),
+                            new Vector2(game.Width - 175, 50),
                             font)
                     },
                     {
                         "berryCount",
                         new TextIcon("0",
-                            new Vector2(game.Width - 150, 100),
+                            new Vector2(game.Width - 175, 100),
                             font)
                     },
                     {
@@ -73,7 +73,7 @@ namespace PencilChiselCode.Source
                     {
                         "twigIcon",
                         new Icon(new Vector2(game.Width - 120, 50),
-                            _game.TextureMap["twigs"])
+                            _game.TextureMap["twig"])
                     },
                     {
                         "twigEButton",
@@ -84,7 +84,7 @@ namespace PencilChiselCode.Source
                     {
                         "berryIcon",
                         new Icon(new Vector2(game.Width - 120, 100),
-                            _game.TextureMap["twigs"]) // TODO: Change to berries texture
+                            _game.TextureMap["berry"], 2F)
                     },
                     {
                         "berryEButton",
@@ -95,28 +95,28 @@ namespace PencilChiselCode.Source
                     {
                         "campfireCostTwigIcon",
                         new Icon(new Vector2(game.Width - 200, 150),
-                            _game.TextureMap["twigs"])
+                            _game.TextureMap["twig"])
                     },
                     {
                         "campfireCostIcon",
                         new Icon(new Vector2(game.Width - 120, 150),
-                            _game.TextureMap["fire_01"], 2)  // TODO: change fire texture
+                            _game.TextureMap["campfire"])
                     },
                     {
                         "camfireXButton",
                         new Icon(new Vector2(game.Width - 60, 150),
-                            _game.TextureMap["f_button"], // TODO: Change to x_button
+                            _game.TextureMap["x_button"],
                             2F)
                     },
                     {
                         "campfireRefuelTwigIcon",
                         new Icon(new Vector2(game.Width - 200, 200),
-                            _game.TextureMap["twigs"])
+                            _game.TextureMap["twig"])
                     },
                     {
                         "campfireRefuelIcon",
                         new Icon(new Vector2(game.Width - 120, 200),
-                            _game.TextureMap["fire_01"], 2)  // TODO: change fire texture
+                            _game.TextureMap["campfire"])
                     },
                     {
                         "camfireRefuelFButton",
@@ -127,7 +127,7 @@ namespace PencilChiselCode.Source
                     {
                         "followerFeedBerry",
                         new Icon(new Vector2(game.Width - 200, 250),
-                            _game.TextureMap["twigs"])  // TODO: change texture to berry
+                            _game.TextureMap["berry"], 2F)
                     },
                     {
                         "followerFeedIcon",
