@@ -116,7 +116,7 @@ public class IngameState : GameScreen
         _restartButton = new Button(restartButton,
             _game.TextureMap["restart_button_hover"],
             _game.TextureMap["restart_button_pressed"],
-            Utils.GetCenterStartCoords(restartButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 200,
+            Utils.GetCenterStartCoords(restartButtonSize, Game1.Instance.GetWindowDimensions()),
             () =>
             {
                 _game.ScreenManager.LoadScreen(new IngameState(_game),
@@ -360,7 +360,7 @@ public class IngameState : GameScreen
         }
         else if (_deathState)
         {
-            _game.SpriteBatch.DrawString(_game.FontMap["16"],"You are dead", new Vector2(_game.GetWindowWidth()/2, _game.GetWindowHeight()/2), Color.Red);
+            _game.SpriteBatch.DrawString(_game.FontMap["32"],"Your companion got too anxious!", new Vector2(_game.GetWindowWidth()/2 - 230, _game.GetWindowHeight()/2 - 100), Color.Red);
             _restartButton.Draw(_game.SpriteBatch);
             _exitButton.Draw(_game.SpriteBatch);
         }
