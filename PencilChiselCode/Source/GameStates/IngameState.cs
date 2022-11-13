@@ -344,6 +344,7 @@ public class IngameState : GameScreen
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _followerAttribute.Draw(_game.SpriteBatch);
+        _game.SpriteBatch.DrawString(_game.FontMap["32"],"Comfy meter", new Vector2(_game.GetWindowWidth()/2 - 350, _game.GetWindowHeight() - 100), Color.Orange);
         _inventory.Draw(_game.SpriteBatch);
 
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
