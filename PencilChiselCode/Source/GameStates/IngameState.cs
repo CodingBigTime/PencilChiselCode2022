@@ -76,6 +76,7 @@ public class IngameState : GameScreen
 
     public override void Update(GameTime gameTime)
     {
+        _game.TiledMapRenderer.Update(gameTime);
         var keyState = Keyboard.GetState();
         if (keyState.IsKeyDown(Keys.Escape) && !_previousPressedKeys.Contains(Keys.Escape))
         {
@@ -113,6 +114,7 @@ public class IngameState : GameScreen
         _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        _game.TiledMapRenderer.Draw(transformMatrix);
         Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
 
         _companion.Draw(_game.SpriteBatch);

@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
@@ -24,6 +26,8 @@ public class Game1 : Game
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
     public OrthographicCamera Camera;
+    public TiledMap TiledMap;
+    public TiledMapRenderer TiledMapRenderer;
 
     public Game1()
     {
@@ -87,6 +91,9 @@ public class Game1 : Game
         FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));
         FontMap.Add("24", Content.Load<BitmapFont>("Fonts/lunchds_24"));
         FontMap.Add("32", Content.Load<BitmapFont>("Fonts/lunchds_32"));
+
+        TiledMap = Content.Load<TiledMap>("Textures/Tiles/tilemap_01");
+        TiledMapRenderer = new TiledMapRenderer(GraphicsDevice, TiledMap);
     }
 
     protected override void Update(GameTime gameTime)
