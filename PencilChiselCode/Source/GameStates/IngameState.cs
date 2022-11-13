@@ -42,7 +42,7 @@ public class IngameState : GameScreen
     private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
     private float _minimialFollowerPlayerDistance = 100F;
-    private Boolean _deathState;
+    private bool _deathState;
     private int _glowFlowerCount = 7;
 
     private int MapIndex =>
