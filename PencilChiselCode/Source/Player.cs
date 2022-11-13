@@ -91,6 +91,11 @@ public class Player
         _popupButton?.Draw(spriteBatch, Position, Size);
     }
 
+    public void FireCreation(uint amount)
+    {
+        _twigs -= amount;
+    }
+
     public void Update(IngameState state, GameTime gameTime)
     {
         var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
