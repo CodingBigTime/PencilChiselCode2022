@@ -4,12 +4,15 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
+using MonoGame.Extended.Content;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
+using MonoGame.Extended.Sprites;
 
 namespace PencilChiselCode;
 
@@ -23,6 +26,7 @@ public class Game1 : Game
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     public Dictionary<string, BitmapFont> FontMap { get; } = new();
+    public Dictionary<string, SpriteSheet> SpriteSheetMap { get; } = new();
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
     public OrthographicCamera Camera;
@@ -78,9 +82,6 @@ public class Game1 : Game
 
         TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
         
-        TextureMap.Add("player_down", Content.Load<Texture2D>("Textures/Entity/player_down_01"));
-        TextureMap.Add("player_up", Content.Load<Texture2D>("Textures/Entity/player_up_01"));
-        TextureMap.Add("player_left", Content.Load<Texture2D>("Textures/Entity/player_side_01"));
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
         TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));
 
@@ -97,6 +98,11 @@ public class Game1 : Game
         FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));
         FontMap.Add("24", Content.Load<BitmapFont>("Fonts/lunchds_24"));
         FontMap.Add("32", Content.Load<BitmapFont>("Fonts/lunchds_32"));
+
+        var fireSpriteSheet = Content.Load<SpriteSheet>("Animations/fire.spritesheet", new JsonContentLoader());
+        SpriteSheetMap.Add("fire", fireSpriteSheet);
+        var playerSpriteSheet = Content.Load<SpriteSheet>("Animations/player.spritesheet", new JsonContentLoader());
+        SpriteSheetMap.Add("player", playerSpriteSheet);
 
         TiledMap = Content.Load<TiledMap>("Textures/Tiles/tilemap_01");
         TiledMapRenderer = new TiledMapRenderer(GraphicsDevice, TiledMap);
