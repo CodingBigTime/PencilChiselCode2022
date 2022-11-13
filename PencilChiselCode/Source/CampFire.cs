@@ -1,7 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
+using MonoGame.Extended;
 using Penumbra;
+using System;
 
 namespace PencilChiselCode.Source
 {
@@ -22,6 +24,7 @@ namespace PencilChiselCode.Source
         private Attribute _attribute;
         private AnimatedSprite _animatedSprite;
         private readonly float _maxScale = 300F;
+        private ParticleGenerator _particleGenerator;
 
         public CampFire(Game1 game, Vector2 position)
         {
@@ -42,9 +45,19 @@ namespace PencilChiselCode.Source
                 -5F
             );
             _game.Penumbra.Lights.Add(PointLight);
+            _particleGenerator = new ParticleGenerator(
+                (() => new Particle(
+                    Utils.RANDOM.NextSingle(1, 2),
+                    Position + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) + Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                    Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                    ((time) => time),
+                    ((time) => IsLit() ? Color.Red : Color.Black)
+                )),
+                5F
+            );
         }
 
-        public bool Lit()
+        public bool IsLit()
         {
             return !_attribute.IsEmpty();
         }
@@ -76,7 +89,8 @@ namespace PencilChiselCode.Source
         {
             _animatedSprite.Update(gameTime);
             _attribute.Update(gameTime);
-            PointLight.Scale = new(_maxScale * _attribute.Percent());
+            PointLight.Scale = new(_maxScale * (float) Math.Sqrt(_attribute.Percent()));
+            _particleGenerator.Update(gameTime, IsLit());
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -88,6 +102,7 @@ namespace PencilChiselCode.Source
                 0F,
                 new(textureScale)
             );
+            _particleGenerator.Draw(spriteBatch);
         }
 
         public void DrawUI(SpriteBatch spriteBatch)
