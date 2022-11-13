@@ -29,7 +29,7 @@ public class Player
     Vector2 position;
     private const float Sqrt12 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
-    private Game1 _game;
+    private Bonfire _game;
     private AnimatedSprite _animatedSprite;
     private Vector2 _speed;
     private static readonly int _pointLightScale = 300;
@@ -43,7 +43,7 @@ public class Player
     public uint Berries { get; private set; }
     private ParticleGenerator _particleGenerator;
 
-    public Player(Game1 game, Vector2 position)
+    public Player(Bonfire game, Vector2 position)
     {
         _game = game;
         Position = position;

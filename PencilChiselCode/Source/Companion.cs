@@ -14,7 +14,7 @@ public class Companion
     private const float sqrt1_2 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
     private readonly float _scale = 1F;
-    private Game1 _game;
+    private Bonfire _game;
     private Vector2 _speed;
     private Vector2 _movement_speed;
     private readonly float _maxSpeed = 80F;
@@ -24,7 +24,7 @@ public class Companion
     private float _minimumDistance = 50F;
     private Boolean _isAFK;
 
-    public Companion(Game1 game, Vector2 position,float speed)
+    public Companion(Bonfire game, Vector2 position,float speed)
     {
         _isAFK = false;
         _movement_speed.X = speed;

@@ -21,13 +21,13 @@ namespace PencilChiselCode.Source
         }
 
         private Vector2 _position;
-        private Game1 _game;
+        private Bonfire _game;
         private Attribute _attribute;
         private AnimatedSprite _animatedSprite;
         private readonly float _maxScale = 300F;
         private ParticleGenerator _particleGenerator;
 
-        public CampFire(Game1 game, Vector2 position)
+        public CampFire(Bonfire game, Vector2 position)
         {
             _game = game;
             Position = position;
