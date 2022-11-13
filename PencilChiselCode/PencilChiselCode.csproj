@@ -8,7 +8,7 @@
     </PropertyGroup>
     <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <ApplicationIcon>Icon.ico</ApplicationIcon>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
         <None Remove="Content\Resources\Animations\fire.spritesheet" />
@@ -24,8 +24,8 @@
         </Content>
       </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Icon.ico" />
-        <EmbeddedResource Include="Icon.bmp" />
+        <EmbeddedResource Include="icon.ico" />
+        <EmbeddedResource Include="icon.bmp" />
     </ItemGroup>
     <ItemGroup>
         <MonoGameContentReference Include="Content\Content.mgcb" />
