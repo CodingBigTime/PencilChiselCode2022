@@ -32,7 +32,7 @@ public class IngameState : GameScreen
     private readonly List<string> _debugData = new() { "", "", "" };
 
     private int MapIndex =>
-        (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].WidthInPixels));
+        (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
 
     public IngameState(Game game) : base(game)
     {
@@ -154,7 +154,7 @@ public class IngameState : GameScreen
         {
             _game.TiledMapRenderer.LoadMap(_maps[i]);
             _game.TiledMapRenderer.Draw(
-                transformMatrix * Matrix.CreateTranslation(_maps[i].WidthInPixels * (i + MapIndex-1), 0, 0));
+                transformMatrix * Matrix.CreateTranslation(_maps[i].HeightInPixels * (i + MapIndex-1), 0, 0));
         }
 
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
