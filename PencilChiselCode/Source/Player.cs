@@ -184,7 +184,7 @@ public class Player
 
         if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null && Twigs > 0)
         {
-            nearestCampfire.FeedFire(10F);
+            nearestCampfire.FeedFire(25F);
             --Twigs;
         }
         if (nearestCampfire == null || Twigs <= 0) _popupButtons.Remove("F");
