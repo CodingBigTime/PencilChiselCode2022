@@ -30,7 +30,7 @@ public class Game1 : Game
         ScreenManager = new ScreenManager();
         Components.Add(ScreenManager);
         Penumbra = new PenumbraComponent(this);
-        //Penumbra.AmbientColor = Color.Black;
+        Penumbra.AmbientColor = Color.Black;
         Instance = this;
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
