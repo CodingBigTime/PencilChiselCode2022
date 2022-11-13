@@ -47,7 +47,7 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
-        for (int i = 0; i < _twigCount; i++)
+        for (var i = 0; i < _twigCount; i++)
         {
             Pickupables.Add(new Pickupable(PickupableTypes.Twig,
                 _game.TextureMap["twigs"],
@@ -56,7 +56,7 @@ public class IngameState : GameScreen
                     Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
                 Utils.RANDOM.NextAngle()));    
         }
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             Pickupables.Add(new Pickupable(PickupableTypes.Bush,
                 _game.TextureMap["bush_berry"],
@@ -109,29 +109,25 @@ public class IngameState : GameScreen
                 attributeTexture, comfyAttributeTexture, attributeTexture.Bounds.Center.ToVector2(), 100, -2F);
     }
     
-    public void RandomBushSpawner(PickupableTypes type)
+    public void RandomBushSpawner()
     {
-        if (Utils.GetRandomInt(0, 101) < 10)
-        {
-            var pickupable = new Pickupable(type,
-                _game.TextureMap["bush_berry"],
-                _game.SoundMap["pickup_branches"],
-                new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
-                Utils.RANDOM.NextAngle());
-            Pickupables.Add(pickupable);
-        }
+        if (Utils.GetRandomInt(0, 101) >= 10) return;
+        var pickupable = new Pickupable(PickupableTypes.Bush,
+            _game.TextureMap["bush_berry"],
+            _game.SoundMap["pickup_branches"],
+            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
+            Utils.RANDOM.NextAngle());
+        Pickupables.Add(pickupable);
     }
-    public void RandomTwigSpawner(PickupableTypes type)
+    public void RandomTwigSpawner()
     {
-        if (Utils.GetRandomInt(0, 101) < 10)
-        {
-            var pickupable = new Pickupable(type,
-                _game.TextureMap["twigs"],
-                _game.SoundMap["pickup_branches"],
-                new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
-                Utils.RANDOM.NextAngle());
-            Pickupables.Add(pickupable);
-        }
+        if (Utils.GetRandomInt(0, 101) >= 10) return;
+        var pickupable = new Pickupable(PickupableTypes.Twig,
+            _game.TextureMap["twigs"],
+            _game.SoundMap["pickup_branches"],
+            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
+            Utils.RANDOM.NextAngle());
+        Pickupables.Add(pickupable);
     }
 
     private void AddRandomMap() => _maps.Add(_game.TiledMaps[Utils.RANDOM.Next(0, _game.TiledMaps.Count)]);
@@ -140,8 +136,8 @@ public class IngameState : GameScreen
     {
         if (gameTime.TotalGameTime.Subtract(_twigCounterGameTime).Milliseconds >= 500)
         {
-            RandomTwigSpawner(PickupableTypes.Twig);
-            RandomBushSpawner(PickupableTypes.Bush);
+            RandomTwigSpawner();
+            RandomBushSpawner();
             _twigCounterGameTime = gameTime.TotalGameTime;
         }
         var oldMapIndex = MapIndex;
