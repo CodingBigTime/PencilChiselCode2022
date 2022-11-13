@@ -54,7 +54,8 @@ public class Player
         _particleGenerator = new ParticleGenerator(
             (() => new Particle(
                 3,
-                Position + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10) + Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
+                Position + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10) +
+                Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
                 Vector2.UnitY * Utils.RANDOM.NextSingle(-5, 5) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                 ((time) => (3 - time) / 3 * 1F),
                 ((time) => Color.LightBlue)
@@ -105,15 +106,12 @@ public class Player
         _popupButton?.Draw(spriteBatch, Position, Size);
     }
 
-    public void FireCreation(uint amount)
+    public void CreateFire(uint amount)
     {
         Twigs -= amount;
     }
-    
-    public Boolean CanFireCreation()
-    {
-        return Twigs >= 2;
-    }
+
+    public bool CanCreateFire() => Twigs >= 2;
 
     public void Update(IngameState state, GameTime gameTime)
     {
@@ -177,8 +175,9 @@ public class Player
 
         var nearestPickupable = state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
-            .FirstOrDefault(pickupable => Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100 && pickupable.IsConsumable);
-        
+            .FirstOrDefault(pickupable =>
+                Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100 && pickupable.IsConsumable);
+
         if (nearestPickupable != null)
         {
             _popupButton ??= new PopupButton(_game, _game.TextureMap["e_button"]);
@@ -201,6 +200,7 @@ public class Player
                     nearestPickupable.Texture = _game.TextureMap["bush_empty"];
                     break;
             }
+
             _popupButton = null;
             nearestPickupable.IsConsumable = false;
         }
