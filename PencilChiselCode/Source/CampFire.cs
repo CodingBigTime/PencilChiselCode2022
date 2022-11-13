@@ -74,7 +74,6 @@ namespace PencilChiselCode.Source
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Texture2D texture = _game.TextureMap["fire_01"];
             float textureScale = _attribute.Percent() * 4F;
             _animatedSprite.Draw(
                 spriteBatch,

@@ -1,0 +1,29 @@
+{
+  "textureAtlas": {
+    "texture": "Animation/player",
+    "regionWidth": 16,
+    "regionHeight": 16
+  },
+  "cycles": {
+    "down": {
+      "frameDuration": 0.2,
+      "isLooping": true,
+      "frames": [ 0, 1 ]
+    },
+    "left": {
+      "frameDuration": 0.2,
+      "isLooping": true,
+      "frames": [ 2, 3 ]
+    },
+    "right": {
+      "frameDuration": 0.2,
+      "isLooping": true,
+      "frames": [ 4, 5 ]
+    },
+    "up": {
+      "frameDuration": 0.2,
+      "isLooping": true,
+      "frames": [ 6, 7 ]
+    }
+  }
+}

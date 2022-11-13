@@ -77,16 +77,8 @@ public class Game1 : Game
 
         TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
         
-        TextureMap.Add("player_down", Content.Load<Texture2D>("Textures/Entity/player_down_01"));
-        TextureMap.Add("player_up", Content.Load<Texture2D>("Textures/Entity/player_up_01"));
-        TextureMap.Add("player_left", Content.Load<Texture2D>("Textures/Entity/player_side_01"));
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
         TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));
-
-        TextureMap.Add("fire_01", Content.Load<Texture2D>("Textures/Tiles/fire_01"));
-        TextureMap.Add("fire_02", Content.Load<Texture2D>("Textures/Tiles/fire_02"));
-        TextureMap.Add("fire_03", Content.Load<Texture2D>("Textures/Tiles/fire_03"));
-        TextureMap.Add("fire_04", Content.Load<Texture2D>("Textures/Tiles/fire_04"));
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
@@ -99,6 +91,8 @@ public class Game1 : Game
 
         var fireSpriteSheet = Content.Load<SpriteSheet>("Animations/fire.spritesheet", new JsonContentLoader());
         SpriteSheetMap.Add("fire", fireSpriteSheet);
+        var playerSpriteSheet = Content.Load<SpriteSheet>("Animations/player.spritesheet", new JsonContentLoader());
+        SpriteSheetMap.Add("player", playerSpriteSheet);
     }
 
     protected override void Update(GameTime gameTime)
