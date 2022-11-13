@@ -10,8 +10,10 @@ namespace PencilChiselCode.Source
         private Vector2 _position;
         private Vector2 _size;
         private Texture2D _texture;
+        private Texture2D _filledTexture;
         private Vector2 _offset;
         private Color _color;
+        private float _scale;
         public readonly float MaxValue;
         public readonly float ChangeRate;
 
@@ -45,26 +47,32 @@ namespace PencilChiselCode.Source
             ChangeRate = changeRate;
         }
 
-        public Attribute(Vector2 position, Vector2 size, Texture2D texture, Vector2 offset, Color color, float maxValue,
-            float changeRate = 0F)
+        public Attribute(Vector2 position, float scale, Texture2D baseTexture, Texture2D filledTexture, Vector2 offset,
+            float maxValue, float changeRate = 0F)
         {
             _position = position;
-            _size = size;
-            _texture = texture;
-            _color = color;
+            _scale = scale;
+            _texture = baseTexture;
+            _filledTexture = filledTexture;
+            _size = new Vector2(baseTexture.Width, baseTexture.Height) * scale;
+            _color = Color.White;
             MaxValue = maxValue;
             Value = maxValue;
+            _offset = offset;
             ChangeRate = changeRate;
         }
 
-        public Attribute(Vector2 position, Vector2 size, Texture2D texture, Vector2 offset, Color color, float maxValue,
-            float value, float changeRate = 0F)
+        public Attribute(Vector2 position, float scale, Texture2D baseTexture, Texture2D filledTexture, Vector2 offset,
+            float maxValue, float value,
+            float changeRate = 0F)
         {
             _position = position;
-            _size = size;
-            _texture = texture;
+            _scale = scale;
+            _size = new Vector2(baseTexture.Width, baseTexture.Height) * scale;
+            _texture = baseTexture;
+            _filledTexture = filledTexture;
             _offset = offset;
-            _color = color;
+            _color = Color.White;
             MaxValue = maxValue;
             Value = value;
             ChangeRate = changeRate;
@@ -97,11 +105,16 @@ namespace PencilChiselCode.Source
         {
             if (_texture != null)
             {
-                spriteBatch.Draw(_texture, _position, null, _color, 0F, _offset, _size, SpriteEffects.None, 0F);
+                spriteBatch.Draw(_texture, _position, null, _color, 0F, _offset, _scale, SpriteEffects.None, 0F);
+                spriteBatch.Draw(_filledTexture, _position,
+                    new Rectangle(0, 0, (int)(_texture.Width * (Value / MaxValue)), _texture.Height), _color, 0F,
+                    _offset, _scale, SpriteEffects.None, 0F);
             }
-
-            spriteBatch.FillRectangle(_position, _size, Color.Black);
-            spriteBatch.FillRectangle(_position, new(_size.X * (Value / MaxValue), _size.Y), _color);
+            else
+            {
+                spriteBatch.FillRectangle(_position, _size, Color.Black);
+                spriteBatch.FillRectangle(_position, new(_size.X * (Value / MaxValue), _size.Y), _color);
+            }
         }
     }
 }
