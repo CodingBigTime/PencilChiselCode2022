@@ -51,7 +51,7 @@ namespace PencilChiselCode.Source
                     Position + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) + Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                     Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                     ((time) => time),
-                    ((time) => IsLit() ? Color.Red : Color.Black)
+                    ((time) => IsLow() ? Color.Black : Color.Red)
                 )),
                 5F
             );
@@ -60,6 +60,11 @@ namespace PencilChiselCode.Source
         public bool IsLit()
         {
             return !_attribute.IsEmpty();
+        }
+
+        public bool IsLow()
+        {
+            return _attribute.Percent() < 0.1;
         }
 
         public Light PointLight { get; } = new PointLight
@@ -90,7 +95,7 @@ namespace PencilChiselCode.Source
             _animatedSprite.Update(gameTime);
             _attribute.Update(gameTime);
             PointLight.Scale = new(_maxScale * (float) Math.Sqrt(_attribute.Percent()));
-            _particleGenerator.Update(gameTime, IsLit());
+            _particleGenerator.Update(gameTime, !IsLow());
         }
 
         public void Draw(SpriteBatch spriteBatch)
