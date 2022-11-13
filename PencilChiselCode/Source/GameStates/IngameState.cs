@@ -118,7 +118,7 @@ public class IngameState : GameScreen
         _restartButton = new Button(restartButton,
             _game.TextureMap["restart_button_hover"],
             _game.TextureMap["restart_button_pressed"],
-            Utils.GetCenterStartCoords(restartButtonSize, Bonfire.Instance.GetWindowDimensions()) + Vector2.UnitY * 200,
+            Utils.GetCenterStartCoords(restartButtonSize, Bonfire.Instance.GetWindowDimensions()),
             () =>
             {
                 _game.ScreenManager.LoadScreen(new IngameState(_game),
@@ -251,7 +251,7 @@ public class IngameState : GameScreen
             _player.Update(this, gameTime);
             _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
-            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime));
+            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime, _player.Position));
             Campfires.RemoveAll(campfire => !campfire.IsLit());
             Campfires.ForEach(campfire => { campfire.Update(gameTime); });
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
@@ -259,10 +259,17 @@ public class IngameState : GameScreen
                 _followerAttribute.ChangeValue(8F * gameTime.GetElapsedSeconds());
             }
             var followerPlayerDistance = Vector2.Distance(_player.Position, _companion.Position);
-            if (!Campfires.Any(campfire => campfire.IsInRange(_companion.Position)) && followerPlayerDistance> _minimialFollowerPlayerDistance)
+            if (keyState.IsKeyDown(Keys.Q) && !PreviousPressedKeys.Contains(Keys.Q) && followerPlayerDistance <= 100 && _player.Berries >= 1)
+            {
+                _player.ReduceBerries(1);
+                _followerAttribute.ChangeValue(10F);
+            }
+            if (!Campfires.Any(campfire => campfire.IsInRange(_companion.Position)) &&
+                followerPlayerDistance > _minimialFollowerPlayerDistance)
             {
                 _followerAttribute.ChangeValue(-8F * gameTime.GetElapsedSeconds());
             }
+
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);
         }
@@ -278,7 +285,7 @@ public class IngameState : GameScreen
         }
         if(keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanCreateFire())
         {
-            _player.CreateFire(2);
+            _player.CreateFire(10);
             _game.SoundMap["light_fire"].Play();
             Campfires.Add(new CampFire(_game, new Vector2(_player.Position.X+20, _player.Position.Y-20)));
         }
@@ -343,6 +350,7 @@ public class IngameState : GameScreen
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _followerAttribute.Draw(_game.SpriteBatch);
+        _game.SpriteBatch.DrawString(_game.FontMap["32"],"Comfy meter", new Vector2(_game.GetWindowWidth()/2 - 350, _game.GetWindowHeight() - 100), Color.Orange);
         _inventory.Draw(_game.SpriteBatch);
 
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
@@ -359,7 +367,7 @@ public class IngameState : GameScreen
         }
         else if (_deathState)
         {
-            _game.SpriteBatch.DrawString(_game.FontMap["16"],"You are dead", new Vector2(_game.GetWindowWidth()/2, _game.GetWindowHeight()/2), Color.Red);
+            _game.SpriteBatch.DrawString(_game.FontMap["32"],"Your companion got too anxious!", new Vector2(_game.GetWindowWidth()/2 - 230, _game.GetWindowHeight()/2 - 100), Color.Red);
             _restartButton.Draw(_game.SpriteBatch);
             _exitButton.Draw(_game.SpriteBatch);
         }

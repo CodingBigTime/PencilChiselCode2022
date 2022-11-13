@@ -66,6 +66,12 @@ namespace PencilChiselCode.Source
                         new TextIcon("+",
                             new Vector2(game.Width - 150, 250),
                             font)
+                    },
+                    {
+                        "followStop",
+                        new TextIcon("follow/stop",
+                            new Vector2(game.Width - 300, 300),
+                            font)
                     }
                 };
             _icons =
@@ -137,8 +143,18 @@ namespace PencilChiselCode.Source
                     {
                         "followerFeedFButton",
                         new Icon(new Vector2(game.Width - 60, 250),
-                            _game.TextureMap["f_button"],
+                            _game.TextureMap["q_button"],
                             2F)
+                    },
+                    {
+                        "followerFollowStand",
+                        new Icon(new Vector2(game.Width - 120, 300),
+                            _game.TextureMap["follower"])
+                    },
+                    {
+                        "followerFollowStandSpace",
+                        new Icon(new Vector2(game.Width - 75, 300),
+                            _game.TextureMap["space_button"], 2)
                     }
                 };
         }
