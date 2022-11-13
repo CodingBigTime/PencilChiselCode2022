@@ -56,6 +56,8 @@ namespace PencilChiselCode.Source
             return distance < Scale();
         }
 
+        public void FeedFire(float amount) => _attribute.Value += amount;
+
         public void Update(GameTime gameTime)
         {
             _attribute.Update(gameTime);

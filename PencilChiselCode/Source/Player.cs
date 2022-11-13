@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -21,15 +23,15 @@ public class Player
             }
         }
         Vector2 position;
-    private const float sqrt1_2 = 0.70710678118654752440084436210485F;
+    private const float Sqrt12 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
     private Game1 _game;
     private Vector2 _speed;
-    private readonly static int _lightScale = 200;
-    private readonly static float _scale = 2F;
-    private readonly static float _maxSpeed = 80F;
-    private readonly static float _acceleration = 1000F;
-    private readonly static float _friction = 2.75F;
+    private static readonly int _lightScale = 200;
+    private static readonly float _scale = 2F;
+    private static readonly float _maxSpeed = 80F;
+    private static readonly float _acceleration = 1000F;
+    private static readonly float _friction = 2.75F;
     private uint _twigs = 0;
     private PopupButton _popupButton;
 
@@ -37,7 +39,6 @@ public class Player
     {
         _game = game;
         Position = position;
-        _popupButton = new(game);
         var texturePlayerDown = _game.TextureMap["player_down"];
         Size = new(texturePlayerDown.Width * _scale, texturePlayerDown.Height * _scale);
     }
@@ -102,8 +103,8 @@ public class Player
         if (mx != 0 && my != 0)
         {
             // Normalize the diagonal movement
-            mx *= sqrt1_2;
-            my *= sqrt1_2;
+            mx *= Sqrt12;
+            my *= Sqrt12;
         }
 
         var ax = _acceleration * mx * delta;
@@ -129,35 +130,43 @@ public class Player
             Position = new(Position.X, Math.Clamp(Position.Y, Size.Y / 2F, _game.Height - Size.Y / 2F));
         }
 
+        var nearestCampfire = state.Campfires
+            .OrderBy(campfire => Vector2.DistanceSquared(campfire.Position, Position))
+            .FirstOrDefault(campfire => Vector2.DistanceSquared(campfire.Position, Position) < 100 * 100);
+        if (nearestCampfire != null)
+        {
+            _popupButton ??= new PopupButton(_game, _game.TextureMap["f_button"]);
+        }
+        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null && _twigs > 0)
+        {
+            nearestCampfire.FeedFire(10F);
+            --_twigs;
+        }
 
-        var pickupable = state.Pickupables.Find(pickupable =>
-            Utils.CreateCircle(Position, Size.GetAverageSize()).Expand(8)
-                .Intersects(Utils.CreateCircle(pickupable.Position, pickupable.Size.GetAverageSize()).Expand(8)));
-        var canPickup = pickupable != null;
-        if (canPickup)
+        var nearestPickupable = state.Pickupables
+            .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
+            .FirstOrDefault(pickupable => Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100);
+        if (nearestPickupable != null)
         {
-            if (_popupButton == null)
-            {
-                _popupButton = new PopupButton(_game);
-            }
-            _popupButton.Update(state, gameTime);
+            _popupButton ??= new PopupButton(_game, _game.TextureMap["e_button"]);
         }
-        else
+        _popupButton?.Update(state, gameTime);
+
+        if (!state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)
         {
-            _popupButton = null;
-        }
-        if (keyState.IsKeyDown(Keys.E))
-        {
-            if (!canPickup) return;
-            switch (pickupable.Type)
+            switch (nearestPickupable.Type)
             {
                 case PickupableTypes.Twig:
                     ++_twigs;
                     break;
             }
 
-            pickupable.PickupSound.Play();
-            state.Pickupables.Remove(pickupable);
+            nearestPickupable.PickupSound.Play();
+            state.Pickupables.Remove(nearestPickupable);
+        }
+        if (nearestPickupable == null && (nearestCampfire == null || _twigs <= 0))
+        {
+            _popupButton = null;
         }
     }
 }

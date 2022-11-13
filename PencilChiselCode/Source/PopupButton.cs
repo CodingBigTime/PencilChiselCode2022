@@ -16,10 +16,11 @@ public class PopupButton
     private Texture2D _texture;
     private Vector2 _size;
 
-    public PopupButton(Game1 game)
+    public PopupButton(Game1 game, Texture2D texture)
     {
         _game = game;
-        _texture = _game.TextureMap["e_button"];
+        _texture = texture;
+        _texture = texture;
         _size = new Vector2(_texture.Width, _texture.Height);
         _scaleTweener = new Tweener();
         _scaleTweener.TweenTo(target: this, expression: button => button.scale, toValue: 1.25F, duration: 1.5F,
