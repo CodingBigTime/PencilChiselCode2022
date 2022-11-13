@@ -154,7 +154,7 @@ public class IngameState : GameScreen
         {
             _game.TiledMapRenderer.LoadMap(_maps[i]);
             _game.TiledMapRenderer.Draw(
-                transformMatrix * Matrix.CreateTranslation(768 * (i + MapIndex-1), 0, 0));
+                transformMatrix * Matrix.CreateTranslation(_maps[i].WidthInPixels * (i + MapIndex-1), 0, 0));
         }
 
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
