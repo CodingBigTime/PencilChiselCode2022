@@ -49,7 +49,7 @@ namespace PencilChiselCode.Source
 
         public Light PointLight { get; } = new PointLight
         {
-            Color = Color.White,
+            Color = Color.DarkOrange,
             ShadowType = ShadowType.Occluded
         };
 
