@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Content;
@@ -33,7 +34,7 @@ public class Bonfire : Game
     public TiledMapRenderer TiledMapRenderer;
     public List<TiledMap> TiledMaps = new();
     public const int TreeVariations = 3;
-
+    public Dictionary<string, Song> SongMap { get; } = new();
     public Bonfire()
     {
         ScreenManager = new ScreenManager();
@@ -117,6 +118,8 @@ public class Bonfire : Game
         FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));
         FontMap.Add("24", Content.Load<BitmapFont>("Fonts/lunchds_24"));
         FontMap.Add("32", Content.Load<BitmapFont>("Fonts/lunchds_32"));
+
+        SongMap.Add("bonfire_song", Content.Load<Song>("Sounds/bonfire_song"));
 
         var fireSpriteSheet = Content.Load<SpriteSheet>("Animations/fire.spritesheet", new JsonContentLoader());
         SpriteSheetMap.Add("fire", fireSpriteSheet);
