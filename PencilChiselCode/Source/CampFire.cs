@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Sprites;
 using Penumbra;
 
 namespace PencilChiselCode.Source
@@ -19,6 +20,7 @@ namespace PencilChiselCode.Source
         private Vector2 _position;
         private Game1 _game;
         private Attribute _attribute;
+        private AnimatedSprite _animatedSprite;
         private readonly float _maxScale = 300F;
 
         public CampFire(Game1 game, Vector2 position)
@@ -32,6 +34,8 @@ namespace PencilChiselCode.Source
                 100F,
                 -5F
             );
+            _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["fire"]);
+            _animatedSprite.Play("burn");
         }
 
         public bool Lit()
@@ -41,7 +45,7 @@ namespace PencilChiselCode.Source
 
         public Light PointLight { get; } = new PointLight
         {
-            Color = Color.White,
+            Color = Color.DarkOrange,
             ShadowType = ShadowType.Occluded
         };
 
@@ -60,24 +64,19 @@ namespace PencilChiselCode.Source
 
         public void Update(GameTime gameTime)
         {
+            _animatedSprite.Update(gameTime);
             _attribute.Update(gameTime);
             PointLight.Scale = new(_maxScale * _attribute.Percent());
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            var texture = _game.TextureMap["fire_01"];
-            var textureScale = _attribute.Percent() * 4F;
-            spriteBatch.Draw(
-                texture: texture,
-                position: Position - new Vector2(texture.Width, texture.Height) * textureScale / 2,
-                sourceRectangle: null,
-                color: Color.White,
-                rotation: 0,
-                origin: Vector2.Zero,
-                scale: textureScale,
-                effects: SpriteEffects.None,
-                layerDepth: 0
+            float textureScale = _attribute.Percent() * 4F;
+            _animatedSprite.Draw(
+                spriteBatch,
+                Position,
+                0F,
+                new(textureScale)
             );
         }
 

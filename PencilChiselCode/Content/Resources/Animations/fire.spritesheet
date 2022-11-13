@@ -1,0 +1,14 @@
+{
+  "textureAtlas": {
+    "texture": "Animation/fire",
+    "regionWidth": 16,
+    "regionHeight": 16
+  },
+  "cycles": {
+    "burn": {
+      "frameDuration": 0.3,
+      "isLooping": true,
+      "frames": [ 0, 1, 2, 3 ]
+    }
+  }
+}

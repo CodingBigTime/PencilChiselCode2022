@@ -66,9 +66,9 @@ public class IngameState : GameScreen
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
             _game.SoundMap["pickup_branches"], new Vector2(700, 280),
             0.5F));
-        _companion = new Companion(_game, new Vector2(100, 100),50F);
+        _companion = new Companion(_game, new Vector2(100, 100), 50F);
         _player = new Player(_game, new Vector2(150, 150));
-        
+
         Campfires.Add(new CampFire(_game, new Vector2(500, 400))); // TEMP
         Campfires.ForEach(campfire => _game.Penumbra.Lights.Add(campfire.PointLight));
 
@@ -86,6 +86,7 @@ public class IngameState : GameScreen
 
     public override void Update(GameTime gameTime)
     {
+        _game.TiledMapRenderer.Update(gameTime);
         var keyState = Keyboard.GetState();
         if (keyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
         {
@@ -100,7 +101,7 @@ public class IngameState : GameScreen
         else
         {
             _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
-            _companion.Update(this,gameTime,_player.Position);
+            _companion.Update(this, gameTime, _player.Position);
             _player.Update(this, gameTime);
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
@@ -116,6 +117,7 @@ public class IngameState : GameScreen
         {
             _showDebug = !_showDebug;
         }
+
         if (keyState.IsKeyDown(Keys.Space) && !PreviousPressedKeys.Contains(Keys.Space))
         {
             Debug.WriteLine("STOP");
@@ -134,6 +136,9 @@ public class IngameState : GameScreen
         _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
 
+        _game.TiledMapRenderer.Draw(transformMatrix);
+        _game.TiledMapRenderer.Draw(transformMatrix * Matrix.CreateTranslation(768, 0, 0));
+
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
 
         Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
@@ -141,7 +146,7 @@ public class IngameState : GameScreen
         _companion.Draw(_game.SpriteBatch);
         _player.Draw(_game.SpriteBatch);
 
-        Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch));  // TEMP
+        Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch)); // TEMP
 
         _game.SpriteBatch.End();
         _game.Penumbra.Draw(gameTime);
@@ -154,7 +159,7 @@ public class IngameState : GameScreen
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         _player.DrawPopupButton(_game.SpriteBatch);
-        Campfires.ForEach(campfire => campfire.DrawUI(_game.SpriteBatch));  // TEMP
+        Campfires.ForEach(campfire => campfire.DrawUI(_game.SpriteBatch)); // TEMP
         _game.SpriteBatch.End();
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);

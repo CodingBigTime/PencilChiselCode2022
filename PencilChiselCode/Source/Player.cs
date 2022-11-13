@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Sprites;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
 
@@ -26,21 +26,23 @@ public class Player
     private const float Sqrt12 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
     private Game1 _game;
+    private AnimatedSprite _animatedSprite;
     private Vector2 _speed;
     private static readonly int _lightScale = 200;
     private static readonly float _scale = 2F;
     private static readonly float _maxSpeed = 80F;
     private static readonly float _acceleration = 1000F;
     private static readonly float _friction = 2.75F;
-    private uint _twigs = 0;
+    private uint _twigs;
     private PopupButton _popupButton;
 
     public Player(Game1 game, Vector2 position)
     {
         _game = game;
         Position = position;
-        var texturePlayerDown = _game.TextureMap["player_down"];
-        Size = new(texturePlayerDown.Width * _scale, texturePlayerDown.Height * _scale);
+        _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["player"]);
+        _animatedSprite.Play("right");
+        Size = new(_animatedSprite.TextureRegion.Width * _scale, _animatedSprite.TextureRegion.Height * _scale);
     }
 
     public Light PointLight { get; } = new PointLight
@@ -61,23 +63,21 @@ public class Player
     public void Draw(SpriteBatch spriteBatch)
     {
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
-        var (texture, spriteEffect) = angle switch {
-            >= -PI / 4 and <= PI / 4 => (_game.TextureMap["player_left"], SpriteEffects.FlipHorizontally),
-            > PI / 4 and < 3 * PI / 4 => (_game.TextureMap["player_down"], SpriteEffects.None),
-            >= 3 * PI / 4 or <= -3 * PI / 4 => (_game.TextureMap["player_left"], SpriteEffects.None),
-            > -3 * PI / 4 and < -PI / 4 => (_game.TextureMap["player_up"], SpriteEffects.None),
-            _ => (_game.TextureMap["player_down"], SpriteEffects.None)
-        };
-        spriteBatch.Draw(
-            texture: texture, 
-            position: Position - Size/2,
-            sourceRectangle: null,
-            color: Color.White,
+        _animatedSprite.Play(
+            angle switch 
+            {
+                >= -PI / 4 and <= PI / 4 => "right",
+                > PI / 4 and < 3 * PI / 4 => "down",
+                >= 3 * PI / 4 or <= -3 * PI / 4 => "left",
+                > -3 * PI / 4 and < -PI / 4 => "up",
+                _ => "right"
+            }
+        );
+        _animatedSprite.Draw(
+            spriteBatch: spriteBatch, 
+            position: Position,
             rotation: 0,
-            origin: Vector2.Zero,
-            scale: _scale,
-            effects: spriteEffect,
-            layerDepth: 0
+            scale: new(_scale)
         );
     }
 
@@ -99,6 +99,7 @@ public class Player
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
         
         Spotlight.Rotation = angle;
+        _animatedSprite.Update(gameTime);
 
         if (mx != 0 && my != 0)
         {
