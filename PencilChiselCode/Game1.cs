@@ -32,6 +32,7 @@ public class Game1 : Game
     public OrthographicCamera Camera;
     public TiledMapRenderer TiledMapRenderer;
     public List<TiledMap> TiledMaps = new();
+    public const int TreeVariations = 3;
 
     public Game1()
     {
@@ -85,24 +86,31 @@ public class Game1 : Game
 
         TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
         TextureMap.Add("f_button", Content.Load<Texture2D>("Textures/GUI/f_button"));
+        TextureMap.Add("q_button", Content.Load<Texture2D>("Textures/GUI/q_button"));
+        TextureMap.Add("x_button", Content.Load<Texture2D>("Textures/GUI/x_button"));
         TextureMap.Add("attribute_bar", Content.Load<Texture2D>("Textures/GUI/attribute_bar"));
         TextureMap.Add("comfy_bar", Content.Load<Texture2D>("Textures/GUI/comfy_bar"));
         TextureMap.Add("fireplace_bar", Content.Load<Texture2D>("Textures/GUI/fireplace_bar"));
+        TextureMap.Add("twig", Content.Load<Texture2D>("Textures/GUI/twig"));
+        TextureMap.Add("berry", Content.Load<Texture2D>("Textures/GUI/berry"));
+        TextureMap.Add("campfire", Content.Load<Texture2D>("Textures/GUI/campfire"));
 
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
         TextureMap.Add("bush_empty", Content.Load<Texture2D>("Textures/Entity/bush_empty"));
         TextureMap.Add("bush_berry", Content.Load<Texture2D>("Textures/Entity/bush_berry"));
         TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));
 
-        TextureMap.Add("fire_01", Content.Load<Texture2D>("Textures/Tiles/fire_01"));
-        TextureMap.Add("fire_02", Content.Load<Texture2D>("Textures/Tiles/fire_02"));
-        TextureMap.Add("fire_03", Content.Load<Texture2D>("Textures/Tiles/fire_03"));
-        TextureMap.Add("fire_04", Content.Load<Texture2D>("Textures/Tiles/fire_04"));
+        for (var i = 1; i <= TreeVariations; ++i)
+        {
+            TextureMap.Add($"tree_{i}", Content.Load<Texture2D>($"Textures/Entity/tree_{i}"));
+        }
+        TextureMap.Add($"flower_lamp_1", Content.Load<Texture2D>($"Textures/Entity/flower_lamp_1"));
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
         SoundMap.Add("pickup_branches", Content.Load<SoundEffect>("Sounds/pickup_branches"));
         SoundMap.Add("fuel_fire", Content.Load<SoundEffect>("Sounds/fuel_fire"));
+        SoundMap.Add("light_fire", Content.Load<SoundEffect>("Sounds/light_fire"));
 
         FontMap.Add("12", Content.Load<BitmapFont>("Fonts/lunchds_12"));
         FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));
@@ -114,7 +122,7 @@ public class Game1 : Game
         var playerSpriteSheet = Content.Load<SpriteSheet>("Animations/player.spritesheet", new JsonContentLoader());
         SpriteSheetMap.Add("player", playerSpriteSheet);
 
-        for (var i = 1; i <= 2; ++i)
+        for (var i = 1; i <= 7; ++i)
         {
             TiledMaps.Add(Content.Load<TiledMap>($"Textures/Tiles/tilemap_{i}"));
         }

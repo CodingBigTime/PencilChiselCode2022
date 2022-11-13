@@ -53,7 +53,7 @@ namespace PencilChiselCode.Source
                     Position + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) + Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                     Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                     ((time) => time),
-                    ((time) => IsLow() ? Color.Black : Color.Red)
+                    ((_) => IsLow() ? Color.Black : Color.Red)
                 )),
                 5F
             );

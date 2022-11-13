@@ -37,8 +37,8 @@ public class Player
     private static readonly float _maxSpeed = 80F;
     private static readonly float _acceleration = 1000F;
     private static readonly float _friction = 2.75F;
-    private uint _twigs;
-    private uint _bushes;
+    public uint Twigs { get; private set; }
+    public uint Berries { get; private set; }
     private PopupButton _popupButton;
     private ParticleGenerator _particleGenerator;
 
@@ -54,7 +54,8 @@ public class Player
         _particleGenerator = new ParticleGenerator(
             (() => new Particle(
                 3,
-                Position + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10) + Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
+                Position + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10) +
+                Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
                 Vector2.UnitY * Utils.RANDOM.NextSingle(-5, 5) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                 ((time) => (3 - time) / 3 * 1F),
                 ((time) => Color.LightBlue)
@@ -105,15 +106,12 @@ public class Player
         _popupButton?.Draw(spriteBatch, Position, Size);
     }
 
-    public void FireCreation(uint amount)
+    public void CreateFire(uint amount)
     {
-        _twigs -= amount;
+        Twigs -= amount;
     }
-    
-    public Boolean CanFireCreation()
-    {
-        return _twigs >= 2;
-    }
+
+    public bool CanCreateFire() => Twigs >= 2;
 
     public void Update(IngameState state, GameTime gameTime)
     {
@@ -168,17 +166,18 @@ public class Player
             _popupButton ??= new PopupButton(_game, _game.TextureMap["f_button"]);
         }
 
-        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null && _twigs > 0)
+        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null && Twigs > 0)
         {
             nearestCampfire.FeedFire(10F);
-            --_twigs;
-            if (_twigs <= 0) _popupButton = null;
+            --Twigs;
+            if (Twigs <= 0) _popupButton = null;
         }
 
         var nearestPickupable = state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
-            .FirstOrDefault(pickupable => Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100 && pickupable.IsConsumable);
-        
+            .FirstOrDefault(pickupable =>
+                Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100 && pickupable.IsConsumable);
+
         if (nearestPickupable != null)
         {
             _popupButton ??= new PopupButton(_game, _game.TextureMap["e_button"]);
@@ -191,21 +190,22 @@ public class Player
             switch (nearestPickupable.Type)
             {
                 case PickupableTypes.Twig:
-                    ++_twigs;
+                    ++Twigs;
                     nearestPickupable.PickupSound.Play();
                     state.Pickupables.Remove(nearestPickupable);
                     break;
                 case PickupableTypes.Bush:
-                    ++_bushes;
+                    ++Berries;
                     nearestPickupable.PickupSound.Play();
                     nearestPickupable.Texture = _game.TextureMap["bush_empty"];
                     break;
             }
+
             _popupButton = null;
             nearestPickupable.IsConsumable = false;
         }
 
-        if (nearestPickupable == null && (nearestCampfire == null || _twigs <= 0))
+        if (nearestPickupable == null && (nearestCampfire == null || Twigs <= 0))
         {
             _popupButton = null;
         }
