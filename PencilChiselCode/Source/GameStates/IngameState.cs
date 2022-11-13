@@ -99,7 +99,7 @@ public class IngameState : GameScreen
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
             _testCampFire.Update(gameTime);  // TEMP
-            if (_testCampFire.isInRange(_companion.Position))
+            if (_testCampFire.IsInRange(_companion.Position))
             {
                 _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
             }

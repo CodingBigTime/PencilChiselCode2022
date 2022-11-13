@@ -1,8 +1,6 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Penumbra;
-using MonoGame.Extended.Tweening;
 
 namespace PencilChiselCode.Source
 {
@@ -10,21 +8,17 @@ namespace PencilChiselCode.Source
     {
         public Vector2 Position
         {
-            get
-            {
-                return position;
-            }
+            get => _position;
             set
             {
-                position = value;
+                _position = value;
                 PointLight.Position = new Vector2(value.X, value.Y);
             }
         }
-        Vector2 position;
 
+        private Vector2 _position;
         private Game1 _game;
         private Attribute _attribute;
-        private Tweener _scaleTweener;
         private readonly float _maxScale = 300F;
 
         public CampFire(Game1 game, Vector2 position)
@@ -56,7 +50,7 @@ namespace PencilChiselCode.Source
             return _maxScale * _attribute.Percent();
         }
 
-        public bool isInRange(Vector2 sourcePosition)
+        public bool IsInRange(Vector2 sourcePosition)
         {
             var distance = Vector2.Distance(Position, sourcePosition);
             return distance < Scale();
@@ -70,10 +64,10 @@ namespace PencilChiselCode.Source
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Texture2D texture = _game.TextureMap["fire_01"];
-            float textureScale = _attribute.Percent() * 4F;
+            var texture = _game.TextureMap["fire_01"];
+            var textureScale = _attribute.Percent() * 4F;
             spriteBatch.Draw(
-                texture: texture, 
+                texture: texture,
                 position: Position - new Vector2(texture.Width, texture.Height) * textureScale / 2,
                 sourceRectangle: null,
                 color: Color.White,

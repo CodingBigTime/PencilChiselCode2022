@@ -14,15 +14,14 @@ namespace PencilChiselCode.Source
         private Color _color;
         public readonly float MaxValue;
         public readonly float ChangeRate;
+
         public float Value
         {
-            get { return value_; }
-            set
-            {
-                value_ = Math.Clamp(value, 0, MaxValue);
-            }
+            get => _value;
+            set => _value = Math.Clamp(value, 0, MaxValue);
         }
-        float value_;
+
+        private float _value;
 
         public Attribute(Vector2 position, Color color, float maxValue, float changeRate = 0F)
         {
@@ -46,7 +45,8 @@ namespace PencilChiselCode.Source
             ChangeRate = changeRate;
         }
 
-        public Attribute(Vector2 position, Vector2 size, Texture2D texture, Vector2 offset, Color color, float maxValue, float changeRate = 0F)
+        public Attribute(Vector2 position, Vector2 size, Texture2D texture, Vector2 offset, Color color, float maxValue,
+            float changeRate = 0F)
         {
             _position = position;
             _size = size;
@@ -57,7 +57,8 @@ namespace PencilChiselCode.Source
             ChangeRate = changeRate;
         }
 
-        public Attribute(Vector2 position, Vector2 size, Texture2D texture, Vector2 offset, Color color, float maxValue, float value, float changeRate = 0F)
+        public Attribute(Vector2 position, Vector2 size, Texture2D texture, Vector2 offset, Color color, float maxValue,
+            float value, float changeRate = 0F)
         {
             _position = position;
             _size = size;
@@ -70,7 +71,6 @@ namespace PencilChiselCode.Source
         }
 
 
-
         public float ChangeValue(float value)
         {
             Value += value;
@@ -78,7 +78,8 @@ namespace PencilChiselCode.Source
             return Value;
         }
 
-        public float Percent() {
+        public float Percent()
+        {
             return Value / MaxValue;
         }
 
@@ -94,11 +95,11 @@ namespace PencilChiselCode.Source
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_position == null) return;
             if (_texture != null)
             {
                 spriteBatch.Draw(_texture, _position, null, _color, 0F, _offset, _size, SpriteEffects.None, 0F);
             }
+
             spriteBatch.FillRectangle(_position, _size, Color.Black);
             spriteBatch.FillRectangle(_position, new(_size.X * (Value / MaxValue), _size.Y), _color);
         }
