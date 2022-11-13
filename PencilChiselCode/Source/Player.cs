@@ -109,6 +109,11 @@ public class Player
     {
         _twigs -= amount;
     }
+    
+    public Boolean CanFireCreation()
+    {
+        return _twigs >= 2;
+    }
 
     public void Update(IngameState state, GameTime gameTime)
     {
