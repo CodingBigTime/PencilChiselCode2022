@@ -14,11 +14,11 @@ namespace PencilChiselCode.Source
 
         private Dictionary<string, Icon> _icons;
 
-        private Game1 _game;
+        private Bonfire _game;
 
         private Player _player;
 
-        public Inventory(Game1 game, Player player)
+        public Inventory(Bonfire game, Player player)
         {
             _game = game;
             _player = player;

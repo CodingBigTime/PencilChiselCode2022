@@ -17,7 +17,7 @@ namespace PencilChiselCode.Source.GameStates;
 public class IngameState : GameScreen
 {
     public static readonly Color BgColor = Color.Green;
-    private Game1 _game => (Game1)Game;
+    private Bonfire _game => (Bonfire)Game;
     private Player _player;
     private Companion _companion;
     private bool _showDebug;
@@ -81,7 +81,7 @@ public class IngameState : GameScreen
         }
         for (var i = 0; i < _treeCount; i++)
         {
-            var treeType = Utils.GetRandomInt(1, Game1.TreeVariations + 1);
+            var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
             GroundEntities.Add(new GroundEntity(_game, _game.TextureMap[$"tree_{treeType}"],
                 new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
                     Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
@@ -99,7 +99,7 @@ public class IngameState : GameScreen
         _pauseButton = new Button(resumeButton,
             _game.TextureMap["resume_button_hover"],
             _game.TextureMap["resume_button_pressed"],
-            Utils.GetCenterStartCoords(resumeButtonSize, Game1.Instance.GetWindowDimensions()),
+            Utils.GetCenterStartCoords(resumeButtonSize, Bonfire.Instance.GetWindowDimensions()),
             () => { _pauseState = false; }
         );
         var exitButton = _game.TextureMap["exit_button_normal"];
@@ -107,7 +107,7 @@ public class IngameState : GameScreen
         _exitButton = new Button(exitButton,
             _game.TextureMap["exit_button_hover"],
             _game.TextureMap["exit_button_pressed"],
-            Utils.GetCenterStartCoords(exitButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
+            Utils.GetCenterStartCoords(exitButtonSize, Bonfire.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
             () => _game.Exit()
         );
 
@@ -116,11 +116,11 @@ public class IngameState : GameScreen
         _restartButton = new Button(restartButton,
             _game.TextureMap["restart_button_hover"],
             _game.TextureMap["restart_button_pressed"],
-            Utils.GetCenterStartCoords(restartButtonSize, Game1.Instance.GetWindowDimensions()),
+            Utils.GetCenterStartCoords(restartButtonSize, Bonfire.Instance.GetWindowDimensions()),
             () =>
             {
                 _game.ScreenManager.LoadScreen(new IngameState(_game),
-                    new FadeTransition(Game1.Instance.GraphicsDevice, Color.Black));
+                    new FadeTransition(Bonfire.Instance.GraphicsDevice, Color.Black));
                 _game.Penumbra = new PenumbraComponent(_game);
                 _game.Penumbra.AmbientColor = Color.Black;
                 _game.Penumbra.Initialize();
@@ -181,7 +181,7 @@ public class IngameState : GameScreen
     public void RandomEntitySpawner()
     {
         if (Utils.GetRandomInt(0, 101) >= 24) return;
-        var treeType = Utils.GetRandomInt(1, Game1.TreeVariations + 1);
+        var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
         GroundEntities.Add(new GroundEntity(_game, _game.TextureMap[$"tree_{treeType}"],
             new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,
                 Utils.GetRandomInt(5, _game.GetWindowHeight())),

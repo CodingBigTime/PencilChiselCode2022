@@ -37,8 +37,8 @@ public class Button
             new Rectangle(Position.ToPoint(), Size.ToPoint()));
         var released = mouseState.LeftButton == ButtonState.Released;
 
-        var pressSound = Game1.Instance.SoundMap["button_press"];
-        var releaseSound = Game1.Instance.SoundMap["button_release"];
+        var pressSound = Bonfire.Instance.SoundMap["button_press"];
+        var releaseSound = Bonfire.Instance.SoundMap["button_release"];
 
         if (inside)
         {

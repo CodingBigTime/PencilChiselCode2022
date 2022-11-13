@@ -23,11 +23,11 @@ public class GroundEntity
     private Vector2 _position;
     public float Rotation;
     private Vector2 _scale;
-    private Game1 _game;
+    private Bonfire _game;
     private Color _glow;
     private Color _color = Color.White;
 
-    public GroundEntity(Game1 game, Texture2D texture, Vector2 position, Vector2 scale,
+    public GroundEntity(Bonfire game, Texture2D texture, Vector2 position, Vector2 scale,
         Color glow, float rotation = 0F)
     {
         _game = game;
@@ -39,7 +39,7 @@ public class GroundEntity
         PointLight.Color = glow;
     }
 
-    public GroundEntity(Game1 game, Texture2D texture, Vector2 position, Vector2 scale, float rotation = 0F)
+    public GroundEntity(Bonfire game, Texture2D texture, Vector2 position, Vector2 scale, float rotation = 0F)
     {
         _game = game;
         Texture = texture;

@@ -16,7 +16,7 @@ using Penumbra;
 
 namespace PencilChiselCode;
 
-public class Game1 : Game
+public class Bonfire : Game
 {
     public readonly int Width = 1366;
     public readonly int Height = 768;
@@ -27,14 +27,14 @@ public class Game1 : Game
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     public Dictionary<string, BitmapFont> FontMap { get; } = new();
     public Dictionary<string, SpriteSheet> SpriteSheetMap { get; } = new();
-    public static Game1 Instance { get; private set; }
+    public static Bonfire Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
     public OrthographicCamera Camera;
     public TiledMapRenderer TiledMapRenderer;
     public List<TiledMap> TiledMaps = new();
     public const int TreeVariations = 3;
 
-    public Game1()
+    public Bonfire()
     {
         ScreenManager = new ScreenManager();
         Components.Add(ScreenManager);
@@ -45,7 +45,6 @@ public class Game1 : Game
         Content.RootDirectory = "Content/Resources";
         IsMouseVisible = true;
         Window.AllowUserResizing = false;
-        Window.Title = "PCC";
         Graphics.SynchronizeWithVerticalRetrace = false;
         IsFixedTimeStep = false;
     }
@@ -58,6 +57,7 @@ public class Game1 : Game
         Graphics.ApplyChanges();
         Camera = new OrthographicCamera(GetViewportAdapter());
         Penumbra.Initialize();
+        Window.Title = "Bonfire";
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }

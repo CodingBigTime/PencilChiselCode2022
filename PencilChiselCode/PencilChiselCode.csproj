@@ -11,8 +11,6 @@
         <ApplicationIcon>Icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <None Remove="Icon.ico" />
-        <None Remove="Icon.bmp" />
         <None Remove="Content\Resources\Animations\fire.spritesheet" />
         <None Remove="Content\Resources\Animations\player.spritesheet" />
         <None Remove="Content\Content.mgcb" />
