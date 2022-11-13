@@ -118,6 +118,12 @@
 /processorParam:Quality=Best
 /build:Resources/Sounds/button_release.wav
 
+#begin Resources/Sounds/fuel_fire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Resources/Sounds/fuel_fire.wav
+
 #begin Resources/Sounds/pickup_branches.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -291,18 +297,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/Buttons/start_button_pressed.png
-
-#begin Resources/Textures/GUI/e_button.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/GUI/e_button.png
 
 #begin Resources/Textures/GUI/e_button.png
 /importer:TextureImporter
@@ -680,3 +674,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/Tiles/tileset.png
+
