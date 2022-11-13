@@ -26,22 +26,9 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Animations/fire.png
 
-#begin Resources/Animations/fire.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Animations/fire.png
-
 #begin Resources/Animations/fire-atlas.json
-/importer:JsonContentImporter
-/processor:JsonContentProcessor
-/processorParam:ContentType=TextureAtlas
+/importer:TexturePackerJsonImporter
+/processor:TexturePackerProcessor
 /build:Resources/Animations/fire-atlas.json
 
 #begin Resources/Fonts/lunchds_12.fnt
