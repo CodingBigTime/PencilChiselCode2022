@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
@@ -30,13 +31,15 @@ public class Player
     private Game1 _game;
     private AnimatedSprite _animatedSprite;
     private Vector2 _speed;
-    private static readonly int _lightScale = 200;
+    private static readonly int _pointLightScale = 300;
+    private static readonly int _spotLightScale = 400;
     private static readonly float _scale = 2F;
     private static readonly float _maxSpeed = 80F;
     private static readonly float _acceleration = 1000F;
     private static readonly float _friction = 2.75F;
     private uint _twigs;
     private PopupButton _popupButton;
+    private ParticleGenerator _particleGenerator;
 
     public Player(Game1 game, Vector2 position)
     {
@@ -47,18 +50,28 @@ public class Player
         Size = new(_animatedSprite.TextureRegion.Width * _scale, _animatedSprite.TextureRegion.Height * _scale);
         _game.Penumbra.Lights.Add(PointLight);
         _game.Penumbra.Lights.Add(Spotlight);
+        _particleGenerator = new ParticleGenerator(
+            (() => new Particle(
+                3,
+                Position + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10) + Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
+                Vector2.UnitY * Utils.RANDOM.NextSingle(-5, 5) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                ((time) => (3 - time) / 3 * 1F),
+                ((time) => Color.LightBlue)
+            )),
+            3F
+        );
     }
 
     public Light PointLight { get; } = new PointLight
     {
-        Scale = new Vector2(_lightScale),
+        Scale = new Vector2(_pointLightScale),
         Color = Color.White,
         ShadowType = ShadowType.Occluded
     };
 
     public Light Spotlight { get; } = new Spotlight
     {
-        Scale = new Vector2(_lightScale * 2),
+        Scale = new Vector2(_spotLightScale),
         Color = Color.White,
         ShadowType = ShadowType.Occluded,
         ConeDecay = 2.5F
@@ -66,6 +79,7 @@ public class Player
 
     public void Draw(SpriteBatch spriteBatch)
     {
+        _particleGenerator.Draw(spriteBatch);
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
         _animatedSprite.Play(
             angle switch
@@ -177,5 +191,7 @@ public class Player
         {
             _popupButton = null;
         }
+
+        _particleGenerator.Update(gameTime, _speed.Length() > 1);
     }
 }

@@ -29,6 +29,7 @@ public class IngameState : GameScreen
     private Button _pauseButton;
     private Button _exitButton;
     private List<TiledMap> _maps;
+    private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
 
     private int MapIndex =>
@@ -87,6 +88,17 @@ public class IngameState : GameScreen
             new(new(10, 50), new(100, 10), Color.Orange, 100, -5F),
             new(new(10, 70), new(100, 10), Color.Blue, 100, -2F)
         });
+
+        _darknessParticles = new ParticleGenerator(
+            (() => new Particle(
+                2F,
+                new(0, Utils.RANDOM.Next(0, _game.Height)),
+                new(Utils.RANDOM.Next(0, 20), Utils.RANDOM.Next(-10, 10)),
+                ((time) => 2 + time),
+                ((time) => Color.Black)
+            )),
+            100F
+        );
     }
 
     private void AddRandomMap() => _maps.Add(_game.TiledMaps[Utils.RANDOM.Next(0, _game.TiledMaps.Count)]);
@@ -118,6 +130,7 @@ public class IngameState : GameScreen
             {
                 _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
             }
+            _darknessParticles.Update(gameTime, true);
         }
 
         if (keyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
@@ -167,6 +180,13 @@ public class IngameState : GameScreen
         Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch)); // TEMP
 
         _game.SpriteBatch.End();
+
+        _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+        _darknessParticles.Draw(_game.SpriteBatch);
+
+        _game.SpriteBatch.End();
+
         _game.Penumbra.Draw(gameTime);
 
         DrawUI(gameTime);
