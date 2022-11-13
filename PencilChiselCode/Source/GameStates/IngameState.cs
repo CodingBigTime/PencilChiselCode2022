@@ -172,6 +172,7 @@ public class IngameState : GameScreen
             _player.Update(this, gameTime);
             _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
+            Campfires.RemoveAll(campfire => !campfire.IsLit());
             Campfires.ForEach(campfire => { campfire.Update(gameTime); });
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
             {
@@ -188,6 +189,12 @@ public class IngameState : GameScreen
         if (keyState.IsKeyDown(Keys.Space) && !PreviousPressedKeys.Contains(Keys.Space))
         {
             _companion.StopResumeFollower();
+        }
+        if(keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanFireCreation())
+        {
+            _player.FireCreation(2);
+            Campfires.Add(new CampFire(_game, new Vector2(_player.Position.X+20, _player.Position.Y-20)));
+            
         }
 
         if (oldMapIndex != MapIndex)
