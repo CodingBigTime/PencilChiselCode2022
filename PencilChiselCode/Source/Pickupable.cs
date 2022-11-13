@@ -34,6 +34,5 @@ public class Pickupable
 
     public void Update(GameTime gameTime)
     {
-        Rotation = 180F;
     }
 }
