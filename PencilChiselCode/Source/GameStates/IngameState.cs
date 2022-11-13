@@ -128,8 +128,10 @@ public class IngameState : GameScreen
         _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
 
-        _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         _game.TiledMapRenderer.Draw(transformMatrix);
+        _game.TiledMapRenderer.Draw(transformMatrix * Matrix.CreateTranslation(768, 0, 0));
+
+        _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
 
         Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
 

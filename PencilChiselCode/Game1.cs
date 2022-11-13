@@ -51,12 +51,13 @@ public class Game1 : Game
         Graphics.PreferredBackBufferWidth = Width;
         Graphics.PreferredBackBufferHeight = Height;
         Graphics.ApplyChanges();
-        var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Width, Height);
-        Camera = new OrthographicCamera(viewportAdapter);
+        Camera = new OrthographicCamera(GetViewportAdapter());
         Penumbra.Initialize();
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }
+
+    public BoxingViewportAdapter GetViewportAdapter() => new(Window, GraphicsDevice, Width, Height);
 
     protected override void LoadContent()
     {
