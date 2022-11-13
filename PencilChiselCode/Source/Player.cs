@@ -40,7 +40,7 @@ public class Player
     private static readonly float _friction = 2.75F;
     private readonly Dictionary<string, PopupButton> _popupButtons = new();
     public uint Twigs { get; private set; }
-    public uint Berries { get; private set; }
+    public int Berries { get; private set; }
     private ParticleGenerator _particleGenerator;
 
     public Player(Game1 game, Vector2 position)
@@ -117,7 +117,12 @@ public class Player
         Twigs -= amount;
     }
 
-    public bool CanCreateFire() => Twigs >= 2;
+    public void ReduceBerries(int amount)
+    {
+        Berries -= amount;
+    }
+
+    public bool CanCreateFire() => Twigs >= 10;
 
     public void Update(IngameState state, GameTime gameTime)
     {
@@ -167,6 +172,7 @@ public class Player
         var nearestCampfire = state.Campfires
             .OrderBy(campfire => Vector2.DistanceSquared(campfire.Position, Position))
             .FirstOrDefault(campfire => Vector2.DistanceSquared(campfire.Position, Position) < 100 * 100);
+        
         if (nearestCampfire != null && !_popupButtons.ContainsKey("F"))
         {
             _popupButtons["F"] = new PopupButton(_game, _game.TextureMap["f_button"]);

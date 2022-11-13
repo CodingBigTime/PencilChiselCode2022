@@ -137,7 +137,7 @@ namespace PencilChiselCode.Source
                     {
                         "followerFeedFButton",
                         new Icon(new Vector2(game.Width - 60, 250),
-                            _game.TextureMap["f_button"],
+                            _game.TextureMap["q_button"],
                             2F)
                     }
                 };

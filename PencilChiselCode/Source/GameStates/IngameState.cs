@@ -253,10 +253,17 @@ public class IngameState : GameScreen
                 _followerAttribute.ChangeValue(8F * gameTime.GetElapsedSeconds());
             }
             var followerPlayerDistance = Vector2.Distance(_player.Position, _companion.Position);
-            if (!Campfires.Any(campfire => campfire.IsInRange(_companion.Position)) && followerPlayerDistance> _minimialFollowerPlayerDistance)
+            if (keyState.IsKeyDown(Keys.Q) && !PreviousPressedKeys.Contains(Keys.Q) && followerPlayerDistance <= 100 && _player.Berries >= 1)
+            {
+                _player.ReduceBerries(1);
+                _followerAttribute.ChangeValue(10F);
+            }
+            if (!Campfires.Any(campfire => campfire.IsInRange(_companion.Position)) &&
+                followerPlayerDistance > _minimialFollowerPlayerDistance)
             {
                 _followerAttribute.ChangeValue(-8F * gameTime.GetElapsedSeconds());
             }
+
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);
         }
@@ -272,7 +279,7 @@ public class IngameState : GameScreen
         }
         if(keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanCreateFire())
         {
-            _player.CreateFire(2);
+            _player.CreateFire(10);
             _game.SoundMap["light_fire"].Play();
             Campfires.Add(new CampFire(_game, new Vector2(_player.Position.X+20, _player.Position.Y-20)));
         }
