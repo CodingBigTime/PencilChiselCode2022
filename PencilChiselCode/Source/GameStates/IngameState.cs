@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
@@ -44,6 +45,7 @@ public class IngameState : GameScreen
     private float _minimialFollowerPlayerDistance = 100F;
     private bool _deathState;
     private int _glowFlowerCount = 7;
+    private Song _song;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -166,6 +168,10 @@ public class IngameState : GameScreen
                 attributeTexture, comfyAttributeTexture, attributeTexture.Bounds.Center.ToVector2(), 100, -2F);
 
         _inventory = new Inventory(_game, _player);
+        _song = _game.SongMap["bonfire_song"];
+        MediaPlayer.Play(_song);
+        MediaPlayer.IsRepeating = true;
+        
     }
     
     public void RandomBushSpawner()

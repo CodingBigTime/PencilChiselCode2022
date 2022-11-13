@@ -106,6 +106,12 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Fonts/lunchds_32_0.png
 
+#begin Resources/Sounds/bonfire_song.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Resources/Sounds/bonfire_song.wav
+
 #begin Resources/Sounds/button_press.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
