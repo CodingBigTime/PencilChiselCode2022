@@ -6,6 +6,8 @@ namespace PencilChiselCode.Source;
 
 public static class Utils
 {
+    public static readonly Random RANDOM = new();
+
     public static Vector2 GetCenterStartCoords(Vector2 drawableSize, Vector2 containerSize) =>
         new((containerSize.X - drawableSize.X) / 2, (containerSize.Y - drawableSize.Y) / 2);
 

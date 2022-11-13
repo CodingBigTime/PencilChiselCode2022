@@ -94,6 +94,7 @@ public class Game1 : Game
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
         SoundMap.Add("pickup_branches", Content.Load<SoundEffect>("Sounds/pickup_branches"));
+        SoundMap.Add("fuel_fire", Content.Load<SoundEffect>("Sounds/fuel_fire"));
         
         FontMap.Add("12", Content.Load<BitmapFont>("Fonts/lunchds_12"));
         FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));

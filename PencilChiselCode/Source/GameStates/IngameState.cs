@@ -58,15 +58,13 @@ public class IngameState : GameScreen
                     new FadeTransition(Game1.Instance.GraphicsDevice, MenuState.BgColor));
             }
         );
-        Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
-            _game.SoundMap["pickup_branches"], new Vector2(200, 700),
-            0.5F));
-        Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
-            _game.SoundMap["pickup_branches"], new Vector2(450, 450),
-            0.5F));
-        Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
-            _game.SoundMap["pickup_branches"], new Vector2(700, 280),
-            0.5F));
+        for (var i = 0; i < 10; ++i)
+        {
+            var pickupable = new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
+                _game.SoundMap["pickup_branches"], new Vector2(100 + Utils.RANDOM.Next(1, 20) * 50,  Utils.RANDOM.Next(1, 15) * 50),
+                0.5F);
+            Pickupables.Add(pickupable);
+        }
         _companion = new Companion(_game, new Vector2(100, 100), 50F);
         _player = new Player(_game, new Vector2(150, 150));
 
