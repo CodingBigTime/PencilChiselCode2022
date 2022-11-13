@@ -36,6 +36,7 @@ public class Player
     private static readonly float _acceleration = 1000F;
     private static readonly float _friction = 2.75F;
     private uint _twigs;
+    private uint _bushes = 0;
     private PopupButton _popupButton;
 
     public Player(Game1 game, Vector2 position)
@@ -153,24 +154,30 @@ public class Player
         var nearestPickupable = state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
             .FirstOrDefault(pickupable => Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100);
-        if (nearestPickupable != null)
+        
+        if (nearestPickupable != null && !nearestPickupable.Consumed)
         {
             _popupButton ??= new PopupButton(_game, _game.TextureMap["e_button"]);
         }
 
         _popupButton?.Update(state, gameTime);
 
-        if (!state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)
+        if (!state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null && !nearestPickupable.Consumed)
         {
             switch (nearestPickupable.Type)
             {
                 case PickupableTypes.Twig:
                     ++_twigs;
+                    nearestPickupable.PickupSound.Play();
+                    state.Pickupables.Remove(nearestPickupable);
+                    break;
+                case PickupableTypes.Bush:
+                    ++_bushes;
+                    nearestPickupable.PickupSound.Play();
+                    nearestPickupable.Texture = _game.TextureMap["bush_empty"];
                     break;
             }
-
-            nearestPickupable.PickupSound.Play();
-            state.Pickupables.Remove(nearestPickupable);
+            nearestPickupable.Consumed = true;
         }
 
         if (nearestPickupable == null && (nearestCampfire == null || _twigs <= 0))
