@@ -36,8 +36,8 @@ public class IngameState : GameScreen
     private Button _exitButton;
 
     private Button _restartButton;
-    private int _twigCount = 10;
-    private int _bushCount = 10;
+    private int _twigCount = 20;
+    private int _bushCount = 20;
     private int _treeCount = 36;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
@@ -46,6 +46,7 @@ public class IngameState : GameScreen
     private bool _deathState;
     private int _glowFlowerCount = 7;
     private Song _song;
+    private float _score;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -176,7 +177,7 @@ public class IngameState : GameScreen
     
     public void RandomBushSpawner()
     {
-        if (Utils.GetRandomInt(0, 101) >= 10) return;
+        if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
         var pickupable = new Pickupable(PickupableTypes.Bush,
             _game.TextureMap["bush_berry"],
             _game.SoundMap["pickup_branches"],
@@ -199,7 +200,7 @@ public class IngameState : GameScreen
     }
     public void RandomTwigSpawner()
     {
-        if (Utils.GetRandomInt(0, 101) >= 10) return;
+        if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
         var pickupable = new Pickupable(PickupableTypes.Twig,
             _game.TextureMap["twigs"],
             _game.SoundMap["pickup_branches"],
@@ -272,6 +273,7 @@ public class IngameState : GameScreen
 
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);
+            _score += gameTime.ElapsedGameTime.Milliseconds;
         }
 
         if (keyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
@@ -367,7 +369,9 @@ public class IngameState : GameScreen
         }
         else if (_deathState)
         {
-            _game.SpriteBatch.DrawString(_game.FontMap["32"],"Your companion got too anxious!", new Vector2(_game.GetWindowWidth()/2 - 230, _game.GetWindowHeight()/2 - 100), Color.Red);
+            var finalScore = (int)Math.Ceiling(_score / 10);
+            _game.SpriteBatch.DrawString(_game.FontMap["32"],"Your companion got too anxious!", new Vector2(_game.GetWindowWidth()/2 - 230, _game.GetWindowHeight()/2 - 160), Color.Red);
+            _game.SpriteBatch.DrawString(_game.FontMap["24"],$"Final score {finalScore}", new Vector2(_game.GetWindowWidth()/2 - 230, _game.GetWindowHeight()/2 - 100), Color.Red);
             _restartButton.Draw(_game.SpriteBatch);
             _exitButton.Draw(_game.SpriteBatch);
         }
