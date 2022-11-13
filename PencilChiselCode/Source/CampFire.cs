@@ -4,6 +4,7 @@ using MonoGame.Extended.Sprites;
 using MonoGame.Extended;
 using Penumbra;
 using System;
+using MonoGame.Extended.Screens;
 
 namespace PencilChiselCode.Source
 {
@@ -44,6 +45,7 @@ namespace PencilChiselCode.Source
                 100F,
                 -5F
             );
+            // _game.Penumbra.Lights.Add(PointLight);
             _game.Penumbra.Lights.Add(PointLight);
             _particleGenerator = new ParticleGenerator(
                 (() => new Particle(

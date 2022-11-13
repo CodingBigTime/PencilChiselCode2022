@@ -22,10 +22,11 @@ public class Companion
     private readonly float _friction = 0.95F;
     private uint _twigs = 0;
     private float _minimumDistance = 50F;
-    private Boolean _isAFK = false;
-    
+    private Boolean _isAFK;
+
     public Companion(Game1 game, Vector2 position,float speed)
     {
+        _isAFK = false;
         _movement_speed.X = speed;
         _movement_speed.Y = speed;
         _game = game;

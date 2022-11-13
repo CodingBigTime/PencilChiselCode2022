@@ -190,18 +190,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/attribute_bar.png
 
-#begin Resources/Textures/GUI/attribute_bar.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/GUI/attribute_bar.png
-
 #begin Resources/Textures/GUI/Buttons/exit_button_hover.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -273,6 +261,42 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/Buttons/menu_button_pressed.png
+
+#begin Resources/Textures/GUI/Buttons/restart_button_hover.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/Buttons/restart_button_hover.png
+
+#begin Resources/Textures/GUI/Buttons/restart_button_normal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/Buttons/restart_button_normal.png
+
+#begin Resources/Textures/GUI/Buttons/restart_button_pressed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/Buttons/restart_button_pressed.png
 
 #begin Resources/Textures/GUI/Buttons/resume_button_hover.png
 /importer:TextureImporter

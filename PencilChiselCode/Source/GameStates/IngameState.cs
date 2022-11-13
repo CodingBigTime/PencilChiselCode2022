@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,7 +8,9 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
+using Penumbra;
 
 namespace PencilChiselCode.Source.GameStates;
 
@@ -29,10 +32,13 @@ public class IngameState : GameScreen
     private static bool _pauseState;
     private Button _pauseButton;
     private Button _exitButton;
+    private Button _restartButton;
     private int _twigCount = 5;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
+    private float _minimialFollowerPlayerDistance = 100F;
+    private Boolean _deathState;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -47,6 +53,7 @@ public class IngameState : GameScreen
 
     public override void LoadContent()
     {
+        _deathState = false;
         base.LoadContent();
         for (var i = 0; i < _twigCount; i++)
         {
@@ -81,6 +88,22 @@ public class IngameState : GameScreen
             _game.TextureMap["exit_button_pressed"],
             Utils.GetCenterStartCoords(exitButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
             () => _game.Exit()
+        );
+        var restartButton = _game.TextureMap["restart_button_normal"];
+        var restartButtonSize = new Size2(restartButton.Width, restartButton.Height);
+        _restartButton = new Button(restartButton,
+            _game.TextureMap["restart_button_hover"],
+            _game.TextureMap["restart_button_pressed"],
+            Utils.GetCenterStartCoords(restartButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 200,
+            () =>
+            {
+                _game.ScreenManager.LoadScreen(new IngameState(_game),
+                    new FadeTransition(Game1.Instance.GraphicsDevice, Color.Black));
+                _game.Penumbra = new PenumbraComponent(_game);
+                _game.Penumbra.AmbientColor = Color.Black;
+                _game.Penumbra.Initialize();
+                _game.Camera = new OrthographicCamera(_game.GetViewportAdapter());
+            }
         );
         for (var i = 0; i < 10; ++i)
         {
@@ -154,13 +177,24 @@ public class IngameState : GameScreen
         var oldMapIndex = MapIndex;
 
         _game.TiledMapRenderer.Update(gameTime);
+        
+        
         var keyState = Keyboard.GetState();
+        if (_followerAttribute.Value <= 0)
+        {
+            _deathState = true;
+        }
         if (keyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
         {
             _pauseState = !_pauseState;
         }
-
-        if (_pauseState)
+        
+        if (_deathState)
+        {
+            _restartButton.Update(gameTime);
+            _exitButton.Update(gameTime);
+        }
+        else if (_pauseState)
         {
             _pauseButton.Update(gameTime);
             _exitButton.Update(gameTime);
@@ -176,7 +210,12 @@ public class IngameState : GameScreen
             Campfires.ForEach(campfire => { campfire.Update(gameTime); });
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
             {
-                _followerAttribute.ChangeValue(10F * gameTime.GetElapsedSeconds());
+                _followerAttribute.ChangeValue(8F * gameTime.GetElapsedSeconds());
+            }
+            var followerPlayerDistance = Vector2.Distance(_player.Position, _companion.Position);
+            if (!Campfires.Any(campfire => campfire.IsInRange(_companion.Position)) && followerPlayerDistance> _minimialFollowerPlayerDistance)
+            {
+                _followerAttribute.ChangeValue(-8F * gameTime.GetElapsedSeconds());
             }
             _darknessParticles.Update(gameTime, true);
         }
@@ -212,8 +251,9 @@ public class IngameState : GameScreen
     public override void Draw(GameTime gameTime)
     {
         _game.Penumbra.BeginDraw();
-
+        
         _game.Penumbra.Transform = Matrix.CreateTranslation(-_game.Camera.Position.X, -_game.Camera.Position.Y, 0);
+
         _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
 
@@ -263,9 +303,15 @@ public class IngameState : GameScreen
             _debugData[0] = $"FPS: {_fps}";
         }
 
-        if (_pauseState)
+        else if (_pauseState)
         {
             _pauseButton.Draw(_game.SpriteBatch);
+            _exitButton.Draw(_game.SpriteBatch);
+        }
+        else if (_deathState)
+        {
+            _game.SpriteBatch.DrawString(_game.FontMap["16"],"You are dead", new Vector2(_game.GetWindowWidth()/2, _game.GetWindowHeight()/2), Color.Red);
+            _restartButton.Draw(_game.SpriteBatch);
             _exitButton.Draw(_game.SpriteBatch);
         }
 
