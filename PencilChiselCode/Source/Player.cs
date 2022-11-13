@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,38 +12,41 @@ namespace PencilChiselCode.Source;
 public class Player
 {
     public Vector2 Size;
+
     public Vector2 Position
+    {
+        get => position;
+        set
         {
-            get { return position; }
-            set
-            {
-                position = value;
-                PointLight.Position = new Vector2(value.X, value.Y);
-                Spotlight.Position = new Vector2(value.X, value.Y);
-            }
+            position = value;
+            PointLight.Position = new Vector2(value.X, value.Y);
+            Spotlight.Position = new Vector2(value.X, value.Y);
         }
-        Vector2 position;
-    private const float sqrt1_2 = 0.70710678118654752440084436210485F;
+    }
+
+    Vector2 position;
+    private const float Sqrt12 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
     private Game1 _game;
     private AnimatedSprite _animatedSprite;
     private Vector2 _speed;
-    private readonly static int _lightScale = 200;
-    private readonly static float _scale = 2F;
-    private readonly static float _maxSpeed = 80F;
-    private readonly static float _acceleration = 1000F;
-    private readonly static float _friction = 2.75F;
-    private uint _twigs = 0;
+    private static readonly int _lightScale = 200;
+    private static readonly float _scale = 2F;
+    private static readonly float _maxSpeed = 80F;
+    private static readonly float _acceleration = 1000F;
+    private static readonly float _friction = 2.75F;
+    private uint _twigs;
     private PopupButton _popupButton;
 
     public Player(Game1 game, Vector2 position)
     {
         _game = game;
         Position = position;
-        _popupButton = new(game);
-        _animatedSprite = new MonoGame.Extended.Sprites.AnimatedSprite(_game.SpriteSheetMap["player"]);
+        _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["player"]);
         _animatedSprite.Play("right");
         Size = new(_animatedSprite.TextureRegion.Width * _scale, _animatedSprite.TextureRegion.Height * _scale);
+        _game.Penumbra.Lights.Add(PointLight);
+        _game.Penumbra.Lights.Add(Spotlight);
     }
 
     public Light PointLight { get; } = new PointLight
@@ -64,7 +68,7 @@ public class Player
     {
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
         _animatedSprite.Play(
-            angle switch 
+            angle switch
             {
                 >= -PI / 4 and <= PI / 4 => "right",
                 > PI / 4 and < 3 * PI / 4 => "down",
@@ -74,7 +78,7 @@ public class Player
             }
         );
         _animatedSprite.Draw(
-            spriteBatch: spriteBatch, 
+            spriteBatch: spriteBatch,
             position: Position,
             rotation: 0,
             scale: new(_scale)
@@ -97,15 +101,15 @@ public class Player
         var mx = Convert.ToSingle(right) - Convert.ToSingle(left);
         var my = Convert.ToSingle(down) - Convert.ToSingle(up);
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
-        
+
         Spotlight.Rotation = angle;
         _animatedSprite.Update(gameTime);
 
         if (mx != 0 && my != 0)
         {
             // Normalize the diagonal movement
-            mx *= sqrt1_2;
-            my *= sqrt1_2;
+            mx *= Sqrt12;
+            my *= Sqrt12;
         }
 
         var ax = _acceleration * mx * delta;
@@ -113,8 +117,8 @@ public class Player
 
         _speed += new Vector2(ax, ay);
         _speed += -(_speed * _friction * delta);
-        var biasX = Math.Abs(_speed.X) / (float) Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
-        var biasY = Math.Abs(_speed.Y) / (float) Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+        var biasX = Math.Abs(_speed.X) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+        var biasY = Math.Abs(_speed.Y) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
         _speed.X = Math.Clamp(_speed.X, -_maxSpeed * biasX, _maxSpeed * biasX);
         _speed.Y = Math.Clamp(_speed.Y, -_maxSpeed * biasY, _maxSpeed * biasY);
         Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
@@ -131,35 +135,47 @@ public class Player
             Position = new(Position.X, Math.Clamp(Position.Y, Size.Y / 2F, _game.Height - Size.Y / 2F));
         }
 
+        var nearestCampfire = state.Campfires
+            .OrderBy(campfire => Vector2.DistanceSquared(campfire.Position, Position))
+            .FirstOrDefault(campfire => Vector2.DistanceSquared(campfire.Position, Position) < 100 * 100);
+        if (nearestCampfire != null)
+        {
+            _popupButton ??= new PopupButton(_game, _game.TextureMap["f_button"]);
+        }
 
-        var pickupable = state.Pickupables.Find(pickupable =>
-            Utils.CreateCircle(Position, Size.GetAverageSize()).Expand(8)
-                .Intersects(Utils.CreateCircle(pickupable.Position, pickupable.Size.GetAverageSize()).Expand(8)));
-        var canPickup = pickupable != null;
-        if (canPickup)
+        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
+            _twigs > 0)
         {
-            if (_popupButton == null)
-            {
-                _popupButton = new PopupButton(_game);
-            }
-            _popupButton.Update(state, gameTime);
+            nearestCampfire.FeedFire(10F);
+            --_twigs;
         }
-        else
+
+        var nearestPickupable = state.Pickupables
+            .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
+            .FirstOrDefault(pickupable => Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100);
+        if (nearestPickupable != null)
         {
-            _popupButton = null;
+            _popupButton ??= new PopupButton(_game, _game.TextureMap["e_button"]);
         }
-        if (keyState.IsKeyDown(Keys.E))
+
+        _popupButton?.Update(state, gameTime);
+
+        if (!state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)
         {
-            if (!canPickup) return;
-            switch (pickupable.Type)
+            switch (nearestPickupable.Type)
             {
                 case PickupableTypes.Twig:
                     ++_twigs;
                     break;
             }
 
-            pickupable.PickupSound.Play();
-            state.Pickupables.Remove(pickupable);
+            nearestPickupable.PickupSound.Play();
+            state.Pickupables.Remove(nearestPickupable);
+        }
+
+        if (nearestPickupable == null && (nearestCampfire == null || _twigs <= 0))
+        {
+            _popupButton = null;
         }
     }
 }

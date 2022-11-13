@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,9 +18,8 @@ public class IngameState : GameScreen
     private Game1 _game => (Game1)Game;
     private Player _player;
     private Companion _companion;
-    private CampFire _testCampFire;
     private bool _showDebug;
-    private readonly HashSet<Keys> _previousPressedKeys = new();
+    public readonly HashSet<Keys> PreviousPressedKeys = new();
     private static float _cameraSpeed = 10.0F;
     private AttributeGroup _followerAttributes;
     private int _fps;
@@ -33,6 +33,7 @@ public class IngameState : GameScreen
     }
 
     public List<Pickupable> Pickupables { get; } = new();
+    public List<CampFire> Campfires { get; } = new();
 
     public override void LoadContent()
     {
@@ -58,16 +59,18 @@ public class IngameState : GameScreen
             }
         );
         Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
-            _game.SoundMap["pickup_branches"], new Vector2(300, 300),
+            _game.SoundMap["pickup_branches"], new Vector2(200, 700),
             0.5F));
-        _companion = new Companion(_game, new Vector2(100, 100),50F);
+        Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
+            _game.SoundMap["pickup_branches"], new Vector2(450, 450),
+            0.5F));
+        Pickupables.Add(new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
+            _game.SoundMap["pickup_branches"], new Vector2(700, 280),
+            0.5F));
+        _companion = new Companion(_game, new Vector2(100, 100), 50F);
         _player = new Player(_game, new Vector2(150, 150));
-        
-        _testCampFire = new CampFire(_game, new Vector2(500, 400));  // TEMP
-        _game.Penumbra.Lights.Add(_testCampFire.PointLight);  // TEMP
 
-        _game.Penumbra.Lights.Add(_player.PointLight);
-        _game.Penumbra.Lights.Add(_player.Spotlight);
+        Campfires.Add(new CampFire(_game, new Vector2(500, 400))); // TEMP
 
         _followerAttributes = new AttributeGroup(new List<Attribute>
         {
@@ -82,7 +85,7 @@ public class IngameState : GameScreen
     {
         _game.TiledMapRenderer.Update(gameTime);
         var keyState = Keyboard.GetState();
-        if (keyState.IsKeyDown(Keys.Escape) && !_previousPressedKeys.Contains(Keys.Escape))
+        if (keyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
         {
             _pauseState = !_pauseState;
         }
@@ -95,29 +98,33 @@ public class IngameState : GameScreen
         else
         {
             _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
-            _companion.Update(this,gameTime,_player.Position);
+            _companion.Update(this, gameTime, _player.Position);
             _player.Update(this, gameTime);
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
-            _testCampFire.Update(gameTime);  // TEMP
-            if (_testCampFire.isInRange(_companion.Position))
+            Campfires.ForEach(campfire =>
+            {
+                campfire.Update(gameTime);
+            });
+            if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
             {
                 _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
             }
         }
 
-        if (keyState.IsKeyDown(Keys.F3) && !_previousPressedKeys.Contains(Keys.F3))
+        if (keyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
         {
             _showDebug = !_showDebug;
         }
-        if (keyState.IsKeyDown(Keys.Space) && !_previousPressedKeys.Contains(Keys.Space))
+
+        if (keyState.IsKeyDown(Keys.Space) && !PreviousPressedKeys.Contains(Keys.Space))
         {
             Debug.WriteLine("STOP");
             _companion.StopResumeFollower();
         }
 
-        _previousPressedKeys.Clear();
-        _previousPressedKeys.UnionWith(keyState.GetPressedKeys());
+        PreviousPressedKeys.Clear();
+        PreviousPressedKeys.UnionWith(keyState.GetPressedKeys());
     }
 
     public override void Draw(GameTime gameTime)
@@ -138,7 +145,7 @@ public class IngameState : GameScreen
         _companion.Draw(_game.SpriteBatch);
         _player.Draw(_game.SpriteBatch);
 
-        _testCampFire.Draw(_game.SpriteBatch);  // TEMP
+        Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch)); // TEMP
 
         _game.SpriteBatch.End();
         _game.Penumbra.Draw(gameTime);
@@ -151,7 +158,7 @@ public class IngameState : GameScreen
         var transformMatrix = _game.Camera.GetViewMatrix();
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
         _player.DrawPopupButton(_game.SpriteBatch);
-        _testCampFire.DrawUI(_game.SpriteBatch);  // TEMP
+        Campfires.ForEach(campfire => campfire.DrawUI(_game.SpriteBatch)); // TEMP
         _game.SpriteBatch.End();
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);

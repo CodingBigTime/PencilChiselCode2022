@@ -81,6 +81,7 @@ public class Game1 : Game
         TextureMap.Add("menu_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/menu_button_pressed"));
 
         TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
+        TextureMap.Add("f_button", Content.Load<Texture2D>("Textures/GUI/f_button"));
         
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
         TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));

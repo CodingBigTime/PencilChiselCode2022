@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Sprites;
 using Penumbra;
 
@@ -10,18 +9,15 @@ namespace PencilChiselCode.Source
     {
         public Vector2 Position
         {
-            get
-            {
-                return position;
-            }
+            get => _position;
             set
             {
-                position = value;
+                _position = value;
                 PointLight.Position = new Vector2(value.X, value.Y);
             }
         }
-        Vector2 position;
 
+        private Vector2 _position;
         private Game1 _game;
         private Attribute _attribute;
         private AnimatedSprite _animatedSprite;
@@ -38,8 +34,9 @@ namespace PencilChiselCode.Source
                 100F,
                 -5F
             );
-            _animatedSprite = new MonoGame.Extended.Sprites.AnimatedSprite(_game.SpriteSheetMap["fire"]);
+            _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["fire"]);
             _animatedSprite.Play("burn");
+            _game.Penumbra.Lights.Add(PointLight);
         }
 
         public bool Lit()
@@ -58,11 +55,13 @@ namespace PencilChiselCode.Source
             return _maxScale * _attribute.Percent();
         }
 
-        public bool isInRange(Vector2 sourcePosition)
+        public bool IsInRange(Vector2 sourcePosition)
         {
             var distance = Vector2.Distance(Position, sourcePosition);
             return distance < Scale();
         }
+
+        public void FeedFire(float amount) => _attribute.Value += amount;
 
         public void Update(GameTime gameTime)
         {
