@@ -18,6 +18,7 @@ To start a fire you need to have 10 twigs in your inventory and for keeping the 
 * Use `F` to keep the fire burning (needs at least 2 twigs) 
 * Use `Q` to feed the companion
 * Use `X` to start a fire (needs at least 10 twigs)
+* Use `Space` to call the companion to your side or put the companion in a place
 * Use `Esc` to pause the game
 
 ***
