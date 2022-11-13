@@ -45,7 +45,6 @@ public class Bonfire : Game
         Content.RootDirectory = "Content/Resources";
         IsMouseVisible = true;
         Window.AllowUserResizing = false;
-        Window.Title = "Bonfire";
         Graphics.SynchronizeWithVerticalRetrace = false;
         IsFixedTimeStep = false;
     }
@@ -58,6 +57,7 @@ public class Bonfire : Game
         Graphics.ApplyChanges();
         Camera = new OrthographicCamera(GetViewportAdapter());
         Penumbra.Initialize();
+        Window.Title = "Bonfire";
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }
