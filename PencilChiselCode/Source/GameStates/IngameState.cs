@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
-using MonoGame.Extended.Screens.Transitions;
+using MonoGame.Extended.Tiled;
 
 namespace PencilChiselCode.Source.GameStates;
 
@@ -19,7 +18,9 @@ public class IngameState : GameScreen
     private Player _player;
     private Companion _companion;
     private bool _showDebug;
+
     public readonly HashSet<Keys> PreviousPressedKeys = new();
+
     private static float _cameraSpeed = 10.0F;
     private AttributeGroup _followerAttributes;
     private int _fps;
@@ -27,6 +28,11 @@ public class IngameState : GameScreen
     private static bool _pauseState;
     private Button _pauseButton;
     private Button _exitButton;
+    private List<TiledMap> _maps;
+    private readonly List<string> _debugData = new() { "", "", "" };
+
+    private int MapIndex =>
+        (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
 
     public IngameState(Game game) : base(game)
     {
@@ -57,14 +63,22 @@ public class IngameState : GameScreen
         for (var i = 0; i < 10; ++i)
         {
             var pickupable = new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
-                _game.SoundMap["pickup_branches"], new Vector2(100 + Utils.RANDOM.Next(1, 20) * 50,  Utils.RANDOM.Next(1, 15) * 50),
+                _game.SoundMap["pickup_branches"],
+                new Vector2(100 + Utils.RANDOM.Next(1, 20) * 50, Utils.RANDOM.Next(1, 15) * 50),
                 0.5F);
             Pickupables.Add(pickupable);
         }
+
         _companion = new Companion(_game, new Vector2(100, 100), 50F);
         _player = new Player(_game, new Vector2(150, 150));
 
         Campfires.Add(new CampFire(_game, new Vector2(500, 400))); // TEMP
+
+        _maps = new List<TiledMap>();
+        for (var i = 0; i < 3; ++i)
+        {
+            AddRandomMap();
+        }
 
         _followerAttributes = new AttributeGroup(new List<Attribute>
         {
@@ -75,8 +89,11 @@ public class IngameState : GameScreen
         });
     }
 
+    private void AddRandomMap() => _maps.Add(_game.TiledMaps[Utils.RANDOM.Next(0, _game.TiledMaps.Count)]);
+
     public override void Update(GameTime gameTime)
     {
+        var oldMapIndex = MapIndex;
         _game.TiledMapRenderer.Update(gameTime);
         var keyState = Keyboard.GetState();
         if (keyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
@@ -96,10 +113,7 @@ public class IngameState : GameScreen
             _player.Update(this, gameTime);
             _followerAttributes.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
-            Campfires.ForEach(campfire =>
-            {
-                campfire.Update(gameTime);
-            });
+            Campfires.ForEach(campfire => { campfire.Update(gameTime); });
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
             {
                 _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
@@ -113,12 +127,19 @@ public class IngameState : GameScreen
 
         if (keyState.IsKeyDown(Keys.Space) && !PreviousPressedKeys.Contains(Keys.Space))
         {
-            Debug.WriteLine("STOP");
             _companion.StopResumeFollower();
+        }
+
+        if (oldMapIndex != MapIndex)
+        {
+            _maps.RemoveAt(0);
+            AddRandomMap();
         }
 
         PreviousPressedKeys.Clear();
         PreviousPressedKeys.UnionWith(keyState.GetPressedKeys());
+        _debugData[1] = $"Translation: {_game.Camera.GetViewMatrix().Translation}";
+        _debugData[2] = $"Map Index: {MapIndex}";
     }
 
     public override void Draw(GameTime gameTime)
@@ -129,8 +150,12 @@ public class IngameState : GameScreen
         _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
 
-        _game.TiledMapRenderer.Draw(transformMatrix);
-        _game.TiledMapRenderer.Draw(transformMatrix * Matrix.CreateTranslation(768, 0, 0));
+        for (var i = 0; i < _maps.Count; ++i)
+        {
+            _game.TiledMapRenderer.LoadMap(_maps[i]);
+            _game.TiledMapRenderer.Draw(
+                transformMatrix * Matrix.CreateTranslation(_maps[i].HeightInPixels * (i + MapIndex-1), 0, 0));
+        }
 
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
 
@@ -161,6 +186,7 @@ public class IngameState : GameScreen
         {
             _fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
             _fpsCounterGameTime = gameTime.TotalGameTime;
+            _debugData[0] = $"FPS: {_fps}";
         }
 
         if (_pauseState)
@@ -171,8 +197,11 @@ public class IngameState : GameScreen
 
         if (_showDebug)
         {
-            _game.SpriteBatch.DrawString(_game.FontMap["16"], $"FPS: {_fps}",
-                new Vector2(16, 16), Color.Black);
+            for (var i = 0; i < _debugData.Count; ++i)
+            {
+                _game.SpriteBatch.DrawString(_game.FontMap["16"], _debugData[i],
+                    new Vector2(16, 16 * (i + 1)), Color.White);
+            }
         }
 
         _game.SpriteBatch.End();
