@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -108,9 +109,11 @@ public class IngameState : GameScreen
             Campfires.ForEach(campfire =>
             {
                 campfire.Update(gameTime);
-                // TODO: move to companion class
-                _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
             });
+            if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
+            {
+                _followerAttributes.Attributes[2].ChangeValue(10F * gameTime.GetElapsedSeconds());
+            }
         }
 
         if (keyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
