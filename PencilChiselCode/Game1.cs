@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -32,6 +33,7 @@ public class Game1 : Game
     public OrthographicCamera Camera;
     public TiledMapRenderer TiledMapRenderer;
     public List<TiledMap> TiledMaps = new();
+    public const int TreeVariations = 3;
 
     public Game1()
     {
@@ -91,10 +93,11 @@ public class Game1 : Game
         TextureMap.Add("bush_berry", Content.Load<Texture2D>("Textures/Entity/bush_berry"));
         TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));
 
-        TextureMap.Add("fire_01", Content.Load<Texture2D>("Textures/Tiles/fire_01"));
-        TextureMap.Add("fire_02", Content.Load<Texture2D>("Textures/Tiles/fire_02"));
-        TextureMap.Add("fire_03", Content.Load<Texture2D>("Textures/Tiles/fire_03"));
-        TextureMap.Add("fire_04", Content.Load<Texture2D>("Textures/Tiles/fire_04"));
+        for (var i = 1; i <= TreeVariations; ++i)
+        {
+            TextureMap.Add($"tree_{i}", Content.Load<Texture2D>($"Textures/Entity/tree_{i}"));
+        }
+        TextureMap.Add($"flower_lamp_1", Content.Load<Texture2D>($"Textures/Entity/flower_lamp_1"));
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));

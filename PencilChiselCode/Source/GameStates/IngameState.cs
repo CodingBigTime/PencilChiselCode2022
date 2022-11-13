@@ -25,13 +25,16 @@ public class IngameState : GameScreen
     private Attribute _followerAttribute;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
-    private TimeSpan _twigCounterGameTime;
+    private TimeSpan _pickupableCounterGameTime;
     private static bool _pauseState;
     private Button _pauseButton;
     private Button _exitButton;
-    private int _twigCount = 5;
+    private int _twigCount = 10;
+    private int _bushCount = 10;
+    private int _treeCount = 36;
     private List<TiledMap> _maps;
     private readonly List<string> _debugData = new() { "", "", "" };
+    private int _glowFlowerCount = 7;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -42,6 +45,7 @@ public class IngameState : GameScreen
     }
 
     public List<Pickupable> Pickupables { get; } = new();
+    public List<GroundEntity> GroundEntities { get; } = new();
     public List<CampFire> Campfires { get; } = new();
 
     public override void LoadContent()
@@ -56,7 +60,7 @@ public class IngameState : GameScreen
                     Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
                 Vector2.One, Utils.RANDOM.NextAngle()));    
         }
-        for (var i = 0; i < 10; i++)
+        for (var i = 0; i < _bushCount; i++)
         {
             Pickupables.Add(new Pickupable(PickupableTypes.Bush,
                 _game.TextureMap["bush_berry"],
@@ -64,6 +68,21 @@ public class IngameState : GameScreen
                 new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
                     Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
                 Vector2.One * 2));
+        }
+        for (var i = 0; i < _treeCount; i++)
+        {
+            var treeType = Utils.GetRandomInt(1, Game1.TreeVariations + 1);
+            GroundEntities.Add(new GroundEntity(_game, _game.TextureMap[$"tree_{treeType}"],
+                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
+                    Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
+                Vector2.One * 2F));
+        }
+        for (var i = 0; i < _glowFlowerCount; i++)
+        {
+            GroundEntities.Add(new GroundEntity(_game, _game.TextureMap["flower_lamp_1"],
+                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
+                    Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
+                Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
         }
         var resumeButton = _game.TextureMap["resume_button_normal"];
         var resumeButtonSize = new Size2(resumeButton.Width, resumeButton.Height);
@@ -81,14 +100,6 @@ public class IngameState : GameScreen
             Utils.GetCenterStartCoords(exitButtonSize, Game1.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
             () => _game.Exit()
         );
-        for (var i = 0; i < 10; ++i)
-        {
-            var pickupable = new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
-                _game.SoundMap["pickup_branches"],
-                new Vector2(100 + Utils.RANDOM.Next(1, 20) * 50, Utils.RANDOM.Next(1, 15) * 50),
-                Vector2.One, 0.5F);
-            Pickupables.Add(pickupable);
-        }
 
         _companion = new Companion(_game, new Vector2(100, 100), 50F);
         _player = new Player(_game, new Vector2(150, 150));
@@ -116,8 +127,21 @@ public class IngameState : GameScreen
             _game.TextureMap["bush_berry"],
             _game.SoundMap["pickup_branches"],
             new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
-            Vector2.One * 2, Utils.RANDOM.NextAngle());
+            Vector2.One * 2);
         Pickupables.Add(pickupable);
+    }
+    public void RandomEntitySpawner()
+    {
+        if (Utils.GetRandomInt(0, 101) >= 24) return;
+        var treeType = Utils.GetRandomInt(1, Game1.TreeVariations + 1);
+        GroundEntities.Add(new GroundEntity(_game, _game.TextureMap[$"tree_{treeType}"],
+            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,
+                Utils.GetRandomInt(5, _game.GetWindowHeight())),
+            Vector2.One * 2F));
+        GroundEntities.Add(new GroundEntity(_game, _game.TextureMap["flower_lamp_1"],
+            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,
+                Utils.GetRandomInt(5, _game.GetWindowHeight())),
+            Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
     }
     public void RandomTwigSpawner()
     {
@@ -134,11 +158,12 @@ public class IngameState : GameScreen
 
     public override void Update(GameTime gameTime)
     {
-        if (gameTime.TotalGameTime.Subtract(_twigCounterGameTime).Milliseconds >= 500)
+        if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
         {
             RandomTwigSpawner();
             RandomBushSpawner();
-            _twigCounterGameTime = gameTime.TotalGameTime;
+            RandomEntitySpawner();
+            _pickupableCounterGameTime = gameTime.TotalGameTime;
         }
         var oldMapIndex = MapIndex;
 
@@ -161,6 +186,7 @@ public class IngameState : GameScreen
             _player.Update(this, gameTime);
             _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
+            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime));
             Campfires.ForEach(campfire => { campfire.Update(gameTime); });
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
             {
@@ -208,11 +234,12 @@ public class IngameState : GameScreen
         _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
 
         Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
+        Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch));
+        GroundEntities.ForEach(groundEntity => groundEntity.Draw(_game.SpriteBatch));
 
         _companion.Draw(_game.SpriteBatch);
         _player.Draw(_game.SpriteBatch);
 
-        Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch)); // TEMP
 
         _game.SpriteBatch.End();
         _game.Penumbra.Draw(gameTime);
