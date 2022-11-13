@@ -26,11 +26,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Animations/fire.png
 
-#begin Resources/Animations/fire-atlas.json
-/importer:TexturePackerJsonImporter
-/processor:TexturePackerProcessor
-/build:Resources/Animations/fire-atlas.json
-
 #begin Resources/Fonts/lunchds_12.fnt
 /importer:BitmapFontImporter
 /processor:BitmapFontProcessor

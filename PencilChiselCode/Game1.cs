@@ -4,10 +4,13 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
+using MonoGame.Extended.Content;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Serialization;
 using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
+using MonoGame.Extended.Sprites;
 
 namespace PencilChiselCode;
 
@@ -21,6 +24,7 @@ public class Game1 : Game
     public Dictionary<string, Texture2D> TextureMap { get; } = new();
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     public Dictionary<string, BitmapFont> FontMap { get; } = new();
+    public Dictionary<string, SpriteSheet> SpriteSheetMap { get; } = new();
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
     public OrthographicCamera Camera;
@@ -92,6 +96,9 @@ public class Game1 : Game
         FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));
         FontMap.Add("24", Content.Load<BitmapFont>("Fonts/lunchds_24"));
         FontMap.Add("32", Content.Load<BitmapFont>("Fonts/lunchds_32"));
+
+        var fireSpriteSheet = Content.Load<SpriteSheet>("Animations/fire.spritesheet", new JsonContentLoader());
+        SpriteSheetMap.Add("fire", fireSpriteSheet);
     }
 
     protected override void Update(GameTime gameTime)
