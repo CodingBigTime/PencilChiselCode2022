@@ -663,6 +663,11 @@
 /processor:TiledMapProcessor
 /build:Resources/Textures/Tiles/tilemap_01.tmx
 
+#begin Resources/Textures/Tiles/tilemap_02.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Resources/Textures/Tiles/tilemap_02.tmx
+
 #begin Resources/Textures/Tiles/tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor

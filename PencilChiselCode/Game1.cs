@@ -7,12 +7,12 @@ using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Serialization;
+using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
-using MonoGame.Extended.Sprites;
 
 namespace PencilChiselCode;
 
@@ -30,8 +30,8 @@ public class Game1 : Game
     public static Game1 Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
     public OrthographicCamera Camera;
-    public TiledMap TiledMap;
     public TiledMapRenderer TiledMapRenderer;
+    public List<TiledMap> TiledMaps = new();
 
     public Game1()
     {
@@ -82,7 +82,7 @@ public class Game1 : Game
 
         TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
         TextureMap.Add("f_button", Content.Load<Texture2D>("Textures/GUI/f_button"));
-        
+
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
         TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));
 
@@ -95,7 +95,7 @@ public class Game1 : Game
         SoundMap.Add("button_release", Content.Load<SoundEffect>("Sounds/button_release"));
         SoundMap.Add("pickup_branches", Content.Load<SoundEffect>("Sounds/pickup_branches"));
         SoundMap.Add("fuel_fire", Content.Load<SoundEffect>("Sounds/fuel_fire"));
-        
+
         FontMap.Add("12", Content.Load<BitmapFont>("Fonts/lunchds_12"));
         FontMap.Add("16", Content.Load<BitmapFont>("Fonts/lunchds_16"));
         FontMap.Add("24", Content.Load<BitmapFont>("Fonts/lunchds_24"));
@@ -106,8 +106,13 @@ public class Game1 : Game
         var playerSpriteSheet = Content.Load<SpriteSheet>("Animations/player.spritesheet", new JsonContentLoader());
         SpriteSheetMap.Add("player", playerSpriteSheet);
 
-        TiledMap = Content.Load<TiledMap>("Textures/Tiles/tilemap_01");
-        TiledMapRenderer = new TiledMapRenderer(GraphicsDevice, TiledMap);
+        for (var i = 1; i <= 2; ++i)
+        {
+            TiledMaps.Add(Content.Load<TiledMap>("Textures/Tiles/tilemap_01"));
+            TiledMaps.Add(Content.Load<TiledMap>("Textures/Tiles/tilemap_02"));
+        }
+
+        TiledMapRenderer = new TiledMapRenderer(GraphicsDevice, TiledMaps[0]);
     }
 
     protected override void Update(GameTime gameTime)
