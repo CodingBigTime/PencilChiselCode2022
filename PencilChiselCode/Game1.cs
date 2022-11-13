@@ -87,6 +87,8 @@ public class Game1 : Game
         TextureMap.Add("fireplace_bar", Content.Load<Texture2D>("Textures/GUI/fireplace_bar"));
 
         TextureMap.Add("twigs", Content.Load<Texture2D>("Textures/Entity/twigs"));
+        TextureMap.Add("bush_empty", Content.Load<Texture2D>("Textures/Entity/bush_empty"));
+        TextureMap.Add("bush_berry", Content.Load<Texture2D>("Textures/Entity/bush_berry"));
         TextureMap.Add("follower", Content.Load<Texture2D>("Textures/Entity/follower"));
 
         TextureMap.Add("fire_01", Content.Load<Texture2D>("Textures/Tiles/fire_01"));

@@ -25,14 +25,17 @@ public class IngameState : GameScreen
     private Attribute _followerAttribute;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
+    private TimeSpan _twigCounterGameTime;
     private static bool _pauseState;
     private Button _pauseButton;
     private Button _exitButton;
+    private int _twigCount = 5;
     private List<TiledMap> _maps;
     private readonly List<string> _debugData = new() { "", "", "" };
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
+
 
     public IngameState(Game game) : base(game)
     {
@@ -44,6 +47,24 @@ public class IngameState : GameScreen
     public override void LoadContent()
     {
         base.LoadContent();
+        for (int i = 0; i < _twigCount; i++)
+        {
+            Pickupables.Add(new Pickupable(PickupableTypes.Twig,
+                _game.TextureMap["twigs"],
+                _game.SoundMap["pickup_branches"],
+                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()), 
+                    Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
+                Utils.RANDOM.NextAngle()));    
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            Pickupables.Add(new Pickupable(PickupableTypes.Bush,
+                _game.TextureMap["bush_berry"],
+                _game.SoundMap["pickup_branches"],
+                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
+                    Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
+                Utils.RANDOM.NextAngle()));
+        }
         var resumeButton = _game.TextureMap["resume_button_normal"];
         var resumeButtonSize = new Size2(resumeButton.Width, resumeButton.Height);
         _pauseButton = new Button(resumeButton,
@@ -87,12 +108,44 @@ public class IngameState : GameScreen
                 new Vector2(_game.GetWindowWidth() / 2, _game.GetWindowHeight() - attributeTexture.Height * 3F), 3F,
                 attributeTexture, comfyAttributeTexture, attributeTexture.Bounds.Center.ToVector2(), 100, -2F);
     }
+    
+    public void RandomBushSpawner(PickupableTypes type)
+    {
+        if (Utils.GetRandomInt(0, 101) < 10)
+        {
+            var pickupable = new Pickupable(type,
+                _game.TextureMap["bush_berry"],
+                _game.SoundMap["pickup_branches"],
+                new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
+                Utils.RANDOM.NextAngle());
+            Pickupables.Add(pickupable);
+        }
+    }
+    public void RandomTwigSpawner(PickupableTypes type)
+    {
+        if (Utils.GetRandomInt(0, 101) < 10)
+        {
+            var pickupable = new Pickupable(type,
+                _game.TextureMap["twigs"],
+                _game.SoundMap["pickup_branches"],
+                new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
+                Utils.RANDOM.NextAngle());
+            Pickupables.Add(pickupable);
+        }
+    }
 
     private void AddRandomMap() => _maps.Add(_game.TiledMaps[Utils.RANDOM.Next(0, _game.TiledMaps.Count)]);
 
     public override void Update(GameTime gameTime)
     {
+        if (gameTime.TotalGameTime.Subtract(_twigCounterGameTime).Milliseconds >= 500)
+        {
+            RandomTwigSpawner(PickupableTypes.Twig);
+            RandomBushSpawner(PickupableTypes.Bush);
+            _twigCounterGameTime = gameTime.TotalGameTime;
+        }
         var oldMapIndex = MapIndex;
+
         _game.TiledMapRenderer.Update(gameTime);
         var keyState = Keyboard.GetState();
         if (keyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
