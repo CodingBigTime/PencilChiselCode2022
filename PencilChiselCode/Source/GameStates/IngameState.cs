@@ -54,7 +54,7 @@ public class IngameState : GameScreen
                 _game.SoundMap["pickup_branches"],
                 new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()), 
                     Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
-                Utils.RANDOM.NextAngle()));    
+                Vector2.One, Utils.RANDOM.NextAngle()));    
         }
         for (var i = 0; i < 10; i++)
         {
@@ -63,7 +63,7 @@ public class IngameState : GameScreen
                 _game.SoundMap["pickup_branches"],
                 new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
                     Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
-                Utils.RANDOM.NextAngle()));
+                Vector2.One * 2));
         }
         var resumeButton = _game.TextureMap["resume_button_normal"];
         var resumeButtonSize = new Size2(resumeButton.Width, resumeButton.Height);
@@ -86,7 +86,7 @@ public class IngameState : GameScreen
             var pickupable = new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
                 _game.SoundMap["pickup_branches"],
                 new Vector2(100 + Utils.RANDOM.Next(1, 20) * 50, Utils.RANDOM.Next(1, 15) * 50),
-                0.5F);
+                Vector2.One, 0.5F);
             Pickupables.Add(pickupable);
         }
 
@@ -116,7 +116,7 @@ public class IngameState : GameScreen
             _game.TextureMap["bush_berry"],
             _game.SoundMap["pickup_branches"],
             new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
-            Utils.RANDOM.NextAngle());
+            Vector2.One * 2, Utils.RANDOM.NextAngle());
         Pickupables.Add(pickupable);
     }
     public void RandomTwigSpawner()
@@ -126,7 +126,7 @@ public class IngameState : GameScreen
             _game.TextureMap["twigs"],
             _game.SoundMap["pickup_branches"],
             new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
-            Utils.RANDOM.NextAngle());
+            Vector2.One,Utils.RANDOM.NextAngle());
         Pickupables.Add(pickupable);
     }
 
