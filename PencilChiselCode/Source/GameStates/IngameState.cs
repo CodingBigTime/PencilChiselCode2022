@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,10 +21,8 @@ public class IngameState : GameScreen
     private Player _player;
     private Companion _companion;
     private bool _showDebug;
-
     public readonly HashSet<Keys> PreviousPressedKeys = new();
-
-    private static float _cameraSpeed = 10.0F;
+    private static float _cameraSpeed = 10F;
     private Attribute _followerAttribute;
     private Inventory _inventory;
     private int _fps;
@@ -34,19 +31,19 @@ public class IngameState : GameScreen
     private static bool _pauseState;
     private Button _pauseButton;
     private Button _exitButton;
-
     private Button _restartButton;
-    private int _twigCount = 20;
-    private int _bushCount = 20;
+    private int _twigCount = 14;
+    private int _bushCount = 14;
     private int _treeCount = 36;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
     private float _minimialFollowerPlayerDistance = 100F;
     private bool _deathState;
-    private int _glowFlowerCount = 7;
+    private int _glowFlowerCount = 10;
     private Song _song;
     private float _score;
+    private int _spawnOffset = 128;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -69,34 +66,38 @@ public class IngameState : GameScreen
             Pickupables.Add(new Pickupable(PickupableTypes.Twig,
                 _game.TextureMap["twigs"],
                 _game.SoundMap["pickup_branches"],
-                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()), 
-                    Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
-                Vector2.One, Utils.RANDOM.NextAngle()));    
+                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X, _game.GetWindowWidth() + _spawnOffset),
+                    Utils.GetRandomInt(10, _game.GetWindowHeight() - 10)),
+                Vector2.One, Utils.RANDOM.NextAngle()));
         }
+
         for (var i = 0; i < _bushCount; i++)
         {
             Pickupables.Add(new Pickupable(PickupableTypes.Bush,
                 _game.TextureMap["bush_berry"],
                 _game.SoundMap["pickup_branches"],
-                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
-                    Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
+                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X, _game.GetWindowWidth() + _spawnOffset),
+                    Utils.GetRandomInt(10, _game.GetWindowHeight() - 10)),
                 Vector2.One * 2));
         }
+
         for (var i = 0; i < _treeCount; i++)
         {
             var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
             GroundEntities.Add(new GroundEntity(_game, _game.TextureMap[$"tree_{treeType}"],
-                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
-                    Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
+                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X, _game.GetWindowWidth() + _spawnOffset),
+                    Utils.GetRandomInt(10, _game.GetWindowHeight() - 10)),
                 Vector2.One * 2F));
         }
+
         for (var i = 0; i < _glowFlowerCount; i++)
         {
             GroundEntities.Add(new GroundEntity(_game, _game.TextureMap["flower_lamp_1"],
-                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X,_game.GetWindowWidth()),
-                    Utils.GetRandomInt(10,_game.GetWindowHeight()-10)),
+                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X, _game.GetWindowWidth() + _spawnOffset),
+                    Utils.GetRandomInt(10, _game.GetWindowHeight() - 10)),
                 Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
         }
+
         var resumeButton = _game.TextureMap["resume_button_normal"];
         var resumeButtonSize = new Size2(resumeButton.Width, resumeButton.Height);
         _pauseButton = new Button(resumeButton,
@@ -156,8 +157,8 @@ public class IngameState : GameScreen
                 2F,
                 new(0, Utils.RANDOM.Next(0, _game.Height)),
                 new(Utils.RANDOM.Next(0, 20), Utils.RANDOM.Next(-10, 10)),
-                ((time) => 2 + time),
-                ((time) => Color.Black)
+                time => 2 + time,
+                _ => Color.Black
             )),
             100F
         );
@@ -172,41 +173,44 @@ public class IngameState : GameScreen
         _song = _game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
-        
     }
-    
+
     public void RandomBushSpawner()
     {
         if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
-        var pickupable = new Pickupable(PickupableTypes.Bush,
+        Pickupables.Add(new Pickupable(PickupableTypes.Bush,
             _game.TextureMap["bush_berry"],
             _game.SoundMap["pickup_branches"],
-            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
-            Vector2.One * 2);
-        Pickupables.Add(pickupable);
+            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + _spawnOffset,
+                Utils.GetRandomInt(5, _game.GetWindowHeight())),
+            Vector2.One * 2)
+        );
     }
+
     public void RandomEntitySpawner()
     {
         if (Utils.GetRandomInt(0, 101) >= 24) return;
         var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
         GroundEntities.Add(new GroundEntity(_game, _game.TextureMap[$"tree_{treeType}"],
-            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,
+            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + _spawnOffset,
                 Utils.GetRandomInt(5, _game.GetWindowHeight())),
             Vector2.One * 2F));
         GroundEntities.Add(new GroundEntity(_game, _game.TextureMap["flower_lamp_1"],
-            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,
+            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + _spawnOffset,
                 Utils.GetRandomInt(5, _game.GetWindowHeight())),
             Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
     }
+
     public void RandomTwigSpawner()
     {
         if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
-        var pickupable = new Pickupable(PickupableTypes.Twig,
+        Pickupables.Add(new Pickupable(PickupableTypes.Twig,
             _game.TextureMap["twigs"],
             _game.SoundMap["pickup_branches"],
-            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 10,Utils.GetRandomInt(5,_game.GetWindowHeight())),
-            Vector2.One,Utils.RANDOM.NextAngle());
-        Pickupables.Add(pickupable);
+            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 128,
+                Utils.GetRandomInt(5, _game.GetWindowHeight())),
+            Vector2.One, Utils.RANDOM.NextAngle())
+        );
     }
 
     private void AddRandomMap() => _maps.Add(_game.TiledMaps[Utils.RANDOM.Next(0, _game.TiledMaps.Count)]);
@@ -220,21 +224,20 @@ public class IngameState : GameScreen
             RandomEntitySpawner();
             _pickupableCounterGameTime = gameTime.TotalGameTime;
         }
-        var oldMapIndex = MapIndex;
 
+        var oldMapIndex = MapIndex;
         _game.TiledMapRenderer.Update(gameTime);
-        
-        
         var keyState = Keyboard.GetState();
         if (_followerAttribute.Value <= 0)
         {
             _deathState = true;
         }
+
         if (keyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
         {
             _pauseState = !_pauseState;
         }
-        
+
         if (_deathState)
         {
             _restartButton.Update(gameTime);
@@ -259,12 +262,15 @@ public class IngameState : GameScreen
             {
                 _followerAttribute.ChangeValue(8F * gameTime.GetElapsedSeconds());
             }
+
             var followerPlayerDistance = Vector2.Distance(_player.Position, _companion.Position);
-            if (keyState.IsKeyDown(Keys.Q) && !PreviousPressedKeys.Contains(Keys.Q) && followerPlayerDistance <= 100 && _player.Berries >= 1)
+            if (keyState.IsKeyDown(Keys.Q) && !PreviousPressedKeys.Contains(Keys.Q) && followerPlayerDistance <= 100 &&
+                _player.Berries >= 1)
             {
                 _player.ReduceBerries(1);
                 _followerAttribute.ChangeValue(10F);
             }
+
             if (!Campfires.Any(campfire => campfire.IsInRange(_companion.Position)) &&
                 followerPlayerDistance > _minimialFollowerPlayerDistance)
             {
@@ -285,11 +291,12 @@ public class IngameState : GameScreen
         {
             _companion.StopResumeFollower();
         }
-        if(keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanCreateFire())
+
+        if (keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanCreateFire())
         {
             _player.CreateFire(10);
             _game.SoundMap["light_fire"].Play();
-            Campfires.Add(new CampFire(_game, new Vector2(_player.Position.X+20, _player.Position.Y-20)));
+            Campfires.Add(new CampFire(_game, new Vector2(_player.Position.X + 20, _player.Position.Y - 20)));
         }
 
         if (oldMapIndex != MapIndex)
@@ -307,9 +314,7 @@ public class IngameState : GameScreen
     public override void Draw(GameTime gameTime)
     {
         _game.Penumbra.BeginDraw();
-        
         _game.Penumbra.Transform = Matrix.CreateTranslation(-_game.Camera.Position.X, -_game.Camera.Position.Y, 0);
-
         _game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = _game.Camera.GetViewMatrix();
 
@@ -352,7 +357,8 @@ public class IngameState : GameScreen
 
         _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _followerAttribute.Draw(_game.SpriteBatch);
-        _game.SpriteBatch.DrawString(_game.FontMap["32"],"Comfy meter", new Vector2(_game.GetWindowWidth()/2 - 350, _game.GetWindowHeight() - 100), Color.Orange);
+        _game.SpriteBatch.DrawString(_game.FontMap["32"], "Comfy meter",
+            new Vector2(_game.GetWindowWidth() / 2 - 350, _game.GetWindowHeight() - 100), Color.Orange);
         _inventory.Draw(_game.SpriteBatch);
 
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
@@ -370,8 +376,10 @@ public class IngameState : GameScreen
         else if (_deathState)
         {
             var finalScore = (int)Math.Ceiling(_score / 10);
-            _game.SpriteBatch.DrawString(_game.FontMap["32"],"Your companion got too anxious!", new Vector2(_game.GetWindowWidth()/2 - 230, _game.GetWindowHeight()/2 - 160), Color.Red);
-            _game.SpriteBatch.DrawString(_game.FontMap["24"],$"Final score {finalScore}", new Vector2(_game.GetWindowWidth()/2 - 230, _game.GetWindowHeight()/2 - 100), Color.Red);
+            _game.SpriteBatch.DrawString(_game.FontMap["32"], "Your companion got too anxious!",
+                new Vector2(_game.GetWindowWidth() / 2 - 230, _game.GetWindowHeight() / 2 - 160), Color.Red);
+            _game.SpriteBatch.DrawString(_game.FontMap["24"], $"Final score {finalScore}",
+                new Vector2(_game.GetWindowWidth() / 2 - 230, _game.GetWindowHeight() / 2 - 100), Color.Red);
             _restartButton.Draw(_game.SpriteBatch);
             _exitButton.Draw(_game.SpriteBatch);
         }

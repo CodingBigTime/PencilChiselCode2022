@@ -53,14 +53,14 @@ public class Player
         _game.Penumbra.Lights.Add(PointLight);
         _game.Penumbra.Lights.Add(Spotlight);
         _particleGenerator = new ParticleGenerator(
-            (() => new Particle(
+            () => new Particle(
                 3,
                 Position + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10) +
                 Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
                 Vector2.UnitY * Utils.RANDOM.NextSingle(-5, 5) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
-                ((time) => (3 - time) / 3 * 1F),
-                ((time) => Color.LightBlue)
-            )),
+                time => (3 - time) / 3 * 1F,
+                _ => Color.LightBlue
+            ),
             3F
         );
     }
@@ -172,21 +172,24 @@ public class Player
         var nearestCampfire = state.Campfires
             .OrderBy(campfire => Vector2.DistanceSquared(campfire.Position, Position))
             .FirstOrDefault(campfire => Vector2.DistanceSquared(campfire.Position, Position) < 100 * 100);
-        
+
         if (nearestCampfire != null && !_popupButtons.ContainsKey("F"))
         {
             _popupButtons["F"] = new PopupButton(_game, _game.TextureMap["f_button"]);
         }
+
         if (nearestCampfire == null)
         {
             _popupButtons.Remove("F");
         }
 
-        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null && Twigs > 0)
+        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
+            Twigs > 0)
         {
             nearestCampfire.FeedFire(25F);
             --Twigs;
         }
+
         if (nearestCampfire == null || Twigs <= 0) _popupButtons.Remove("F");
 
         var nearestPickupable = state.Pickupables
