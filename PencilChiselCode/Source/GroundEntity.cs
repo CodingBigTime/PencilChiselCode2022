@@ -1,7 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
+using MonoGame.Extended.Tweening;
 using Penumbra;
+
 namespace PencilChiselCode.Source;
 
 public class GroundEntity
@@ -26,32 +29,46 @@ public class GroundEntity
     private Bonfire _game;
     private Color _glow;
     private Color _color = Color.White;
+    private Tweener _lightSizeTweener;
+
+    private void Init(Bonfire game, Texture2D texture, Vector2 position, Vector2 scale, float rotation)
+    {
+        _game = game;
+        Texture = texture;
+        Position = position;
+        Rotation = rotation;
+        _scale = scale;
+    }
 
     public GroundEntity(Bonfire game, Texture2D texture, Vector2 position, Vector2 scale,
         Color glow, float rotation = 0F)
     {
-        _game = game;
-        Texture = texture;
-        Position = position;
-        Rotation = rotation;
-        _scale = scale;
+        Init(game, texture, position, scale, rotation);
         _game.Penumbra.Lights.Add(PointLight);
         PointLight.Color = glow;
+        _lightSizeTweener = new Tweener();
+        _lightSizeTweener.TweenTo(target: PointLight, expression: pointLight => pointLight.Scale,
+                toValue: new Vector2(196F), duration: 10F,
+                delay: 0F)
+            .RepeatForever(repeatDelay: 2f)
+            .AutoReverse()
+            .Easing(EasingFunctions.SineInOut);
+        var repeat = Utils.RANDOM.Next(24);
+        for (var i = 0; i < repeat; ++i)
+        {
+            _lightSizeTweener.Update(1F);
+        }
     }
 
     public GroundEntity(Bonfire game, Texture2D texture, Vector2 position, Vector2 scale, float rotation = 0F)
     {
-        _game = game;
-        Texture = texture;
-        Position = position;
-        Rotation = rotation;
-        _scale = scale;
+        Init(game, texture, position, scale, rotation);
         _game.Penumbra.Hulls.Add(Hull);
     }
 
     public Light PointLight { get; } = new PointLight
     {
-        Scale = new(128),
+        Scale = new(64F),
         Radius = 1,
         ShadowType = ShadowType.Occluded
     };
@@ -66,12 +83,16 @@ public class GroundEntity
 
     public void Update(GameTime gameTime, Vector2 playerPosition)
     {
-        if (Size.Y > 32 
+        _lightSizeTweener?.Update(gameTime.GetElapsedSeconds());
+        if (Size.Y > 32
             && playerPosition.Y < _position.Y + 32
-            && playerPosition.Y > _position.Y - 64 
-            && Math.Abs(playerPosition.X - _position.X) < 32) {
+            && playerPosition.Y > _position.Y - 64
+            && Math.Abs(playerPosition.X - _position.X) < 32)
+        {
             _color.A = 150;
-        } else {
+        }
+        else
+        {
             _color.A = 255;
         }
     }
