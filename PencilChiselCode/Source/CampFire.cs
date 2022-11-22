@@ -1,10 +1,9 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Sprites;
 using MonoGame.Extended;
+using MonoGame.Extended.Sprites;
 using Penumbra;
-using System;
-using MonoGame.Extended.Screens;
 
 namespace PencilChiselCode.Source
 {
@@ -50,10 +49,11 @@ namespace PencilChiselCode.Source
             _particleGenerator = new ParticleGenerator(
                 (() => new Particle(
                     Utils.RANDOM.NextSingle(1, 2),
-                    Position + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) + Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                    Position + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) +
+                    Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                     Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
-                    ((time) => time),
-                    ((_) => IsLow() ? Color.Black : Color.Red)
+                    time => time,
+                    _ => IsLow() ? Color.Black : Color.Red
                 )),
                 5F
             );
@@ -96,7 +96,7 @@ namespace PencilChiselCode.Source
         {
             _animatedSprite.Update(gameTime);
             _attribute.Update(gameTime);
-            PointLight.Scale = new(_maxScale * (float) Math.Sqrt(_attribute.Percent()));
+            PointLight.Scale = new(_maxScale * (float)Math.Sqrt(_attribute.Percent()));
             _particleGenerator.Update(gameTime, !IsLow());
         }
 

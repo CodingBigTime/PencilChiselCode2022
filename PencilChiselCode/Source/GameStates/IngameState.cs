@@ -10,7 +10,6 @@ using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
-using Penumbra;
 
 namespace PencilChiselCode.Source.GameStates;
 
@@ -22,15 +21,16 @@ public class IngameState : GameScreen
     private Companion _companion;
     private bool _showDebug;
     public readonly HashSet<Keys> PreviousPressedKeys = new();
-    private static float _cameraSpeed = 10F;
+    private float _cameraSpeed = 10F;
     private Attribute _followerAttribute;
     private Inventory _inventory;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private TimeSpan _pickupableCounterGameTime;
-    private static bool _pauseState;
+    private bool _pauseState;
     private Button _pauseButton;
     private Button _exitButton;
+    private Button _menuButton;
     private Button _restartButton;
     private int _twigCount = 14;
     private int _bushCount = 14;
@@ -115,6 +115,14 @@ public class IngameState : GameScreen
             () => _game.Exit()
         );
 
+        var menuButton = _game.TextureMap["menu_button_normal"];
+        var menuButtonSize = new Size2(menuButton.Width, menuButton.Height);
+        _menuButton = new Button(menuButton,
+            _game.TextureMap["menu_button_hover"],
+            _game.TextureMap["menu_button_pressed"],
+            Utils.GetCenterStartCoords(menuButtonSize, Bonfire.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
+            () => _game.ScreenManager.LoadScreen(new MenuState(_game), new FadeTransition(Bonfire.Instance.GraphicsDevice, Color.Black)));
+
         var restartButton = _game.TextureMap["restart_button_normal"];
         var restartButtonSize = new Size2(restartButton.Width, restartButton.Height);
         _restartButton = new Button(restartButton,
@@ -125,10 +133,7 @@ public class IngameState : GameScreen
             {
                 _game.ScreenManager.LoadScreen(new IngameState(_game),
                     new FadeTransition(Bonfire.Instance.GraphicsDevice, Color.Black));
-                _game.Penumbra = new PenumbraComponent(_game);
-                _game.Penumbra.AmbientColor = Color.Black;
-                _game.Penumbra.Initialize();
-                _game.Camera = new OrthographicCamera(_game.GetViewportAdapter());
+                _game.ResetPenumbra();
             }
         );
         for (var i = 0; i < 10; ++i)
@@ -246,7 +251,7 @@ public class IngameState : GameScreen
         else if (_pauseState)
         {
             _pauseButton.Update(gameTime);
-            _exitButton.Update(gameTime);
+            _menuButton.Update(gameTime);
         }
         else
         {
@@ -371,7 +376,7 @@ public class IngameState : GameScreen
         else if (_pauseState)
         {
             _pauseButton.Draw(_game.SpriteBatch);
-            _exitButton.Draw(_game.SpriteBatch);
+            _menuButton.Draw(_game.SpriteBatch);
         }
         else if (_deathState)
         {

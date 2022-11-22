@@ -35,6 +35,7 @@ public class Bonfire : Game
     public List<TiledMap> TiledMaps = new();
     public const int TreeVariations = 3;
     public Dictionary<string, Song> SongMap { get; } = new();
+
     public Bonfire()
     {
         ScreenManager = new ScreenManager();
@@ -83,7 +84,8 @@ public class Bonfire : Game
         TextureMap.Add("menu_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/menu_button_pressed"));
         TextureMap.Add("restart_button_normal", Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_normal"));
         TextureMap.Add("restart_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_hover"));
-        TextureMap.Add("restart_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_pressed"));
+        TextureMap.Add("restart_button_pressed",
+            Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_pressed"));
 
         TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
         TextureMap.Add("f_button", Content.Load<Texture2D>("Textures/GUI/f_button"));
@@ -106,6 +108,7 @@ public class Bonfire : Game
         {
             TextureMap.Add($"tree_{i}", Content.Load<Texture2D>($"Textures/Entity/tree_{i}"));
         }
+
         TextureMap.Add($"flower_lamp_1", Content.Load<Texture2D>($"Textures/Entity/flower_lamp_1"));
 
         SoundMap.Add("button_press", Content.Load<SoundEffect>("Sounds/button_press"));
@@ -132,6 +135,14 @@ public class Bonfire : Game
         }
 
         TiledMapRenderer = new TiledMapRenderer(GraphicsDevice, TiledMaps[0]);
+    }
+
+    public void ResetPenumbra()
+    {
+        Penumbra = new PenumbraComponent(this);
+        Penumbra.AmbientColor = Color.Black;
+        Camera = new OrthographicCamera(GetViewportAdapter());
+        Penumbra.Initialize();
     }
 
     protected override void Update(GameTime gameTime)

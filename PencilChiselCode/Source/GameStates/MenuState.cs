@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
@@ -32,6 +31,7 @@ public class MenuState : GameScreen
             {
                 Bonfire.Instance.ScreenManager.LoadScreen(new IngameState(_game),
                     new FadeTransition(Bonfire.Instance.GraphicsDevice, Color.Black));
+                _game.ResetPenumbra();
             }
         ));
         var exitButton = textureMap["exit_button_normal"];
