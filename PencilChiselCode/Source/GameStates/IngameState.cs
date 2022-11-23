@@ -381,10 +381,10 @@ public class IngameState : GameScreen
         else if (_deathState)
         {
             var finalScore = (int)Math.Ceiling(_score / 10);
-            _game.SpriteBatch.DrawString(_game.FontMap["32"], "Your companion got too anxious!",
-                new Vector2(_game.GetWindowWidth() / 2 - 230, _game.GetWindowHeight() / 2 - 160), Color.Red);
-            _game.SpriteBatch.DrawString(_game.FontMap["24"], $"Final score {finalScore}",
-                new Vector2(_game.GetWindowWidth() / 2 - 230, _game.GetWindowHeight() / 2 - 100), Color.Red);
+            _game.SpriteBatch.DrawOutlinedString(_game.FontMap["32"], "Your companion got too anxious!",
+                new Vector2(_game.GetWindowWidth() / 2F, _game.GetWindowHeight() / 3F - 60F), Color.Red, Color.Black, Utils.HorizontalFontAlignment.Center, Utils.VerticalFontAlignment.Center);
+            _game.SpriteBatch.DrawOutlinedString(_game.FontMap["24"], $"Final score {finalScore}",
+                new Vector2(_game.GetWindowWidth() / 2F, _game.GetWindowHeight() / 3F), Color.Red, Color.Black, Utils.HorizontalFontAlignment.Center, Utils.VerticalFontAlignment.Center);
             _restartButton.Draw(_game.SpriteBatch);
             _exitButton.Draw(_game.SpriteBatch);
         }

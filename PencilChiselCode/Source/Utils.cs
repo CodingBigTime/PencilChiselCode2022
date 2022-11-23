@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using MonoGame.Extended.BitmapFonts;
 
 namespace PencilChiselCode.Source;
 
@@ -43,4 +45,55 @@ public static class Utils
     }
 
     public static CircleF Expand(this CircleF circle, int radius) => new(circle.Center, circle.Radius + radius);
+
+    public static void DrawOutlinedString(this SpriteBatch spriteBatch, BitmapFont font, string text, Vector2 position,
+        Color frontColor,
+        Color backColor, HorizontalFontAlignment horizontalFontAlignment = HorizontalFontAlignment.Left,
+        VerticalFontAlignment verticalFontAlignment = VerticalFontAlignment.Top)
+    {
+        var (x, y) = font.MeasureString(text);
+
+        x = horizontalFontAlignment switch
+        {
+            HorizontalFontAlignment.Center => -x / 2F,
+            HorizontalFontAlignment.Right => -x,
+            _ => 0
+        };
+
+        y = verticalFontAlignment switch
+        {
+            VerticalFontAlignment.Center => y / 2F,
+            VerticalFontAlignment.Bottom => y,
+            _ => 0
+        };
+
+        position += new Vector2(x, y);
+
+        spriteBatch.DrawString(font, text, position + new Vector2(1, 1), backColor);
+        spriteBatch.DrawString(font, text, position + new Vector2(-1, 1), backColor);
+        spriteBatch.DrawString(font, text, position + new Vector2(1, -1), backColor);
+        spriteBatch.DrawString(font, text, position + new Vector2(-1, -1), backColor);
+
+        spriteBatch.DrawString(font, text, position, frontColor);
+    }
+
+    public enum HorizontalFontAlignment
+    {
+        Left,
+        Center,
+        Right
+    }
+
+    public enum VerticalFontAlignment
+    {
+        Top,
+        Center,
+        Bottom
+    }
+
+    public static void Deconstruct(this Size2 size, out float width, out float height)
+    {
+        width = size.Width;
+        height = size.Height;
+    }
 }
