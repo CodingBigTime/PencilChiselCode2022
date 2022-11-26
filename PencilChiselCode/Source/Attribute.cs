@@ -86,15 +86,8 @@ namespace PencilChiselCode.Source
             return Value;
         }
 
-        public float Percent()
-        {
-            return Value / MaxValue;
-        }
-
-        public bool IsEmpty()
-        {
-            return Value <= 0;
-        }
+        public float Percent() => Value / MaxValue;
+        public bool IsEmpty() => Value <= 0;
 
         public void Update(GameTime gameTime)
         {

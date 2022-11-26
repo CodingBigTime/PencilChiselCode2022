@@ -61,15 +61,9 @@ namespace PencilChiselCode.Source
             );
         }
 
-        public bool IsLit()
-        {
-            return !_attribute.IsEmpty();
-        }
+        public bool IsLit() => !_attribute.IsEmpty();
 
-        public bool IsLow()
-        {
-            return _attribute.Percent() < 0.1;
-        }
+        public bool IsLow() => _attribute.Percent() < 0.1;
 
         public Light PointLight { get; } = new PointLight
         {
@@ -77,10 +71,7 @@ namespace PencilChiselCode.Source
             ShadowType = ShadowType.Occluded
         };
 
-        public float Scale()
-        {
-            return _maxScale * _attribute.Percent();
-        }
+        public float Scale() => _maxScale * _attribute.Percent();
 
         public bool IsInRange(Vector2 sourcePosition)
         {
