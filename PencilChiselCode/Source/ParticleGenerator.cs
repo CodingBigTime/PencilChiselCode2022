@@ -24,7 +24,8 @@ namespace PencilChiselCode.Source
 
         public void Update(GameTime gameTime, bool addNew)
         {
-            if (addNew && Utils.RANDOM.NextDouble() < _frequency * gameTime.ElapsedGameTime.TotalSeconds) {
+            if (addNew && Utils.RANDOM.NextDouble() < _frequency * gameTime.ElapsedGameTime.TotalSeconds)
+            {
                 _particles.Add(_particleGenerator());
             }
             _particles.ToList().ForEach(particle => particle.Update(gameTime));

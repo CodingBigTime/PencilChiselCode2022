@@ -35,7 +35,13 @@ public class GroundEntity
     private const float RenderOffset = 32;
     public bool ShouldRemove => Game.Camera.Position.X > Position.X + Size.X * _scale.X + RenderOffset;
 
-    private void Init(BonfireGameState state, Texture2D texture, Vector2 position, Vector2 scale, float rotation)
+    private void Init(
+        BonfireGameState state,
+        Texture2D texture,
+        Vector2 position,
+        Vector2 scale,
+        float rotation
+    )
     {
         _state = state;
         Texture = texture;
@@ -44,16 +50,27 @@ public class GroundEntity
         _scale = scale;
     }
 
-    public GroundEntity(BonfireGameState state, Texture2D texture, Vector2 position, Vector2 scale,
-        Color glow, float rotation = 0F)
+    public GroundEntity(
+        BonfireGameState state,
+        Texture2D texture,
+        Vector2 position,
+        Vector2 scale,
+        Color glow,
+        float rotation = 0F
+    )
     {
         Init(state, texture, position, scale, rotation);
         Game.Penumbra.Lights.Add(PointLight);
         PointLight.Color = glow;
         _lightSizeTweener = new Tweener();
-        _lightSizeTweener.TweenTo(target: PointLight, expression: pointLight => pointLight.Scale,
-                toValue: new Vector2(196F), duration: 10F,
-                delay: 0F)
+        _lightSizeTweener
+            .TweenTo(
+                target: PointLight,
+                expression: pointLight => pointLight.Scale,
+                toValue: new Vector2(196F),
+                duration: 10F,
+                delay: 0F
+            )
             .RepeatForever(repeatDelay: 2f)
             .AutoReverse()
             .Easing(EasingFunctions.SineInOut);
@@ -75,18 +92,25 @@ public class GroundEntity
         Cleanup();
     }
 
-    public GroundEntity(BonfireGameState state, Texture2D texture, Vector2 position, Vector2 scale, float rotation = 0F)
+    public GroundEntity(
+        BonfireGameState state,
+        Texture2D texture,
+        Vector2 position,
+        Vector2 scale,
+        float rotation = 0F
+    )
     {
         Init(state, texture, position, scale, rotation);
         Game.Penumbra.Hulls.Add(Hull);
     }
 
-    public Light PointLight { get; } = new PointLight
-    {
-        Scale = new(64F),
-        Radius = 1,
-        ShadowType = ShadowType.Occluded
-    };
+    public Light PointLight { get; } =
+        new PointLight
+        {
+            Scale = new(64F),
+            Radius = 1,
+            ShadowType = ShadowType.Occluded
+        };
 
     // public Hull Hull { get; } = Hull.CreateCircle(radius: 7);
     public Hull Hull { get; } = Hull.CreateRectangle(scale: new(8, 16));
@@ -94,7 +118,18 @@ public class GroundEntity
     public void Draw(SpriteBatch spriteBatch)
     {
         if (ShouldRemove) return;
-        spriteBatch.Draw(Texture, Position, null, _color, Rotation, Size / 2, _scale, SpriteEffects.None, 0);
+
+        spriteBatch.Draw(
+            Texture,
+            Position,
+            null,
+            _color,
+            Rotation,
+            Size / 2,
+            _scale,
+            SpriteEffects.None,
+            0
+        );
     }
 
     public void Update(GameTime gameTime, Vector2 playerPosition)
@@ -106,10 +141,12 @@ public class GroundEntity
         }
 
         _lightSizeTweener?.Update(gameTime.GetElapsedSeconds());
-        if (Size.Y > 32
+        if (
+            Size.Y > 32
             && playerPosition.Y < _position.Y + 32
             && playerPosition.Y > _position.Y - 64
-            && Math.Abs(playerPosition.X - _position.X) < 32)
+            && Math.Abs(playerPosition.X - _position.X) < 32
+        )
         {
             _color.A = 150;
         }
