@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Tweening;
+using PencilChiselCode.Source.GameStates;
 using Penumbra;
 
 namespace PencilChiselCode.Source;
@@ -26,25 +27,26 @@ public class GroundEntity
     private Vector2 _position;
     public float Rotation;
     private Vector2 _scale;
-    private Bonfire _game;
     private Color _glow;
     private Color _color = Color.White;
     private Tweener _lightSizeTweener;
+    private BonfireGameState _state;
+    private Bonfire Game => _state.Game;
 
-    private void Init(Bonfire game, Texture2D texture, Vector2 position, Vector2 scale, float rotation)
+    private void Init(BonfireGameState state, Texture2D texture, Vector2 position, Vector2 scale, float rotation)
     {
-        _game = game;
+        _state = state;
         Texture = texture;
         Position = position;
         Rotation = rotation;
         _scale = scale;
     }
 
-    public GroundEntity(Bonfire game, Texture2D texture, Vector2 position, Vector2 scale,
+    public GroundEntity(BonfireGameState state, Texture2D texture, Vector2 position, Vector2 scale,
         Color glow, float rotation = 0F)
     {
-        Init(game, texture, position, scale, rotation);
-        _game.Penumbra.Lights.Add(PointLight);
+        Init(state, texture, position, scale, rotation);
+        Game.Penumbra.Lights.Add(PointLight);
         PointLight.Color = glow;
         _lightSizeTweener = new Tweener();
         _lightSizeTweener.TweenTo(target: PointLight, expression: pointLight => pointLight.Scale,
@@ -60,10 +62,10 @@ public class GroundEntity
         }
     }
 
-    public GroundEntity(Bonfire game, Texture2D texture, Vector2 position, Vector2 scale, float rotation = 0F)
+    public GroundEntity(BonfireGameState state, Texture2D texture, Vector2 position, Vector2 scale, float rotation = 0F)
     {
-        Init(game, texture, position, scale, rotation);
-        _game.Penumbra.Hulls.Add(Hull);
+        Init(state, texture, position, scale, rotation);
+        Game.Penumbra.Hulls.Add(Hull);
     }
 
     public Light PointLight { get; } = new PointLight

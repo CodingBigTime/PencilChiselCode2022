@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
+using PencilChiselCode.Source.GameStates;
 using Penumbra;
 
 namespace PencilChiselCode.Source
@@ -20,20 +21,21 @@ namespace PencilChiselCode.Source
         }
 
         private Vector2 _position;
-        private Bonfire _game;
         private Attribute _attribute;
         private AnimatedSprite _animatedSprite;
         private readonly float _maxScale = 300F;
         private ParticleGenerator _particleGenerator;
+        private BonfireGameState _state;
+        private Bonfire Game => _state.Game;
 
-        public CampFire(Bonfire game, Vector2 position)
+        public CampFire(BonfireGameState state, Vector2 position)
         {
-            _game = game;
+            _state = state;
             Position = position;
-            _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["fire"]);
+            _animatedSprite = new AnimatedSprite(Game.SpriteSheetMap["fire"]);
             _animatedSprite.Play("burn");
-            var attributeTexture = _game.TextureMap["attribute_bar"];
-            var fireplaceAttributeTexture = _game.TextureMap["fireplace_bar"];
+            var attributeTexture = Game.TextureMap["attribute_bar"];
+            var fireplaceAttributeTexture = Game.TextureMap["fireplace_bar"];
             _attribute = new Attribute(
                 Position + new Vector2(_animatedSprite.TextureRegion.Width,
                     _animatedSprite.TextureRegion.Height * 3 + attributeTexture.Height),
@@ -44,8 +46,8 @@ namespace PencilChiselCode.Source
                 100F,
                 -5F
             );
-            // _game.Penumbra.Lights.Add(PointLight);
-            _game.Penumbra.Lights.Add(PointLight);
+            // Game.Penumbra.Lights.Add(PointLight);
+            Game.Penumbra.Lights.Add(PointLight);
             _particleGenerator = new ParticleGenerator(
                 (() => new Particle(
                     Utils.RANDOM.NextSingle(1, 2),
@@ -88,7 +90,7 @@ namespace PencilChiselCode.Source
 
         public void FeedFire(float amount)
         {
-            _game.SoundMap["fuel_fire"].Play();
+            Game.SoundMap["fuel_fire"].Play();
             _attribute.Value += amount;
         }
 

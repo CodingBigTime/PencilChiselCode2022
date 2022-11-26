@@ -8,17 +8,18 @@ namespace PencilChiselCode.Source;
 
 public class PopupButton
 {
-    private readonly Bonfire _game;
     private readonly Tweener _scaleTweener;
     private readonly Tweener _rotationTweener;
     public float scale = 0.75F;
     public float rotation = -0.33F;
     public Texture2D Texture;
     private Vector2 _size;
+    private BonfireGameState _state;
+    private Bonfire Game => _state.Game;
 
-    public PopupButton(Bonfire game, Texture2D texture)
+    public PopupButton(BonfireGameState state, Texture2D texture)
     {
-        _game = game;
+        _state = state;
         Texture = texture;
         Texture = texture;
         _size = new Vector2(Texture.Width, Texture.Height);

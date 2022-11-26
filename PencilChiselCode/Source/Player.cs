@@ -17,41 +17,42 @@ public class Player
 
     public Vector2 Position
     {
-        get => position;
+        get => _position;
         set
         {
-            position = value;
+            _position = value;
             PointLight.Position = new Vector2(value.X, value.Y);
             Spotlight.Position = new Vector2(value.X, value.Y);
         }
     }
 
-    Vector2 position;
+    private Vector2 _position;
     private const float Sqrt12 = 0.70710678118654752440084436210485F;
     private const float PI = (float)Math.PI;
-    private Bonfire _game;
     private AnimatedSprite _animatedSprite;
     private Vector2 _speed;
-    private static readonly int _pointLightScale = 300;
-    private static readonly int _spotLightScale = 400;
-    private static readonly float _scale = 2F;
-    private static readonly float _maxSpeed = 80F;
-    private static readonly float _acceleration = 1000F;
-    private static readonly float _friction = 2.75F;
+    private const int PointLightScale = 300;
+    private const int SpotLightScale = 400;
+    private readonly float _scale = 2F;
+    private readonly float _maxSpeed = 80F;
+    private readonly float _acceleration = 1000F;
+    private readonly float _friction = 2.75F;
     private readonly Dictionary<string, PopupButton> _popupButtons = new();
     public uint Twigs { get; private set; }
     public int Berries { get; private set; }
     private ParticleGenerator _particleGenerator;
+    private readonly IngameState _state;
+    private Bonfire Game => _state.Game;
 
-    public Player(Bonfire game, Vector2 position)
+    public Player(IngameState state, Vector2 position)
     {
-        _game = game;
+        _state = state;
         Position = position;
-        _animatedSprite = new AnimatedSprite(_game.SpriteSheetMap["player"]);
+        _animatedSprite = new AnimatedSprite(Game.SpriteSheetMap["player"]);
         _animatedSprite.Play("right");
         Size = new(_animatedSprite.TextureRegion.Width * _scale, _animatedSprite.TextureRegion.Height * _scale);
-        _game.Penumbra.Lights.Add(PointLight);
-        _game.Penumbra.Lights.Add(Spotlight);
+        Game.Penumbra.Lights.Add(PointLight);
+        Game.Penumbra.Lights.Add(Spotlight);
         _particleGenerator = new ParticleGenerator(
             () => new Particle(
                 3,
@@ -67,14 +68,14 @@ public class Player
 
     public Light PointLight { get; } = new PointLight
     {
-        Scale = new Vector2(_pointLightScale),
+        Scale = new Vector2(PointLightScale),
         Color = Color.White,
         ShadowType = ShadowType.Occluded
     };
 
     public Light Spotlight { get; } = new Spotlight
     {
-        Scale = new Vector2(_spotLightScale),
+        Scale = new Vector2(SpotLightScale),
         Color = Color.White,
         ShadowType = ShadowType.Occluded,
         ConeDecay = 2.5F
@@ -124,7 +125,7 @@ public class Player
 
     public bool CanCreateFire() => Twigs >= 10;
 
-    public void Update(IngameState state, GameTime gameTime)
+    public void Update(GameTime gameTime)
     {
         var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
         var keyState = Keyboard.GetState();
@@ -157,25 +158,25 @@ public class Player
         _speed.Y = Math.Clamp(_speed.Y, -_maxSpeed * biasY, _maxSpeed * biasY);
         Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
 
-        if (Position.X >= _game.Camera.Center.X + _game.Width / 2F - Size.X / 2F)
+        if (Position.X >= Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F)
         {
             _speed.X = 0;
-            Position = new(Math.Min(Position.X, _game.Camera.Center.X + _game.Width / 2F - Size.X / 2F), Position.Y);
+            Position = new(Math.Min(Position.X, Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F), Position.Y);
         }
 
-        if (Position.Y <= Size.Y / 2F || Position.Y >= _game.Height - Size.Y / 2F)
+        if (Position.Y <= Size.Y / 2F || Position.Y >= Game.Height - Size.Y / 2F)
         {
             _speed.Y = 0;
-            Position = new(Position.X, Math.Clamp(Position.Y, Size.Y / 2F, _game.Height - Size.Y / 2F));
+            Position = new(Position.X, Math.Clamp(Position.Y, Size.Y / 2F, Game.Height - Size.Y / 2F));
         }
 
-        var nearestCampfire = state.Campfires
+        var nearestCampfire = _state.Campfires
             .OrderBy(campfire => Vector2.DistanceSquared(campfire.Position, Position))
             .FirstOrDefault(campfire => Vector2.DistanceSquared(campfire.Position, Position) < 100 * 100);
 
         if (nearestCampfire != null && !_popupButtons.ContainsKey("F"))
         {
-            _popupButtons["F"] = new PopupButton(_game, _game.TextureMap["f_button"]);
+            _popupButtons["F"] = new PopupButton(_state, Game.TextureMap["f_button"]);
         }
 
         if (nearestCampfire == null)
@@ -183,7 +184,7 @@ public class Player
             _popupButtons.Remove("F");
         }
 
-        if (!state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
+        if (!_state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
             Twigs > 0)
         {
             nearestCampfire.FeedFire(25F);
@@ -192,34 +193,34 @@ public class Player
 
         if (nearestCampfire == null || Twigs <= 0) _popupButtons.Remove("F");
 
-        var nearestPickupable = state.Pickupables
+        var nearestPickupable = _state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
             .FirstOrDefault(pickupable =>
                 Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100 && pickupable.IsConsumable);
 
         if (nearestPickupable != null && !_popupButtons.ContainsKey("E"))
         {
-            _popupButtons["E"] = new PopupButton(_game, _game.TextureMap["e_button"]);
+            _popupButtons["E"] = new PopupButton(_state, Game.TextureMap["e_button"]);
         }
 
         foreach (var (_, value) in _popupButtons)
         {
-            value.Update(state, gameTime);
+            value.Update(_state, gameTime);
         }
 
-        if (!state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)
+        if (!_state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)
         {
             switch (nearestPickupable.Type)
             {
                 case PickupableTypes.Twig:
                     ++Twigs;
                     nearestPickupable.PickupSound.Play();
-                    state.Pickupables.Remove(nearestPickupable);
+                    _state.Pickupables.Remove(nearestPickupable);
                     break;
                 case PickupableTypes.Bush:
                     ++Berries;
                     nearestPickupable.PickupSound.Play();
-                    nearestPickupable.Texture = _game.TextureMap["bush_empty"];
+                    nearestPickupable.Texture = Game.TextureMap["bush_empty"];
                     break;
             }
 

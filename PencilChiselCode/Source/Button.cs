@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using PencilChiselCode.Source.GameStates;
 
 namespace PencilChiselCode.Source;
 
@@ -14,9 +15,13 @@ public class Button
     private readonly Texture2D _hoveredTexture;
     private readonly Texture2D _pressedTexture;
     private readonly Action _action;
+    private readonly BonfireGameState _state;
+    private Bonfire Game => _state.Game;
 
-    public Button(Texture2D normal, Texture2D hovered, Texture2D pressed, Vector2 position, Action action)
+    public Button(BonfireGameState state, Texture2D normal, Texture2D hovered, Texture2D pressed, Vector2 position,
+        Action action)
     {
+        _state = state;
         _normalTexture = normal;
         _hoveredTexture = hovered;
         _pressedTexture = pressed;
@@ -37,8 +42,8 @@ public class Button
             new Rectangle(Position.ToPoint(), Size.ToPoint()));
         var released = mouseState.LeftButton == ButtonState.Released;
 
-        var pressSound = Bonfire.Instance.SoundMap["button_press"];
-        var releaseSound = Bonfire.Instance.SoundMap["button_release"];
+        var pressSound = Game.SoundMap["button_press"];
+        var releaseSound = Game.SoundMap["button_release"];
 
         if (inside)
         {
