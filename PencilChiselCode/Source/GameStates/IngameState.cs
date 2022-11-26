@@ -7,16 +7,13 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
-using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
 
 namespace PencilChiselCode.Source.GameStates;
 
-public class IngameState : GameScreen
+public class IngameState : BonfireGameState
 {
-    public static readonly Color BgColor = Color.Green;
-    private Bonfire _game => (Bonfire)Game;
     private Player _player;
     private Companion _companion;
     private bool _showDebug;
@@ -46,7 +43,7 @@ public class IngameState : GameScreen
     private int _spawnOffset = 128;
 
     private int MapIndex =>
-        (int)Math.Abs(Math.Floor(_game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
+        (int)Math.Abs(Math.Floor(Game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
 
 
     public IngameState(Game game) : base(game)
@@ -64,92 +61,97 @@ public class IngameState : GameScreen
         for (var i = 0; i < _twigCount; i++)
         {
             Pickupables.Add(new Pickupable(PickupableTypes.Twig,
-                _game.TextureMap["twigs"],
-                _game.SoundMap["pickup_branches"],
-                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X, _game.GetWindowWidth() + _spawnOffset),
-                    Utils.GetRandomInt(10, _game.GetWindowHeight() - 10)),
+                Game.TextureMap["twigs"],
+                Game.SoundMap["pickup_branches"],
+                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
+                    Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)),
                 Vector2.One, Utils.RANDOM.NextAngle()));
         }
 
         for (var i = 0; i < _bushCount; i++)
         {
             Pickupables.Add(new Pickupable(PickupableTypes.Bush,
-                _game.TextureMap["bush_berry"],
-                _game.SoundMap["pickup_branches"],
-                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X, _game.GetWindowWidth() + _spawnOffset),
-                    Utils.GetRandomInt(10, _game.GetWindowHeight() - 10)),
+                Game.TextureMap["bush_berry"],
+                Game.SoundMap["pickup_branches"],
+                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
+                    Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)),
                 Vector2.One * 2));
         }
 
         for (var i = 0; i < _treeCount; i++)
         {
             var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
-            GroundEntities.Add(new GroundEntity(_game, _game.TextureMap[$"tree_{treeType}"],
-                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X, _game.GetWindowWidth() + _spawnOffset),
-                    Utils.GetRandomInt(10, _game.GetWindowHeight() - 10)),
+            GroundEntities.Add(new GroundEntity(this, Game.TextureMap[$"tree_{treeType}"],
+                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
+                    Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)),
                 Vector2.One * 2F));
         }
 
         for (var i = 0; i < _glowFlowerCount; i++)
         {
-            GroundEntities.Add(new GroundEntity(_game, _game.TextureMap["flower_lamp_1"],
-                new Vector2(Utils.GetRandomInt((int)_game.Camera.Position.X, _game.GetWindowWidth() + _spawnOffset),
-                    Utils.GetRandomInt(10, _game.GetWindowHeight() - 10)),
+            GroundEntities.Add(new GroundEntity(this, Game.TextureMap["flower_lamp_1"],
+                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
+                    Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)),
                 Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
         }
 
-        var resumeButton = _game.TextureMap["resume_button_normal"];
+        var resumeButton = Game.TextureMap["resume_button_normal"];
         var resumeButtonSize = new Size2(resumeButton.Width, resumeButton.Height);
-        _pauseButton = new Button(resumeButton,
-            _game.TextureMap["resume_button_hover"],
-            _game.TextureMap["resume_button_pressed"],
-            Utils.GetCenterStartCoords(resumeButtonSize, Bonfire.Instance.GetWindowDimensions()),
+        _pauseButton = new Button(this,
+            resumeButton,
+            Game.TextureMap["resume_button_hover"],
+            Game.TextureMap["resume_button_pressed"],
+            Utils.GetCenterStartCoords(resumeButtonSize, Game.GetWindowDimensions()),
             () => { _pauseState = false; }
         );
-        var exitButton = _game.TextureMap["exit_button_normal"];
+        var exitButton = Game.TextureMap["exit_button_normal"];
         var exitButtonSize = new Size2(exitButton.Width, exitButton.Height);
-        _exitButton = new Button(exitButton,
-            _game.TextureMap["exit_button_hover"],
-            _game.TextureMap["exit_button_pressed"],
-            Utils.GetCenterStartCoords(exitButtonSize, Bonfire.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
-            () => _game.Exit()
+        _exitButton = new Button(this,
+            exitButton,
+            Game.TextureMap["exit_button_hover"],
+            Game.TextureMap["exit_button_pressed"],
+            Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions()) + Vector2.UnitY * 100,
+            () => Game.Exit()
         );
 
-        var menuButton = _game.TextureMap["menu_button_normal"];
+        var menuButton = Game.TextureMap["menu_button_normal"];
         var menuButtonSize = new Size2(menuButton.Width, menuButton.Height);
-        _menuButton = new Button(menuButton,
-            _game.TextureMap["menu_button_hover"],
-            _game.TextureMap["menu_button_pressed"],
-            Utils.GetCenterStartCoords(menuButtonSize, Bonfire.Instance.GetWindowDimensions()) + Vector2.UnitY * 100,
-            () => _game.ScreenManager.LoadScreen(new MenuState(_game), new FadeTransition(Bonfire.Instance.GraphicsDevice, Color.Black)));
+        _menuButton = new Button(this,
+            menuButton,
+            Game.TextureMap["menu_button_hover"],
+            Game.TextureMap["menu_button_pressed"],
+            Utils.GetCenterStartCoords(menuButtonSize, Game.GetWindowDimensions()) + Vector2.UnitY * 100,
+            () => Game.ScreenManager.LoadScreen(new MenuState(Game),
+                new FadeTransition(Game.GraphicsDevice, Color.Black)));
 
-        var restartButton = _game.TextureMap["restart_button_normal"];
+        var restartButton = Game.TextureMap["restart_button_normal"];
         var restartButtonSize = new Size2(restartButton.Width, restartButton.Height);
-        _restartButton = new Button(restartButton,
-            _game.TextureMap["restart_button_hover"],
-            _game.TextureMap["restart_button_pressed"],
-            Utils.GetCenterStartCoords(restartButtonSize, Bonfire.Instance.GetWindowDimensions()),
+        _restartButton = new Button(this,
+            restartButton,
+            Game.TextureMap["restart_button_hover"],
+            Game.TextureMap["restart_button_pressed"],
+            Utils.GetCenterStartCoords(restartButtonSize, Game.GetWindowDimensions()),
             () =>
             {
-                _game.ScreenManager.LoadScreen(new IngameState(_game),
-                    new FadeTransition(Bonfire.Instance.GraphicsDevice, Color.Black));
-                _game.ResetPenumbra();
+                Game.ScreenManager.LoadScreen(new IngameState(Game),
+                    new FadeTransition(Game.GraphicsDevice, Color.Black));
+                Game.ResetPenumbra();
             }
         );
         for (var i = 0; i < 10; ++i)
         {
-            var pickupable = new Pickupable(PickupableTypes.Twig, _game.TextureMap["twigs"],
-                _game.SoundMap["pickup_branches"],
+            var pickupable = new Pickupable(PickupableTypes.Twig, Game.TextureMap["twigs"],
+                Game.SoundMap["pickup_branches"],
                 new Vector2(100 + Utils.RANDOM.Next(1, 20) * 50, Utils.RANDOM.Next(1, 15) * 50),
                 Vector2.One, 0.5F);
             Pickupables.Add(pickupable);
         }
 
 
-        _companion = new Companion(_game, new Vector2(100, 100), 50F);
-        _player = new Player(_game, new Vector2(150, 150));
+        _companion = new Companion(this, new Vector2(100, 100), 50F);
+        _player = new Player(this, new Vector2(150, 150));
 
-        Campfires.Add(new CampFire(_game, new Vector2(500, 400))); // TEMP
+        Campfires.Add(new CampFire(this, new Vector2(500, 400))); // TEMP
 
         _maps = new List<TiledMap>();
         for (var i = 0; i < 3; ++i)
@@ -160,22 +162,22 @@ public class IngameState : GameScreen
         _darknessParticles = new ParticleGenerator(
             (() => new Particle(
                 2F,
-                new(0, Utils.RANDOM.Next(0, _game.Height)),
+                new(0, Utils.RANDOM.Next(0, Game.Height)),
                 new(Utils.RANDOM.Next(0, 20), Utils.RANDOM.Next(-10, 10)),
                 time => 2 + time,
                 _ => Color.Black
             )),
             100F
         );
-        var attributeTexture = _game.TextureMap["attribute_bar"];
-        var comfyAttributeTexture = _game.TextureMap["comfy_bar"];
+        var attributeTexture = Game.TextureMap["attribute_bar"];
+        var comfyAttributeTexture = Game.TextureMap["comfy_bar"];
         _followerAttribute =
             new Attribute(
-                new Vector2(_game.GetWindowWidth() / 2, _game.GetWindowHeight() - attributeTexture.Height * 3F), 3F,
+                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() - attributeTexture.Height * 3F), 3F,
                 attributeTexture, comfyAttributeTexture, attributeTexture.Bounds.Center.ToVector2(), 100, -2F);
 
-        _inventory = new Inventory(_game, _player);
-        _song = _game.SongMap["bonfire_song"];
+        _inventory = new Inventory(this, _player);
+        _song = Game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
     }
@@ -184,10 +186,10 @@ public class IngameState : GameScreen
     {
         if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
         Pickupables.Add(new Pickupable(PickupableTypes.Bush,
-            _game.TextureMap["bush_berry"],
-            _game.SoundMap["pickup_branches"],
-            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + _spawnOffset,
-                Utils.GetRandomInt(5, _game.GetWindowHeight())),
+            Game.TextureMap["bush_berry"],
+            Game.SoundMap["pickup_branches"],
+            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + _spawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())),
             Vector2.One * 2)
         );
     }
@@ -196,13 +198,13 @@ public class IngameState : GameScreen
     {
         if (Utils.GetRandomInt(0, 101) >= 24) return;
         var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
-        GroundEntities.Add(new GroundEntity(_game, _game.TextureMap[$"tree_{treeType}"],
-            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + _spawnOffset,
-                Utils.GetRandomInt(5, _game.GetWindowHeight())),
+        GroundEntities.Add(new GroundEntity(this, Game.TextureMap[$"tree_{treeType}"],
+            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + _spawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())),
             Vector2.One * 2F));
-        GroundEntities.Add(new GroundEntity(_game, _game.TextureMap["flower_lamp_1"],
-            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + _spawnOffset,
-                Utils.GetRandomInt(5, _game.GetWindowHeight())),
+        GroundEntities.Add(new GroundEntity(this, Game.TextureMap["flower_lamp_1"],
+            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + _spawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())),
             Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
     }
 
@@ -210,15 +212,15 @@ public class IngameState : GameScreen
     {
         if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
         Pickupables.Add(new Pickupable(PickupableTypes.Twig,
-            _game.TextureMap["twigs"],
-            _game.SoundMap["pickup_branches"],
-            new Vector2(_game.Camera.Position.X + _game.GetWindowWidth() + 128,
-                Utils.GetRandomInt(5, _game.GetWindowHeight())),
+            Game.TextureMap["twigs"],
+            Game.SoundMap["pickup_branches"],
+            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + 128,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())),
             Vector2.One, Utils.RANDOM.NextAngle())
         );
     }
 
-    private void AddRandomMap() => _maps.Add(_game.TiledMaps[Utils.RANDOM.Next(0, _game.TiledMaps.Count)]);
+    private void AddRandomMap() => _maps.Add(Game.TiledMaps[Utils.RANDOM.Next(0, Game.TiledMaps.Count)]);
 
     public override void Update(GameTime gameTime)
     {
@@ -231,7 +233,7 @@ public class IngameState : GameScreen
         }
 
         var oldMapIndex = MapIndex;
-        _game.TiledMapRenderer.Update(gameTime);
+        Game.TiledMapRenderer.Update(gameTime);
         var keyState = Keyboard.GetState();
         if (_followerAttribute.Value <= 0)
         {
@@ -255,9 +257,9 @@ public class IngameState : GameScreen
         }
         else
         {
-            _game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
-            _companion.Update(this, gameTime, _player.Position);
-            _player.Update(this, gameTime);
+            Game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+            _companion.Update(gameTime, _player.Position);
+            _player.Update(gameTime);
             _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
             GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime, _player.Position));
@@ -300,8 +302,8 @@ public class IngameState : GameScreen
         if (keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanCreateFire())
         {
             _player.CreateFire(10);
-            _game.SoundMap["light_fire"].Play();
-            Campfires.Add(new CampFire(_game, new Vector2(_player.Position.X + 20, _player.Position.Y - 20)));
+            Game.SoundMap["light_fire"].Play();
+            Campfires.Add(new CampFire(this, new Vector2(_player.Position.X + 20, _player.Position.Y - 20)));
         }
 
         if (oldMapIndex != MapIndex)
@@ -312,59 +314,59 @@ public class IngameState : GameScreen
 
         PreviousPressedKeys.Clear();
         PreviousPressedKeys.UnionWith(keyState.GetPressedKeys());
-        _debugData[1] = $"Translation: {_game.Camera.GetViewMatrix().Translation}";
+        _debugData[1] = $"Translation: {Game.Camera.GetViewMatrix().Translation}";
         _debugData[2] = $"Map Index: {MapIndex}";
     }
 
     public override void Draw(GameTime gameTime)
     {
-        _game.Penumbra.BeginDraw();
-        _game.Penumbra.Transform = Matrix.CreateTranslation(-_game.Camera.Position.X, -_game.Camera.Position.Y, 0);
-        _game.GraphicsDevice.Clear(BgColor);
-        var transformMatrix = _game.Camera.GetViewMatrix();
+        Game.Penumbra.BeginDraw();
+        Game.Penumbra.Transform = Matrix.CreateTranslation(-Game.Camera.Position.X, -Game.Camera.Position.Y, 0);
+        Game.GraphicsDevice.Clear(BgColor);
+        var transformMatrix = Game.Camera.GetViewMatrix();
 
         for (var i = 0; i < _maps.Count; ++i)
         {
-            _game.TiledMapRenderer.LoadMap(_maps[i]);
-            _game.TiledMapRenderer.Draw(
-                transformMatrix * Matrix.CreateTranslation(_maps[i].HeightInPixels * (i + MapIndex - 1), 0, 0));
+            Game.TiledMapRenderer.LoadMap(_maps[i]);
+            Game.TiledMapRenderer.Draw(
+                transformMatrix * Matrix.CreateTranslation(_maps[i].WidthInPixels * (i + MapIndex - 1), 0, 0));
         }
 
-        _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        Game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
 
-        Pickupables.ForEach(pickupable => pickupable.Draw(_game.SpriteBatch));
-        Campfires.ForEach(campfire => campfire.Draw(_game.SpriteBatch));
-        GroundEntities.ForEach(groundEntity => groundEntity.Draw(_game.SpriteBatch));
+        Pickupables.ForEach(pickupable => pickupable.Draw(Game.SpriteBatch));
+        Campfires.ForEach(campfire => campfire.Draw(Game.SpriteBatch));
+        GroundEntities.ForEach(groundEntity => groundEntity.Draw(Game.SpriteBatch));
 
-        _companion.Draw(_game.SpriteBatch);
-        _player.Draw(_game.SpriteBatch);
+        _companion.Draw(Game.SpriteBatch);
+        _player.Draw(Game.SpriteBatch);
 
-        _game.SpriteBatch.End();
+        Game.SpriteBatch.End();
 
-        _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        Game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        _darknessParticles.Draw(_game.SpriteBatch);
+        _darknessParticles.Draw(Game.SpriteBatch);
 
-        _game.SpriteBatch.End();
+        Game.SpriteBatch.End();
 
-        _game.Penumbra.Draw(gameTime);
+        Game.Penumbra.Draw(gameTime);
 
         DrawUI(gameTime);
     }
 
     private void DrawUI(GameTime gameTime)
     {
-        var transformMatrix = _game.Camera.GetViewMatrix();
-        _game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
-        _player.DrawPopupButton(_game.SpriteBatch);
-        Campfires.ForEach(campfire => campfire.DrawUI(_game.SpriteBatch));
-        _game.SpriteBatch.End();
+        var transformMatrix = Game.Camera.GetViewMatrix();
+        Game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        _player.DrawPopupButton(Game.SpriteBatch);
+        Campfires.ForEach(campfire => campfire.DrawUI(Game.SpriteBatch));
+        Game.SpriteBatch.End();
 
-        _game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        _followerAttribute.Draw(_game.SpriteBatch);
-        _game.SpriteBatch.DrawString(_game.FontMap["32"], "Comfy meter",
-            new Vector2(_game.GetWindowWidth() / 2 - 350, _game.GetWindowHeight() - 100), Color.Orange);
-        _inventory.Draw(_game.SpriteBatch);
+        Game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        _followerAttribute.Draw(Game.SpriteBatch);
+        Game.SpriteBatch.DrawString(Game.FontMap["32"], "Comfy meter",
+            new Vector2(Game.GetWindowWidth() / 2 - 350, Game.GetWindowHeight() - 100), Color.Orange);
+        _inventory.Draw(Game.SpriteBatch);
 
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
         {
@@ -375,29 +377,31 @@ public class IngameState : GameScreen
 
         else if (_pauseState)
         {
-            _pauseButton.Draw(_game.SpriteBatch);
-            _menuButton.Draw(_game.SpriteBatch);
+            _pauseButton.Draw(Game.SpriteBatch);
+            _menuButton.Draw(Game.SpriteBatch);
         }
         else if (_deathState)
         {
             var finalScore = (int)Math.Ceiling(_score / 10);
-            _game.SpriteBatch.DrawOutlinedString(_game.FontMap["32"], "Your companion got too anxious!",
-                new Vector2(_game.GetWindowWidth() / 2F, _game.GetWindowHeight() / 3F - 60F), Color.Red, Color.Black, Utils.HorizontalFontAlignment.Center, Utils.VerticalFontAlignment.Center);
-            _game.SpriteBatch.DrawOutlinedString(_game.FontMap["24"], $"Final score {finalScore}",
-                new Vector2(_game.GetWindowWidth() / 2F, _game.GetWindowHeight() / 3F), Color.Red, Color.Black, Utils.HorizontalFontAlignment.Center, Utils.VerticalFontAlignment.Center);
-            _restartButton.Draw(_game.SpriteBatch);
-            _exitButton.Draw(_game.SpriteBatch);
+            Game.SpriteBatch.DrawOutlinedString(Game.FontMap["32"], "Your companion got too anxious!",
+                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() / 3F - 60F), Color.Red, Color.Black,
+                Utils.HorizontalFontAlignment.Center, Utils.VerticalFontAlignment.Center);
+            Game.SpriteBatch.DrawOutlinedString(Game.FontMap["24"], $"Final score {finalScore}",
+                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() / 3F), Color.Red, Color.Black,
+                Utils.HorizontalFontAlignment.Center, Utils.VerticalFontAlignment.Center);
+            _restartButton.Draw(Game.SpriteBatch);
+            _exitButton.Draw(Game.SpriteBatch);
         }
 
         if (_showDebug)
         {
             for (var i = 0; i < _debugData.Count; ++i)
             {
-                _game.SpriteBatch.DrawString(_game.FontMap["16"], _debugData[i],
+                Game.SpriteBatch.DrawString(Game.FontMap["16"], _debugData[i],
                     new Vector2(16, 16 * (i + 1)), Color.White);
             }
         }
 
-        _game.SpriteBatch.End();
+        Game.SpriteBatch.End();
     }
 }

@@ -28,7 +28,6 @@ public class Bonfire : Game
     public Dictionary<string, SoundEffect> SoundMap { get; } = new();
     public Dictionary<string, BitmapFont> FontMap { get; } = new();
     public Dictionary<string, SpriteSheet> SpriteSheetMap { get; } = new();
-    public static Bonfire Instance { get; private set; }
     public readonly ScreenManager ScreenManager;
     public OrthographicCamera Camera;
     public TiledMapRenderer TiledMapRenderer;
@@ -42,7 +41,6 @@ public class Bonfire : Game
         Components.Add(ScreenManager);
         Penumbra = new PenumbraComponent(this);
         Penumbra.AmbientColor = Color.Black;
-        Instance = this;
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
         IsMouseVisible = true;

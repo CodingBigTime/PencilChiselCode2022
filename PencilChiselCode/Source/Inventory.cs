@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PencilChiselCode.Source.GameStates;
@@ -11,150 +9,150 @@ namespace PencilChiselCode.Source
     public class Inventory
     {
         private Dictionary<string, TextIcon> _textIcons;
-
         private Dictionary<string, Icon> _icons;
-
-        private Bonfire _game;
-
         private Player _player;
+        private readonly BonfireGameState _state;
+        private Bonfire Game => _state.Game;
 
-        public Inventory(Bonfire game, Player player)
+        public Inventory(BonfireGameState state, Player player)
         {
-            _game = game;
+            _state = state;
             _player = player;
-            var font = _game.FontMap["32"];
+            var font = Game.FontMap["32"];
             _textIcons =
-                new Dictionary<string, TextIcon> {
+                new Dictionary<string, TextIcon>
+                {
                     {
                         "twigCount",
                         new TextIcon("0",
-                            new Vector2(game.Width - 175, 50),
+                            new Vector2(Game.Width - 175, 50),
                             font)
                     },
                     {
                         "berryCount",
                         new TextIcon("0",
-                            new Vector2(game.Width - 175, 100),
+                            new Vector2(Game.Width - 175, 100),
                             font)
                     },
                     {
                         "campfireTwigCost",
                         new TextIcon("10 x",
-                            new Vector2(game.Width - 275, 150),
+                            new Vector2(Game.Width - 275, 150),
                             font)
                     },
                     {
                         "campfireEquals",
                         new TextIcon("=",
-                            new Vector2(game.Width - 150, 150),
+                            new Vector2(Game.Width - 150, 150),
                             font)
                     },
                     {
                         "campfireRefuel2x",
                         new TextIcon("2 x",
-                            new Vector2(game.Width - 260, 200),
+                            new Vector2(Game.Width - 260, 200),
                             font)
                     },
                     {
                         "campfireRefuelPlus",
                         new TextIcon("+",
-                            new Vector2(game.Width - 150, 200),
+                            new Vector2(Game.Width - 150, 200),
                             font)
                     },
                     {
                         "followerFeedPlus",
                         new TextIcon("+",
-                            new Vector2(game.Width - 150, 250),
+                            new Vector2(Game.Width - 150, 250),
                             font)
                     },
                     {
                         "followStop",
                         new TextIcon("follow/stop",
-                            new Vector2(game.Width - 300, 300),
+                            new Vector2(Game.Width - 300, 300),
                             font)
                     }
                 };
             _icons =
-                new Dictionary<string, Icon> {
+                new Dictionary<string, Icon>
+                {
                     {
                         "twigIcon",
-                        new Icon(new Vector2(game.Width - 120, 50),
-                            _game.TextureMap["twig"])
+                        new Icon(new Vector2(Game.Width - 120, 50),
+                            Game.TextureMap["twig"])
                     },
                     {
                         "twigEButton",
-                        new Icon(new Vector2(game.Width - 60, 50),
-                            _game.TextureMap["e_button"],
+                        new Icon(new Vector2(Game.Width - 60, 50),
+                            Game.TextureMap["e_button"],
                             2F)
                     },
                     {
                         "berryIcon",
-                        new Icon(new Vector2(game.Width - 120, 100),
-                            _game.TextureMap["berry"], 2F)
+                        new Icon(new Vector2(Game.Width - 120, 100),
+                            Game.TextureMap["berry"], 2F)
                     },
                     {
                         "berryEButton",
-                        new Icon(new Vector2(game.Width - 60, 100),
-                            _game.TextureMap["e_button"],
+                        new Icon(new Vector2(Game.Width - 60, 100),
+                            Game.TextureMap["e_button"],
                             2F)
                     },
                     {
                         "campfireCostTwigIcon",
-                        new Icon(new Vector2(game.Width - 200, 150),
-                            _game.TextureMap["twig"])
+                        new Icon(new Vector2(Game.Width - 200, 150),
+                            Game.TextureMap["twig"])
                     },
                     {
                         "campfireCostIcon",
-                        new Icon(new Vector2(game.Width - 120, 150),
-                            _game.TextureMap["campfire"])
+                        new Icon(new Vector2(Game.Width - 120, 150),
+                            Game.TextureMap["campfire"])
                     },
                     {
                         "camfireXButton",
-                        new Icon(new Vector2(game.Width - 60, 150),
-                            _game.TextureMap["x_button"],
+                        new Icon(new Vector2(Game.Width - 60, 150),
+                            Game.TextureMap["x_button"],
                             2F)
                     },
                     {
                         "campfireRefuelTwigIcon",
-                        new Icon(new Vector2(game.Width - 200, 200),
-                            _game.TextureMap["twig"])
+                        new Icon(new Vector2(Game.Width - 200, 200),
+                            Game.TextureMap["twig"])
                     },
                     {
                         "campfireRefuelIcon",
-                        new Icon(new Vector2(game.Width - 120, 200),
-                            _game.TextureMap["campfire"])
+                        new Icon(new Vector2(Game.Width - 120, 200),
+                            Game.TextureMap["campfire"])
                     },
                     {
                         "camfireRefuelFButton",
-                        new Icon(new Vector2(game.Width - 60, 200),
-                            _game.TextureMap["f_button"],
+                        new Icon(new Vector2(Game.Width - 60, 200),
+                            Game.TextureMap["f_button"],
                             2F)
                     },
                     {
                         "followerFeedBerry",
-                        new Icon(new Vector2(game.Width - 200, 250),
-                            _game.TextureMap["berry"], 2F)
+                        new Icon(new Vector2(Game.Width - 200, 250),
+                            Game.TextureMap["berry"], 2F)
                     },
                     {
                         "followerFeedIcon",
-                        new Icon(new Vector2(game.Width - 120, 250),
-                            _game.TextureMap["follower"])
+                        new Icon(new Vector2(Game.Width - 120, 250),
+                            Game.TextureMap["follower"])
                     },
                     {
                         "followerFeedFButton",
-                        new Icon(new Vector2(game.Width - 60, 250),
-                            _game.TextureMap["q_button"],
+                        new Icon(new Vector2(Game.Width - 60, 250),
+                            Game.TextureMap["q_button"],
                             2F)
                     },
                     {
                         "followerFollowStand",
-                        new Icon(new Vector2(game.Width - 120, 300),
-                            _game.TextureMap["follower"])
+                        new Icon(new Vector2(Game.Width - 120, 300),
+                            Game.TextureMap["follower"])
                     },
                     {
                         "followerFollowStandSpace",
-                        new Icon(new Vector2(game.Width - 75, 300),
-                            _game.TextureMap["space_button"], 2)
+                        new Icon(new Vector2(Game.Width - 75, 300),
+                            Game.TextureMap["space_button"], 2)
                     }
                 };
         }
