@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using PencilChiselCode.Source.GameStates;
 
 namespace PencilChiselCode.Source;
 
@@ -14,10 +15,17 @@ public class Pickupable
     private Vector2 _scale;
     public SoundEffect PickupSound { get; set; }
     public PickupableTypes Type { get; set; }
+    private const float RenderOffset = 32;
+    private readonly BonfireGameState _state;
+    private Bonfire Game => _state.Game;
 
-    public Pickupable(PickupableTypes type, Texture2D texture, SoundEffect pickupSound, Vector2 position,
+    public bool ShouldRemove => Game.Camera.Position.X > Position.X + Size.X * _scale.X + RenderOffset;
+
+    public Pickupable(BonfireGameState state, PickupableTypes type, Texture2D texture, SoundEffect pickupSound,
+        Vector2 position,
         Vector2 scale, float rotation = 0F)
     {
+        _state = state;
         IsConsumable = true;
         Texture = texture;
         Position = position;

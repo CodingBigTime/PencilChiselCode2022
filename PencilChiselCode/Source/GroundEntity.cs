@@ -32,6 +32,8 @@ public class GroundEntity
     private Tweener _lightSizeTweener;
     private BonfireGameState _state;
     private Bonfire Game => _state.Game;
+    private const float RenderOffset = 32;
+    public bool ShouldRemove => Game.Camera.Position.X > Position.X + Size.X * _scale.X + RenderOffset;
 
     private void Init(BonfireGameState state, Texture2D texture, Vector2 position, Vector2 scale, float rotation)
     {
@@ -62,6 +64,17 @@ public class GroundEntity
         }
     }
 
+    private void Cleanup()
+    {
+        Game.Penumbra.Lights.Remove(PointLight);
+        Game.Penumbra.Hulls.Remove(Hull);
+    }
+
+    ~GroundEntity()
+    {
+        Cleanup();
+    }
+
     public GroundEntity(BonfireGameState state, Texture2D texture, Vector2 position, Vector2 scale, float rotation = 0F)
     {
         Init(state, texture, position, scale, rotation);
@@ -80,11 +93,18 @@ public class GroundEntity
 
     public void Draw(SpriteBatch spriteBatch)
     {
+        if (ShouldRemove) return;
         spriteBatch.Draw(Texture, Position, null, _color, Rotation, Size / 2, _scale, SpriteEffects.None, 0);
     }
 
     public void Update(GameTime gameTime, Vector2 playerPosition)
     {
+        if (ShouldRemove)
+        {
+            Cleanup();
+            return;
+        }
+
         _lightSizeTweener?.Update(gameTime.GetElapsedSeconds());
         if (Size.Y > 32
             && playerPosition.Y < _position.Y + 32

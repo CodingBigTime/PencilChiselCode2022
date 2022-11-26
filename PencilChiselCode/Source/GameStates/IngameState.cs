@@ -60,7 +60,7 @@ public class IngameState : BonfireGameState
         base.LoadContent();
         for (var i = 0; i < _twigCount; i++)
         {
-            Pickupables.Add(new Pickupable(PickupableTypes.Twig,
+            Pickupables.Add(new Pickupable(this, PickupableTypes.Twig,
                 Game.TextureMap["twigs"],
                 Game.SoundMap["pickup_branches"],
                 new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
@@ -70,7 +70,7 @@ public class IngameState : BonfireGameState
 
         for (var i = 0; i < _bushCount; i++)
         {
-            Pickupables.Add(new Pickupable(PickupableTypes.Bush,
+            Pickupables.Add(new Pickupable(this, PickupableTypes.Bush,
                 Game.TextureMap["bush_berry"],
                 Game.SoundMap["pickup_branches"],
                 new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
@@ -140,7 +140,7 @@ public class IngameState : BonfireGameState
         );
         for (var i = 0; i < 10; ++i)
         {
-            var pickupable = new Pickupable(PickupableTypes.Twig, Game.TextureMap["twigs"],
+            var pickupable = new Pickupable(this, PickupableTypes.Twig, Game.TextureMap["twigs"],
                 Game.SoundMap["pickup_branches"],
                 new Vector2(100 + Utils.RANDOM.Next(1, 20) * 50, Utils.RANDOM.Next(1, 15) * 50),
                 Vector2.One, 0.5F);
@@ -160,13 +160,13 @@ public class IngameState : BonfireGameState
         }
 
         _darknessParticles = new ParticleGenerator(
-            (() => new Particle(
+            () => new Particle(
                 2F,
                 new(0, Utils.RANDOM.Next(0, Game.Height)),
                 new(Utils.RANDOM.Next(0, 20), Utils.RANDOM.Next(-10, 10)),
                 time => 2 + time,
                 _ => Color.Black
-            )),
+            ),
             100F
         );
         var attributeTexture = Game.TextureMap["attribute_bar"];
@@ -185,7 +185,7 @@ public class IngameState : BonfireGameState
     public void RandomBushSpawner()
     {
         if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
-        Pickupables.Add(new Pickupable(PickupableTypes.Bush,
+        Pickupables.Add(new Pickupable(this, PickupableTypes.Bush,
             Game.TextureMap["bush_berry"],
             Game.SoundMap["pickup_branches"],
             new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + _spawnOffset,
@@ -211,7 +211,7 @@ public class IngameState : BonfireGameState
     public void RandomTwigSpawner()
     {
         if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
-        Pickupables.Add(new Pickupable(PickupableTypes.Twig,
+        Pickupables.Add(new Pickupable(this, PickupableTypes.Twig,
             Game.TextureMap["twigs"],
             Game.SoundMap["pickup_branches"],
             new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + 128,
@@ -262,9 +262,12 @@ public class IngameState : BonfireGameState
             _player.Update(gameTime);
             _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
+            Pickupables.RemoveAll(pickupable => pickupable.ShouldRemove);
             GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime, _player.Position));
-            Campfires.RemoveAll(campfire => !campfire.IsLit());
+            GroundEntities.RemoveAll(groundEntity => groundEntity.ShouldRemove);
             Campfires.ForEach(campfire => { campfire.Update(gameTime); });
+            Campfires.RemoveAll(campfire => campfire.ShouldRemove);
+
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
             {
                 _followerAttribute.ChangeValue(8F * gameTime.GetElapsedSeconds());
