@@ -65,6 +65,15 @@ public class Player
             3F
         );
     }
+    private void Cleanup()
+    {
+        Game.Penumbra.Lights.Remove(PointLight);
+        Game.Penumbra.Lights.Remove(Spotlight);
+    }
+    ~Player()
+    {
+        Cleanup();
+    }
 
     public Light PointLight { get; } = new PointLight
     {

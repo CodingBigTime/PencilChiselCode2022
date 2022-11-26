@@ -46,22 +46,32 @@ namespace PencilChiselCode.Source
                 100F,
                 -5F
             );
-            // Game.Penumbra.Lights.Add(PointLight);
             Game.Penumbra.Lights.Add(PointLight);
             _particleGenerator = new ParticleGenerator(
-                (() => new Particle(
+                () => new Particle(
                     Utils.RANDOM.NextSingle(1, 2),
                     Position + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) +
                     Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                     Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
                     time => time,
                     _ => IsLow() ? Color.Black : Color.Red
-                )),
+                ),
                 5F
             );
         }
 
+        private void Cleanup()
+        {
+            Game.Penumbra.Lights.Remove(PointLight);
+        }
+
+        ~CampFire()
+        {
+            Cleanup();
+        }
+
         public bool IsLit() => !_attribute.IsEmpty();
+        public bool ShouldRemove => !IsLit();
 
         public bool IsLow() => _attribute.Percent() < 0.1;
 
@@ -87,6 +97,11 @@ namespace PencilChiselCode.Source
 
         public void Update(GameTime gameTime)
         {
+            if (ShouldRemove)
+            {
+                Cleanup();
+                return;
+            }
             _animatedSprite.Update(gameTime);
             _attribute.Update(gameTime);
             PointLight.Scale = new(_maxScale * (float)Math.Sqrt(_attribute.Percent()));
@@ -95,6 +110,7 @@ namespace PencilChiselCode.Source
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (ShouldRemove) return;
             float textureScale = _attribute.Percent() * 4F;
             _animatedSprite.Draw(
                 spriteBatch,
@@ -107,6 +123,7 @@ namespace PencilChiselCode.Source
 
         public void DrawUI(SpriteBatch spriteBatch)
         {
+            if (ShouldRemove) return;
             _attribute.Draw(spriteBatch);
         }
     }
