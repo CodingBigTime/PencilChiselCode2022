@@ -8,16 +8,14 @@ namespace PencilChiselCode.Source
 {
     public class Inventory
     {
-        private Dictionary<string, TextIcon> _textIcons;
-        private Dictionary<string, Icon> _icons;
-        private Player _player;
-        private readonly BonfireGameState _state;
+        private readonly Dictionary<string, TextIcon> _textIcons;
+        private readonly Dictionary<string, Icon> _icons;
+        private readonly IngameState _state;
         private Bonfire Game => _state.Game;
 
-        public Inventory(BonfireGameState state, Player player)
+        public Inventory(IngameState state)
         {
             _state = state;
-            _player = player;
             var font = Game.FontMap["32"];
             _textIcons =
                 new Dictionary<string, TextIcon>
@@ -159,8 +157,8 @@ namespace PencilChiselCode.Source
 
         public void Update()
         {
-            _textIcons["twigCount"].Text = _player.Twigs.ToString();
-            _textIcons["berryCount"].Text = _player.Berries.ToString();
+            _textIcons["twigCount"].Text = _state.Player.Twigs.ToString();
+            _textIcons["berryCount"].Text = _state.Player.Berries.ToString();
         }
 
         public void Draw(SpriteBatch spriteBatch)

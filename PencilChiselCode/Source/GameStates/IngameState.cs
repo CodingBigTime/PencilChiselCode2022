@@ -14,7 +14,7 @@ namespace PencilChiselCode.Source.GameStates;
 
 public class IngameState : BonfireGameState
 {
-    private Player _player;
+    public Player Player { get; private set; }
     private Companion _companion;
     private bool _showDebug;
     public readonly HashSet<Keys> PreviousPressedKeys = new();
@@ -29,18 +29,18 @@ public class IngameState : BonfireGameState
     private Button _exitButton;
     private Button _menuButton;
     private Button _restartButton;
-    private int _twigCount = 14;
-    private int _bushCount = 14;
-    private int _treeCount = 36;
+    private const int _twigCount = 14;
+    private const int _bushCount = 14;
+    private const int _treeCount = 36;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
-    private float _minimialFollowerPlayerDistance = 100F;
+    private const float _minimialFollowerPlayerDistance = 100F;
     private bool _deathState;
-    private int _glowFlowerCount = 10;
+    private const int _glowFlowerCount = 10;
     private Song _song;
     private float _score;
-    private int _spawnOffset = 128;
+    private const int _spawnOffset = 128;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(Game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -111,7 +111,7 @@ public class IngameState : BonfireGameState
             Game.TextureMap["exit_button_hover"],
             Game.TextureMap["exit_button_pressed"],
             Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions()) + Vector2.UnitY * 100,
-            () => Game.Exit()
+            Game.Exit
         );
 
         var menuButton = Game.TextureMap["menu_button_normal"];
@@ -149,7 +149,7 @@ public class IngameState : BonfireGameState
 
 
         _companion = new Companion(this, new Vector2(100, 100), 50F);
-        _player = new Player(this, new Vector2(150, 150));
+        Player = new Player(this, new Vector2(150, 150));
 
         Campfires.Add(new CampFire(this, new Vector2(500, 400))); // TEMP
 
@@ -176,7 +176,7 @@ public class IngameState : BonfireGameState
                 new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() - attributeTexture.Height * 3F), 3F,
                 attributeTexture, comfyAttributeTexture, attributeTexture.Bounds.Center.ToVector2(), 100, -2F);
 
-        _inventory = new Inventory(this, _player);
+        _inventory = new Inventory(this);
         _song = Game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
@@ -258,14 +258,16 @@ public class IngameState : BonfireGameState
         else
         {
             Game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
-            _companion.Update(gameTime, _player.Position);
-            _player.Update(gameTime);
+            _companion.Update(gameTime, Player.Position);
+            Player.Update(gameTime);
             _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
             Pickupables.RemoveAll(pickupable => pickupable.ShouldRemove);
-            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime, _player.Position));
+
+            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime, Player.Position));
             GroundEntities.RemoveAll(groundEntity => groundEntity.ShouldRemove);
-            Campfires.ForEach(campfire => { campfire.Update(gameTime); });
+
+            Campfires.ForEach(campfire => campfire.Update(gameTime));
             Campfires.RemoveAll(campfire => campfire.ShouldRemove);
 
             if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
@@ -273,11 +275,11 @@ public class IngameState : BonfireGameState
                 _followerAttribute.ChangeValue(8F * gameTime.GetElapsedSeconds());
             }
 
-            var followerPlayerDistance = Vector2.Distance(_player.Position, _companion.Position);
+            var followerPlayerDistance = Vector2.Distance(Player.Position, _companion.Position);
             if (keyState.IsKeyDown(Keys.Q) && !PreviousPressedKeys.Contains(Keys.Q) && followerPlayerDistance <= 100 &&
-                _player.Berries >= 1)
+                Player.Berries >= 1)
             {
-                _player.ReduceBerries(1);
+                Player.ReduceBerries(1);
                 _followerAttribute.ChangeValue(10F);
             }
 
@@ -302,11 +304,11 @@ public class IngameState : BonfireGameState
             _companion.StopResumeFollower();
         }
 
-        if (keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && _player.CanCreateFire())
+        if (keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && Player.CanCreateFire())
         {
-            _player.CreateFire(10);
+            Player.CreateFire(10);
             Game.SoundMap["light_fire"].Play();
-            Campfires.Add(new CampFire(this, new Vector2(_player.Position.X + 20, _player.Position.Y - 20)));
+            Campfires.Add(new CampFire(this, new Vector2(Player.Position.X + 20, Player.Position.Y - 20)));
         }
 
         if (oldMapIndex != MapIndex)
@@ -342,7 +344,7 @@ public class IngameState : BonfireGameState
         GroundEntities.ForEach(groundEntity => groundEntity.Draw(Game.SpriteBatch));
 
         _companion.Draw(Game.SpriteBatch);
-        _player.Draw(Game.SpriteBatch);
+        Player.Draw(Game.SpriteBatch);
 
         Game.SpriteBatch.End();
 
@@ -361,7 +363,7 @@ public class IngameState : BonfireGameState
     {
         var transformMatrix = Game.Camera.GetViewMatrix();
         Game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
-        _player.DrawPopupButton(Game.SpriteBatch);
+        Player.DrawPopupButton(Game.SpriteBatch);
         Campfires.ForEach(campfire => campfire.DrawUI(Game.SpriteBatch));
         Game.SpriteBatch.End();
 

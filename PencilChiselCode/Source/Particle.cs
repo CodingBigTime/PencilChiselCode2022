@@ -8,11 +8,11 @@ namespace PencilChiselCode.Source
     public class Particle
     {
         private float _startTime;
-        private float _duration;
+        private readonly float _duration;
         private Vector2 _position;
         private Vector2 _velocity;
-        private Func<float, float> _scaleFunction;
-        private Func<float, Color> _colorFunction;
+        private readonly Func<float, float> _scaleFunction;
+        private readonly Func<float, Color> _colorFunction;
         private float _scale;
         private Color _color;
         private bool _expired;
@@ -37,9 +37,12 @@ namespace PencilChiselCode.Source
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (_startTime < 0) {
+            if (_startTime < 0)
+            {
                 _startTime = (float)gameTime.TotalGameTime.TotalSeconds;
-            } else if (gameTime.TotalGameTime.TotalSeconds - _startTime > _duration) {
+            }
+            else if (gameTime.TotalGameTime.TotalSeconds - _startTime > _duration)
+            {
                 _expired = true;
             }
 
@@ -50,10 +53,11 @@ namespace PencilChiselCode.Source
             _position += _velocity * deltaTime;
             _scale = _scaleFunction(elapsedTime);
             _color = _colorFunction(elapsedTime);
-            _color.A = (byte) (Byte.MaxValue * (1 - Math.Pow((gameTime.TotalGameTime.TotalSeconds - _startTime) / _duration, 2)));
+            _color.A = (byte)(Byte.MaxValue * (1 - Math.Pow((gameTime.TotalGameTime.TotalSeconds - _startTime) / _duration, 2)));
         }
 
-        public void Draw(SpriteBatch spriteBatch) {
+        public void Draw(SpriteBatch spriteBatch)
+        {
             if (IsExpired()) return;
             var size = new Vector2(10, 10) * _scale;
             spriteBatch.FillRectangle(_position - size / 2, size, _color);

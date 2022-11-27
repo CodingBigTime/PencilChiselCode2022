@@ -8,7 +8,7 @@ namespace PencilChiselCode.Source
     {
         public string Text;
         private Vector2 _position;
-        private BitmapFont _font;
+        private readonly BitmapFont _font;
 
         public TextIcon(string text, Vector2 position, BitmapFont font)
         {

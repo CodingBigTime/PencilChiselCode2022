@@ -40,7 +40,7 @@ public class Player
     private readonly Dictionary<string, PopupButton> _popupButtons = new();
     public uint Twigs { get; private set; }
     public int Berries { get; private set; }
-    private ParticleGenerator _particleGenerator;
+    private readonly ParticleGenerator _particleGenerator;
     private readonly IngameState _state;
     private Bonfire Game => _state.Game;
 
@@ -214,7 +214,7 @@ public class Player
 
         foreach (var (_, value) in _popupButtons)
         {
-            value.Update(_state, gameTime);
+            value.Update(gameTime);
         }
 
         if (!_state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)

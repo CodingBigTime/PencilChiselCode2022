@@ -14,7 +14,7 @@ public class PopupButton
     public float rotation = -0.33F;
     public Texture2D Texture;
     private Vector2 _size;
-    private BonfireGameState _state;
+    private readonly BonfireGameState _state;
     private Bonfire Game => _state.Game;
 
     public PopupButton(BonfireGameState state, Texture2D texture)
@@ -52,7 +52,7 @@ public class PopupButton
         );
     }
 
-    public void Update(IngameState state, GameTime gameTime)
+    public void Update(GameTime gameTime)
     {
         _scaleTweener.Update(gameTime.GetElapsedSeconds());
         _rotationTweener.Update(gameTime.GetElapsedSeconds());
