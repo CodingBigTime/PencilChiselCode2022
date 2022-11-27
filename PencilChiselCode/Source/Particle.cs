@@ -8,11 +8,11 @@ namespace PencilChiselCode.Source
     public class Particle
     {
         private float _startTime;
-        private float _duration;
+        private readonly float _duration;
         private Vector2 _position;
         private Vector2 _velocity;
-        private Func<float, float> _scaleFunction;
-        private Func<float, Color> _colorFunction;
+        private readonly Func<float, float> _scaleFunction;
+        private readonly Func<float, Color> _colorFunction;
         private float _scale;
         private Color _color;
         private bool _expired;

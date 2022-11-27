@@ -21,11 +21,11 @@ namespace PencilChiselCode.Source
         }
 
         private Vector2 _position;
-        private Attribute _attribute;
-        private AnimatedSprite _animatedSprite;
+        private readonly Attribute _attribute;
+        private readonly AnimatedSprite _animatedSprite;
         private readonly float _maxScale = 300F;
-        private ParticleGenerator _particleGenerator;
-        private BonfireGameState _state;
+        private readonly ParticleGenerator _particleGenerator;
+        private readonly BonfireGameState _state;
         private Bonfire Game => _state.Game;
 
         public CampFire(BonfireGameState state, Vector2 position)

@@ -27,9 +27,8 @@ public class GroundEntity
     private Vector2 _position;
     public float Rotation;
     private Vector2 _scale;
-    private Color _glow;
     private Color _color = Color.White;
-    private Tweener _lightSizeTweener;
+    private readonly Tweener _lightSizeTweener;
     private BonfireGameState _state;
     private Bonfire Game => _state.Game;
     private const float RenderOffset = 32;

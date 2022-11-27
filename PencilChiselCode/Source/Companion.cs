@@ -13,9 +13,9 @@ public class Companion
     private readonly float _scale = 1F;
     private Vector2 _speed;
     private Vector2 _movement_speed;
-    private float _minimumDistance = 50F;
+    private const float _minimumDistance = 50F;
     private bool _isAFK;
-    private BonfireGameState _state;
+    private readonly BonfireGameState _state;
     private Bonfire Game => _state.Game;
 
     public Companion(BonfireGameState state, Vector2 position, float speed)

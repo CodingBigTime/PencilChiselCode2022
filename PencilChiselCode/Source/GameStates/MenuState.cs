@@ -38,7 +38,7 @@ public class MenuState : BonfireGameState
             textureMap["exit_button_hover"],
             textureMap["exit_button_pressed"],
             Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions()) + Vector2.UnitY * 100,
-            () => Game.Exit()
+            Game.Exit
         ));
     }
 

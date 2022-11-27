@@ -8,14 +8,14 @@ namespace PencilChiselCode.Source
     public class Attribute
     {
         private Vector2 _position;
+        private float _scale;
         private Vector2 _size;
-        private Texture2D _texture;
-        private Texture2D _filledTexture;
+        private readonly Texture2D _texture;
+        private readonly Texture2D _filledTexture;
         private Vector2 _offset;
         private Color _color;
-        private float _scale;
-        public readonly float MaxValue;
-        public readonly float ChangeRate;
+        public float MaxValue;
+        public float ChangeRate;
 
         public float Value
         {
