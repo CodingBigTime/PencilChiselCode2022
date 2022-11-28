@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -225,23 +224,7 @@ public class IngameState : BonfireGameState
 
     public override void Update(GameTime gameTime)
     {
-        if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
-        {
-            RandomTwigSpawner();
-            RandomBushSpawner();
-            RandomEntitySpawner();
-            _pickupableCounterGameTime = gameTime.TotalGameTime;
-        }
-
-        var oldMapIndex = MapIndex;
-        Game.TiledMapRenderer.Update(gameTime);
-
-        if (_companion.IsAnxious())
-        {
-            _deathState = true;
-        }
-
-        if (KeyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
+        if (!_deathState && KeyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
         {
             _pauseState = !_pauseState;
         }
@@ -258,6 +241,22 @@ public class IngameState : BonfireGameState
         }
         else
         {
+            if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
+            {
+                RandomTwigSpawner();
+                RandomBushSpawner();
+                RandomEntitySpawner();
+                _pickupableCounterGameTime = gameTime.TotalGameTime;
+            }
+
+            var oldMapIndex = MapIndex;
+            Game.TiledMapRenderer.Update(gameTime);
+
+            if (_companion.IsAnxious())
+            {
+                _deathState = true;
+            }
+
             Game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
             _companion.Update(gameTime, Player.Position);
             Player.Update(gameTime);
@@ -273,6 +272,12 @@ public class IngameState : BonfireGameState
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);
             _score += gameTime.ElapsedGameTime.Milliseconds;
+
+            if (oldMapIndex != MapIndex)
+            {
+                _maps.RemoveAt(0);
+                AddRandomMap();
+            }
         }
 
         if (KeyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
@@ -290,12 +295,6 @@ public class IngameState : BonfireGameState
             Player.CreateFire(10);
             Game.SoundMap["light_fire"].Play();
             Campfires.Add(new CampFire(this, new Vector2(Player.Position.X + 20, Player.Position.Y - 20)));
-        }
-
-        if (oldMapIndex != MapIndex)
-        {
-            _maps.RemoveAt(0);
-            AddRandomMap();
         }
 
         PreviousPressedKeys.Clear();
