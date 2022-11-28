@@ -79,13 +79,7 @@ namespace PencilChiselCode.Source
         }
 
 
-        public float ChangeValue(float value)
-        {
-            Value += value;
-
-            return Value;
-        }
-
+        public float ChangeValue(float value) => Value += value;
         public float Percent() => Value / MaxValue;
         public bool IsEmpty() => Value <= 0;
 

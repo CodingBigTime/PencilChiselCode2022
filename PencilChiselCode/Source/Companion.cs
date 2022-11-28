@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using PencilChiselCode.Source.GameStates;
 
 namespace PencilChiselCode.Source;
@@ -12,21 +15,34 @@ public class Companion
     private const float PI = (float)Math.PI;
     private readonly float _scale = 1F;
     private Vector2 _speed;
-    private Vector2 _movement_speed;
-    private const float _minimumDistance = 50F;
-    private bool _isAFK;
-    private readonly BonfireGameState _state;
+    private Vector2 _movementSpeed;
+    private const float MinimumFollowDistance = 50F;
+    private bool _isStationary;
+    private readonly IngameState _state;
     private Bonfire Game => _state.Game;
+    public readonly Attribute ComfyMeter;
 
-    public Companion(BonfireGameState state, Vector2 position, float speed)
+    public Companion(IngameState state, Vector2 position, float speed)
     {
         _state = state;
-        _isAFK = false;
-        _movement_speed.X = speed;
-        _movement_speed.Y = speed;
+        _isStationary = false;
+        _movementSpeed.X = speed;
+        _movementSpeed.Y = speed;
         Position = position;
         var textureCompanionDown = Game.TextureMap["follower"];
         Size = new(textureCompanionDown.Width * _scale, textureCompanionDown.Height * _scale);
+        var attributeTexture = Game.TextureMap["attribute_bar"];
+        var comfyAttributeTexture = Game.TextureMap["comfy_bar"];
+        ComfyMeter =
+            new Attribute(
+                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() - attributeTexture.Height * 3F),
+                3F,
+                attributeTexture,
+                comfyAttributeTexture,
+                attributeTexture.Bounds.Center.ToVector2(),
+                100,
+                -2F
+            );
     }
 
     public void Draw(SpriteBatch spriteBatch)
@@ -55,42 +71,67 @@ public class Companion
 
     public void Update(GameTime gameTime, Vector2 playerPosition)
     {
+        ComfyMeter.Update(gameTime);
+
         var (playerPosX, playerPosY) = playerPosition;
         var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
         var width = Math.Abs(Position.X - playerPosX);
         var height = Math.Abs(Position.Y - playerPosY);
         var h = (float)Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
 
-        if (Math.Sqrt(width * width + height * height) > _minimumDistance && !_isAFK)
+        if (Math.Sqrt(width * width + height * height) > MinimumFollowDistance && !_isStationary)
         {
-            _movement_speed.X = _movement_speed.Y;
+            _movementSpeed.X = _movementSpeed.Y;
         }
         else
         {
-            _movement_speed.X = 0;
+            _movementSpeed.X = 0;
         }
 
         if (playerPosX > Position.X)
         {
-            Position.X += _movement_speed.X * (width / h) * delta;
+            Position.X += _movementSpeed.X * (width / h) * delta;
         }
         else if (playerPosX < Position.X)
         {
-            Position.X -= _movement_speed.X * (width / h) * delta;
+            Position.X -= _movementSpeed.X * (width / h) * delta;
         }
 
         if (playerPosY > Position.Y)
         {
-            Position.Y += _movement_speed.X * (height / h) * delta;
+            Position.Y += _movementSpeed.X * (height / h) * delta;
         }
         else if (playerPosY < Position.Y)
         {
-            Position.Y -= _movement_speed.X * (height / h) * delta;
+            Position.Y -= _movementSpeed.X * (height / h) * delta;
         }
+
+        var followerPlayerDistance = Vector2.Distance(_state.Player.Position, Position);
+
+        if (Position.X < Game.Camera.Position.X + IngameState.DarknessEndOffset)
+        {
+            ComfyMeter.ChangeValue(-24F * gameTime.GetElapsedSeconds());
+        }
+        else if (_state.Campfires.Any(campfire => campfire.IsInRange(Position)))
+        {
+            ComfyMeter.ChangeValue(8F * gameTime.GetElapsedSeconds());
+        }
+        else if (followerPlayerDistance > IngameState.MinimumFollowerPlayerDistance)
+        {
+            ComfyMeter.ChangeValue(-4F * gameTime.GetElapsedSeconds());
+        }
+
+        if (
+            !IngameState.KeyState.IsKeyDown(Keys.Q) ||
+            _state.PreviousPressedKeys.Contains(Keys.Q) ||
+            !(followerPlayerDistance <= 100) ||
+            _state.Player.Berries < 1
+        )
+            return;
+        _state.Player.ReduceBerries(1);
+        ComfyMeter.ChangeValue(10F);
     }
 
-    public void StopResumeFollower()
-    {
-        _isAFK = !_isAFK;
-    }
+    public bool IsAnxious() => ComfyMeter.Value <= 0;
+    public void ToggleSitting() => _isStationary = !_isStationary;
 }

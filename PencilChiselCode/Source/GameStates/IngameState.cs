@@ -19,7 +19,6 @@ public class IngameState : BonfireGameState
     private bool _showDebug;
     public readonly HashSet<Keys> PreviousPressedKeys = new();
     private float _cameraSpeed = 10F;
-    private Attribute _followerAttribute;
     private Inventory _inventory;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
@@ -29,18 +28,19 @@ public class IngameState : BonfireGameState
     private Button _exitButton;
     private Button _menuButton;
     private Button _restartButton;
-    private const int _twigCount = 14;
-    private const int _bushCount = 14;
-    private const int _treeCount = 36;
+    private const int TwigCount = 14;
+    private const int BushCount = 14;
+    private const int TreeCount = 36;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
-    private const float _minimialFollowerPlayerDistance = 100F;
+    public const float MinimumFollowerPlayerDistance = 100F;
     private bool _deathState;
-    private const int _glowFlowerCount = 10;
+    private const int GlowFlowerCount = 10;
     private Song _song;
     private float _score;
-    private const int _spawnOffset = 128;
+    private const int SpawnOffset = 128;
+    public const int DarknessEndOffset = 64;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(Game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -58,39 +58,39 @@ public class IngameState : BonfireGameState
     {
         _deathState = false;
         base.LoadContent();
-        for (var i = 0; i < _twigCount; i++)
+        for (var i = 0; i < TwigCount; i++)
         {
             Pickupables.Add(new Pickupable(this, PickupableTypes.Twig,
                 Game.TextureMap["twigs"],
                 Game.SoundMap["pickup_branches"],
-                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
+                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                     Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)),
                 Vector2.One, Utils.RANDOM.NextAngle()));
         }
 
-        for (var i = 0; i < _bushCount; i++)
+        for (var i = 0; i < BushCount; i++)
         {
             Pickupables.Add(new Pickupable(this, PickupableTypes.Bush,
                 Game.TextureMap["bush_berry"],
                 Game.SoundMap["pickup_branches"],
-                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
+                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                     Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)),
                 Vector2.One * 2));
         }
 
-        for (var i = 0; i < _treeCount; i++)
+        for (var i = 0; i < TreeCount; i++)
         {
             var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
             GroundEntities.Add(new GroundEntity(this, Game.TextureMap[$"tree_{treeType}"],
-                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
+                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                     Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)),
                 Vector2.One * 2F));
         }
 
-        for (var i = 0; i < _glowFlowerCount; i++)
+        for (var i = 0; i < GlowFlowerCount; i++)
         {
             GroundEntities.Add(new GroundEntity(this, Game.TextureMap["flower_lamp_1"],
-                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + _spawnOffset),
+                new Vector2(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                     Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)),
                 Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
         }
@@ -148,8 +148,8 @@ public class IngameState : BonfireGameState
         }
 
 
-        _companion = new Companion(this, new Vector2(100, 100), 50F);
-        Player = new Player(this, new Vector2(150, 150));
+        _companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 50F);
+        Player = new Player(this, new Vector2(96, Game.GetWindowHeight() / 2F));
 
         Campfires.Add(new CampFire(this, new Vector2(500, 400))); // TEMP
 
@@ -169,28 +169,29 @@ public class IngameState : BonfireGameState
             ),
             100F
         );
-        var attributeTexture = Game.TextureMap["attribute_bar"];
-        var comfyAttributeTexture = Game.TextureMap["comfy_bar"];
-        _followerAttribute =
-            new Attribute(
-                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() - attributeTexture.Height * 3F), 3F,
-                attributeTexture, comfyAttributeTexture, attributeTexture.Bounds.Center.ToVector2(), 100, -2F);
-
         _inventory = new Inventory(this);
         _song = Game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
     }
 
+
+
+    public static KeyboardState KeyState => Keyboard.GetState();
     public void RandomBushSpawner()
     {
-        if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
-        Pickupables.Add(new Pickupable(this, PickupableTypes.Bush,
-            Game.TextureMap["bush_berry"],
-            Game.SoundMap["pickup_branches"],
-            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + _spawnOffset,
-                Utils.GetRandomInt(5, Game.GetWindowHeight())),
-            Vector2.One * 2)
+        if (Utils.GetRandomInt(0, 101) >= TwigCount) return;
+        Pickupables.Add(
+            new Pickupable(this,
+                PickupableTypes.Bush,
+                Game.TextureMap["bush_berry"],
+                Game.SoundMap["pickup_branches"],
+                new Vector2(
+                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                    Utils.GetRandomInt(5, Game.GetWindowHeight())
+                ),
+                Vector2.One * 2
+            )
         );
     }
 
@@ -199,18 +200,18 @@ public class IngameState : BonfireGameState
         if (Utils.GetRandomInt(0, 101) >= 24) return;
         var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
         GroundEntities.Add(new GroundEntity(this, Game.TextureMap[$"tree_{treeType}"],
-            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + _spawnOffset,
+            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
                 Utils.GetRandomInt(5, Game.GetWindowHeight())),
             Vector2.One * 2F));
         GroundEntities.Add(new GroundEntity(this, Game.TextureMap["flower_lamp_1"],
-            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + _spawnOffset,
+            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
                 Utils.GetRandomInt(5, Game.GetWindowHeight())),
             Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
     }
 
     public void RandomTwigSpawner()
     {
-        if (Utils.GetRandomInt(0, 101) >= _twigCount) return;
+        if (Utils.GetRandomInt(0, 101) >= TwigCount) return;
         Pickupables.Add(new Pickupable(this, PickupableTypes.Twig,
             Game.TextureMap["twigs"],
             Game.SoundMap["pickup_branches"],
@@ -234,13 +235,13 @@ public class IngameState : BonfireGameState
 
         var oldMapIndex = MapIndex;
         Game.TiledMapRenderer.Update(gameTime);
-        var keyState = Keyboard.GetState();
-        if (_followerAttribute.Value <= 0)
+
+        if (_companion.IsAnxious())
         {
             _deathState = true;
         }
 
-        if (keyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
+        if (KeyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
         {
             _pauseState = !_pauseState;
         }
@@ -260,7 +261,6 @@ public class IngameState : BonfireGameState
             Game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
             _companion.Update(gameTime, Player.Position);
             Player.Update(gameTime);
-            _followerAttribute.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
             Pickupables.RemoveAll(pickupable => pickupable.ShouldRemove);
 
@@ -270,41 +270,22 @@ public class IngameState : BonfireGameState
             Campfires.ForEach(campfire => campfire.Update(gameTime));
             Campfires.RemoveAll(campfire => campfire.ShouldRemove);
 
-            if (Campfires.Any(campfire => campfire.IsInRange(_companion.Position)))
-            {
-                _followerAttribute.ChangeValue(8F * gameTime.GetElapsedSeconds());
-            }
-
-            var followerPlayerDistance = Vector2.Distance(Player.Position, _companion.Position);
-            if (keyState.IsKeyDown(Keys.Q) && !PreviousPressedKeys.Contains(Keys.Q) && followerPlayerDistance <= 100 &&
-                Player.Berries >= 1)
-            {
-                Player.ReduceBerries(1);
-                _followerAttribute.ChangeValue(10F);
-            }
-
-            if (!Campfires.Any(campfire => campfire.IsInRange(_companion.Position)) &&
-                followerPlayerDistance > _minimialFollowerPlayerDistance)
-            {
-                _followerAttribute.ChangeValue(-8F * gameTime.GetElapsedSeconds());
-            }
-
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);
             _score += gameTime.ElapsedGameTime.Milliseconds;
         }
 
-        if (keyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
+        if (KeyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
         {
             _showDebug = !_showDebug;
         }
 
-        if (keyState.IsKeyDown(Keys.Space) && !PreviousPressedKeys.Contains(Keys.Space))
+        if (KeyState.IsKeyDown(Keys.Space) && !PreviousPressedKeys.Contains(Keys.Space))
         {
-            _companion.StopResumeFollower();
+            _companion.ToggleSitting();
         }
 
-        if (keyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && Player.CanCreateFire())
+        if (KeyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && Player.CanCreateFire())
         {
             Player.CreateFire(10);
             Game.SoundMap["light_fire"].Play();
@@ -318,7 +299,7 @@ public class IngameState : BonfireGameState
         }
 
         PreviousPressedKeys.Clear();
-        PreviousPressedKeys.UnionWith(keyState.GetPressedKeys());
+        PreviousPressedKeys.UnionWith(KeyState.GetPressedKeys());
         _debugData[1] = $"Translation: {Game.Camera.GetViewMatrix().Translation}";
         _debugData[2] = $"Map Index: {MapIndex}";
     }
@@ -368,7 +349,7 @@ public class IngameState : BonfireGameState
         Game.SpriteBatch.End();
 
         Game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        _followerAttribute.Draw(Game.SpriteBatch);
+        _companion.ComfyMeter.Draw(Game.SpriteBatch);
         Game.SpriteBatch.DrawString(Game.FontMap["32"], "Comfy meter",
             new Vector2(Game.GetWindowWidth() / 2 - 350, Game.GetWindowHeight() - 100), Color.Orange);
         _inventory.Draw(Game.SpriteBatch);
