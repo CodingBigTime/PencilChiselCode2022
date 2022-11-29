@@ -22,6 +22,8 @@ public static class Utils
             new Rectangle((int)rectanglePosition.X, (int)rectanglePosition.Y, (int)rectangleSize.X,
                 (int)rectangleSize.Y));
 
+    public static bool Intersects(Rectangle rectangle1, Rectangle rectangle2) => rectangle1.Intersects(rectangle2);
+
     public static int GetRandomInt(int min, int max) => new Random().Next(min, max);
     public static Vector2 ToVector2(this Point point) => new(point.X, point.Y);
     public static Point ToPoint(this Vector2 vector) => new((int)vector.X, (int)vector.Y);

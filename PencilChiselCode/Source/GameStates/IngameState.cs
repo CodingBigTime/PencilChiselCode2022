@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -175,8 +176,8 @@ public class IngameState : BonfireGameState
     }
 
 
-
     public static KeyboardState KeyState => Keyboard.GetState();
+
     public void RandomBushSpawner()
     {
         if (Utils.GetRandomInt(0, 101) >= TwigCount) return;
@@ -194,31 +195,76 @@ public class IngameState : BonfireGameState
         );
     }
 
-    public void RandomEntitySpawner()
+    public static void TryGenerate(int chance, Func<bool> generator, int attempts = 10)
     {
-        if (Utils.GetRandomInt(0, 101) >= 24) return;
-        var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
-        GroundEntities.Add(new GroundEntity(this, Game.TextureMap[$"tree_{treeType}"],
-            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                Utils.GetRandomInt(5, Game.GetWindowHeight())),
-            Vector2.One * 2F));
-        GroundEntities.Add(new GroundEntity(this, Game.TextureMap["flower_lamp_1"],
-            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                Utils.GetRandomInt(5, Game.GetWindowHeight())),
-            Vector2.One * 1.5F, new Color(0F, 0.3F, 0.75F)));
+        if (Utils.GetRandomInt(0, 101) >= chance) return;
+        for (var i = 0; i < attempts; ++i)
+        {
+            if (generator())
+            {
+                break;
+            }
+        }
     }
 
-    public void RandomTwigSpawner()
-    {
-        if (Utils.GetRandomInt(0, 101) >= TwigCount) return;
-        Pickupables.Add(new Pickupable(this, PickupableTypes.Twig,
-            Game.TextureMap["twigs"],
-            Game.SoundMap["pickup_branches"],
-            new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + 128,
-                Utils.GetRandomInt(5, Game.GetWindowHeight())),
-            Vector2.One, Utils.RANDOM.NextAngle())
-        );
-    }
+    public void RandomTreeSpawner() =>
+        TryGenerate(24, () =>
+        {
+            var treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
+            var tree = new GroundEntity(
+                this,
+                Game.TextureMap[$"tree_{treeType}"],
+                new Vector2(
+                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                    Utils.GetRandomInt(5, Game.GetWindowHeight())
+                ),
+                Vector2.One * 2F
+            );
+            if (
+                GroundEntities.Any((entity) => entity.Intersects(tree.Position, tree.Size)) ||
+                Pickupables.Any((entity) => entity.Intersects(tree.Position, tree.Size))
+            ) return false; 
+            GroundEntities.Add(tree);
+            return true;
+        });
+
+    public void RandomPlantSpawner() =>
+        TryGenerate(24, () =>
+        {
+            var plant = new GroundEntity(
+                this,
+                Game.TextureMap["flower_lamp_1"],
+                new Vector2(
+                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                    Utils.GetRandomInt(5, Game.GetWindowHeight())
+                ),
+                Vector2.One * 1.5F,
+                new Color(0F, 0.3F, 0.75F)
+            );
+            if (
+                GroundEntities.Any((entity) => entity.Intersects(plant.Position, plant.Size)) ||
+                Pickupables.Any((entity) => entity.Intersects(plant.Position, plant.Size))
+            ) return false;
+            GroundEntities.Add(plant);
+            return true;
+        });
+
+    public void RandomTwigSpawner() =>
+        TryGenerate(TwigCount, () =>
+        {
+            var pickupable = new Pickupable(this, PickupableTypes.Twig,
+                Game.TextureMap["twigs"],
+                Game.SoundMap["pickup_branches"],
+                new Vector2(Game.Camera.Position.X + Game.GetWindowWidth() + 128,
+                    Utils.GetRandomInt(5, Game.GetWindowHeight())),
+                Vector2.One, Utils.RANDOM.NextAngle());
+            if (
+                GroundEntities.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size)) ||
+                Pickupables.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size))
+            ) return false;
+            Pickupables.Add(pickupable);
+            return true;
+        });
 
     private void AddRandomMap() => _maps.Add(Game.TiledMaps[Utils.RANDOM.Next(0, Game.TiledMaps.Count)]);
 
@@ -245,7 +291,8 @@ public class IngameState : BonfireGameState
             {
                 RandomTwigSpawner();
                 RandomBushSpawner();
-                RandomEntitySpawner();
+                RandomTreeSpawner();
+                RandomPlantSpawner();
                 _pickupableCounterGameTime = gameTime.TotalGameTime;
             }
 

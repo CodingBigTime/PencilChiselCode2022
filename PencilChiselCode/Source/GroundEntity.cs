@@ -154,4 +154,7 @@ public class GroundEntity
             _color.A = 255;
         }
     }
+
+    public bool Intersects(Vector2 position, Vector2 size) => Utils.Intersects(
+        new Rectangle(Position.ToPoint(), Size.ToPoint()), new Rectangle(position.ToPoint(), size.ToPoint()));
 }
