@@ -82,8 +82,11 @@ public class GroundEntity
 
     private void Cleanup()
     {
-        Game.Penumbra.Lights.Remove(PointLight);
-        Game.Penumbra.Hulls.Remove(Hull);
+        lock (Game.Penumbra)
+        {
+            Game.Penumbra.Lights.Remove(PointLight);
+            Game.Penumbra.Hulls.Remove(Hull);
+        }
     }
 
     ~GroundEntity()
