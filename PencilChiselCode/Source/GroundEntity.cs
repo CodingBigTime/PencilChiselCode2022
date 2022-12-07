@@ -82,8 +82,11 @@ public class GroundEntity
 
     private void Cleanup()
     {
-        Game.Penumbra.Lights.Remove(PointLight);
-        Game.Penumbra.Hulls.Remove(Hull);
+        lock (Game.Penumbra)
+        {
+            Game.Penumbra.Lights.Remove(PointLight);
+            Game.Penumbra.Hulls.Remove(Hull);
+        }
     }
 
     ~GroundEntity()
@@ -154,4 +157,7 @@ public class GroundEntity
             _color.A = 255;
         }
     }
+
+    public bool Intersects(Vector2 position, Vector2 size) => Utils.Intersects(
+        new Rectangle(Position.ToPoint(), Size.ToPoint()), new Rectangle(position.ToPoint(), size.ToPoint()));
 }

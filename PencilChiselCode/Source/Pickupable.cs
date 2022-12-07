@@ -43,4 +43,7 @@ public class Pickupable
     public void Update(GameTime gameTime)
     {
     }
+
+    public bool Intersects(Vector2 position, Vector2 size) => Utils.Intersects(
+        new Rectangle(Position.ToPoint(), Size.ToPoint()), new Rectangle(position.ToPoint(), size.ToPoint()));
 }

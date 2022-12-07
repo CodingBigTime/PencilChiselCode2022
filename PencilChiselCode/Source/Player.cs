@@ -67,8 +67,11 @@ public class Player
     }
     private void Cleanup()
     {
-        Game.Penumbra.Lights.Remove(PointLight);
-        Game.Penumbra.Lights.Remove(Spotlight);
+        lock (Game.Penumbra)
+        {
+            Game.Penumbra.Lights.Remove(PointLight);
+            Game.Penumbra.Lights.Remove(Spotlight);
+        }
     }
     ~Player()
     {

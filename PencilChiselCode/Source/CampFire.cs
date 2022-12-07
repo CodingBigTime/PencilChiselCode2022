@@ -62,7 +62,10 @@ namespace PencilChiselCode.Source
 
         private void Cleanup()
         {
-            Game.Penumbra.Lights.Remove(PointLight);
+            lock (Game.Penumbra)
+            {
+                Game.Penumbra.Lights.Remove(PointLight);
+            }
         }
 
         ~CampFire()
