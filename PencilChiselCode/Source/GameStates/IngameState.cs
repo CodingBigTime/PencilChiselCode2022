@@ -31,9 +31,9 @@ public class IngameState : BonfireGameState
     private const double TwigSpawnChance = 0.14;
     private const double BushSpawnChance = 0.14;
     private const double TreeSpawnChance = 0.24;
-    private const double TwigCount = 14;
-    private const double BushCount = 14;
-    private const double TreeCount = 36;
+    private const int TwigCount = 14;
+    private const int BushCount = 14;
+    private const int TreeCount = 36;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
