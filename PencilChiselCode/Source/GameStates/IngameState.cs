@@ -63,25 +63,25 @@ public class IngameState : BonfireGameState
         base.LoadContent();
         for (var i = 0; i < TwigCount; i++)
         {
-            RandomTwigSpawner(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
+            SpawnRandomTwig(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10), chance: 1, attempts: 30);
         }
 
         for (var i = 0; i < BushCount; i++)
         {
-            RandomBushSpawner(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
+            SpawnRandomBush(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10), chance: 1, attempts: 30);
         }
 
         for (var i = 0; i < TreeCount; i++)
         {
-            RandomTreeSpawner(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
+            SpawnRandomTree(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10), chance: 1, attempts: 64);
         }
 
         for (var i = 0; i < GlowFlowerCount; i++)
         {
-            RandomPlantSpawner(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
+            SpawnRandomPlant(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10), chance: 1, attempts: 30);
         }
 
@@ -171,7 +171,7 @@ public class IngameState : BonfireGameState
         }
     }
 
-    public void RandomBushSpawner(float x, float y, double chance = BushSpawnChance, int attempts = 10) =>
+    public void SpawnRandomBush(float x, float y, double chance = BushSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
             var pickupable = new Pickupable(this,
@@ -189,7 +189,8 @@ public class IngameState : BonfireGameState
             return true;
         }, chance, attempts);
 
-    public void RandomTreeSpawner(float x, float y, int treeType = 0, double chance = TreeSpawnChance, int attempts = 10) =>
+    public void SpawnRandomTree(float x, float y, int treeType = 0, double chance = TreeSpawnChance,
+        int attempts = 10) =>
         TryGenerate(() =>
         {
             if (treeType == 0) treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
@@ -207,7 +208,7 @@ public class IngameState : BonfireGameState
             return true;
         }, chance, attempts);
 
-    public void RandomPlantSpawner(float x, float y, double chance = TreeSpawnChance, int attempts = 10) =>
+    public void SpawnRandomPlant(float x, float y, double chance = TreeSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
             var plant = new GroundEntity(
@@ -225,7 +226,7 @@ public class IngameState : BonfireGameState
             return true;
         }, chance, attempts);
 
-    public void RandomTwigSpawner(float x, float y, double chance = TwigSpawnChance, int attempts = 10) =>
+    public void SpawnRandomTwig(float x, float y, double chance = TwigSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
             var pickupable = new Pickupable(this, PickupableTypes.Twig,
@@ -264,13 +265,13 @@ public class IngameState : BonfireGameState
         {
             if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
             {
-                RandomTwigSpawner(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                SpawnRandomTwig(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
                     Utils.GetRandomInt(5, Game.GetWindowHeight()));
-                RandomBushSpawner(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                SpawnRandomBush(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
                     Utils.GetRandomInt(5, Game.GetWindowHeight()));
-                RandomTreeSpawner(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                SpawnRandomTree(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
                     Utils.GetRandomInt(5, Game.GetWindowHeight()));
-                RandomPlantSpawner(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                SpawnRandomPlant(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
                     Utils.GetRandomInt(5, Game.GetWindowHeight()));
                 _pickupableCounterGameTime = gameTime.TotalGameTime;
             }
