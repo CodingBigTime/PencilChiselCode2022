@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Screens.Transitions;
 
 namespace PencilChiselCode.Source.GameStates;
 
@@ -24,12 +23,7 @@ public class MenuState : BonfireGameState
             textureMap["start_button_hover"],
             textureMap["start_button_pressed"],
             Utils.GetCenterStartCoords(startButtonSize, Game.GetWindowDimensions()),
-            () =>
-            {
-                Game.ScreenManager.LoadScreen(new IngameState(Game),
-                    new FadeTransition(Game.GraphicsDevice, Color.Black));
-                Game.ResetPenumbra();
-            }
+            Game.Start
         ));
         var exitButton = textureMap["exit_button_normal"];
         var exitButtonSize = new Vector2(exitButton.Width, exitButton.Height);
@@ -57,6 +51,12 @@ public class MenuState : BonfireGameState
 
     public override void Update(GameTime gameTime)
     {
+        if (Game.Controls.JustPressed(ControlKeys.START))
+        {
+            Game.Start();
+            return;
+        }
+
         foreach (var button in _buttons)
         {
             button.Update(gameTime);

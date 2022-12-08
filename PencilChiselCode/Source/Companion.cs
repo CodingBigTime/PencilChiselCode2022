@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using PencilChiselCode.Source.GameStates;
 
@@ -122,9 +121,8 @@ public class Companion
         }
 
         if (
-            !IngameState.KeyState.IsKeyDown(Keys.Q) ||
-            _state.PreviousPressedKeys.Contains(Keys.Q) ||
-            !(followerPlayerDistance <= 100) ||
+            !_state.Game.Controls.JustPressed(ControlKeys.FEED) ||
+            followerPlayerDistance > 100 ||
             _state.Player.Berries < 1
         )
             return;
