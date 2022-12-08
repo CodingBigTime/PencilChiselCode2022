@@ -13,8 +13,11 @@ namespace PencilChiselCode.Source;
 public class Player
 {
     public Companion Companion => _state.Companion;
-    public Vector2 Size => new(_animatedSprite.TextureRegion.Width * _scale,
-        _animatedSprite.TextureRegion.Height * _scale);
+
+    public Vector2 Size => new(
+        _animatedSprite.TextureRegion.Width * _scale,
+        _animatedSprite.TextureRegion.Height * _scale
+    );
 
     public Vector2 Position
     {
