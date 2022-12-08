@@ -78,14 +78,9 @@ public class Companion
         var height = Math.Abs(Position.Y - playerPosY);
         var h = (float)Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
 
-        if (Math.Sqrt(width * width + height * height) > MinimumFollowDistance && !_isStationary)
-        {
-            _movementSpeed.X = _movementSpeed.Y;
-        }
-        else
-        {
-            _movementSpeed.X = 0;
-        }
+        _movementSpeed.X = Math.Sqrt(width * width + height * height) > MinimumFollowDistance && !_isStationary
+            ? _movementSpeed.Y
+            : 0;
 
         if (playerPosX > Position.X)
         {
@@ -123,9 +118,8 @@ public class Companion
         if (
             !_state.Game.Controls.JustPressed(ControlKeys.FEED) ||
             followerPlayerDistance > 100 ||
-            _state.Player.Berries < 1
-        )
-            return;
+            _state.Player.Inventory[PickupableTypes.Bush] < 1
+        ) return;
         _state.Player.ReduceBerries(1);
         ComfyMeter.ChangeValue(10F);
     }

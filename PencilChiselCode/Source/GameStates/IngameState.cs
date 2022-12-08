@@ -8,6 +8,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
+using PencilChiselCode.Source.Objects;
 
 namespace PencilChiselCode.Source.GameStates;
 
@@ -171,10 +172,8 @@ public class IngameState : BonfireGameState
     public void SpawnRandomBush(float x, float y, double chance = BushSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
-            var pickupable = new Pickupable(this,
-                PickupableTypes.Bush,
-                Game.TextureMap["bush_berry"],
-                Game.SoundMap["pickup_branches"],
+            var pickupable = new BerryBush(
+                this,
                 new Vector2(x, y),
                 Vector2.One * 2
             );
@@ -191,7 +190,7 @@ public class IngameState : BonfireGameState
         TryGenerate(() =>
         {
             if (treeType == 0) treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
-            var tree = new GroundEntity(
+            var tree = new Tree(
                 this,
                 Game.TextureMap[$"tree_{treeType}"],
                 new Vector2(x, y),
@@ -208,7 +207,7 @@ public class IngameState : BonfireGameState
     public void SpawnRandomPlant(float x, float y, double chance = TreeSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
-            var plant = new GroundEntity(
+            var plant = new Tree(
                 this,
                 Game.TextureMap["flower_lamp_1"],
                 new Vector2(x, y),
@@ -226,11 +225,11 @@ public class IngameState : BonfireGameState
     public void SpawnRandomTwig(float x, float y, double chance = TwigSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
-            var pickupable = new Pickupable(this, PickupableTypes.Twig,
-                Game.TextureMap["twigs"],
-                Game.SoundMap["pickup_branches"],
+            var pickupable = new Twig(
+                this,
                 new Vector2(x, y),
-                Vector2.One, Utils.RANDOM.NextAngle());
+                Vector2.One, Utils.RANDOM.NextAngle()
+            );
             if (
                 GroundEntities.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size)) ||
                 Pickupables.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size))
@@ -285,13 +284,13 @@ public class IngameState : BonfireGameState
             _companion.Update(gameTime, Player.Position);
             Player.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
-            Pickupables.RemoveAll(pickupable => pickupable.ShouldRemove);
+            Pickupables.RemoveAll(pickupable => pickupable.ShouldRemove());
 
-            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime, Player.Position));
-            GroundEntities.RemoveAll(groundEntity => groundEntity.ShouldRemove);
+            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime));
+            GroundEntities.RemoveAll(groundEntity => groundEntity.ShouldRemove());
 
             Campfires.ForEach(campfire => campfire.Update(gameTime));
-            Campfires.RemoveAll(campfire => campfire.ShouldRemove);
+            Campfires.RemoveAll(campfire => campfire.ShouldRemove());
 
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);
