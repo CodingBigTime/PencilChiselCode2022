@@ -89,11 +89,15 @@ public class Bonfire : Game
         TextureMap.Add("restart_button_pressed",
             Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_pressed"));
 
-        TextureMap.Add("e_button", Content.Load<Texture2D>("Textures/GUI/e_button"));
-        TextureMap.Add("f_button", Content.Load<Texture2D>("Textures/GUI/f_button"));
-        TextureMap.Add("q_button", Content.Load<Texture2D>("Textures/GUI/q_button"));
         TextureMap.Add("x_button", Content.Load<Texture2D>("Textures/GUI/x_button"));
-        TextureMap.Add("space_button", Content.Load<Texture2D>("Textures/GUI/space_button"));
+        TextureMap.Add("y_button", Content.Load<Texture2D>("Textures/GUI/y_button"));
+        TextureMap.Add("a_button", Content.Load<Texture2D>("Textures/GUI/a_button"));
+        TextureMap.Add("b_button", Content.Load<Texture2D>("Textures/GUI/b_button"));
+        TextureMap.Add("e_key", Content.Load<Texture2D>("Textures/GUI/e_key"));
+        TextureMap.Add("f_key", Content.Load<Texture2D>("Textures/GUI/f_key"));
+        TextureMap.Add("q_key", Content.Load<Texture2D>("Textures/GUI/q_key"));
+        TextureMap.Add("x_key", Content.Load<Texture2D>("Textures/GUI/x_key"));
+        TextureMap.Add("space_key", Content.Load<Texture2D>("Textures/GUI/space_key"));
         TextureMap.Add("attribute_bar", Content.Load<Texture2D>("Textures/GUI/attribute_bar"));
         TextureMap.Add("comfy_bar", Content.Load<Texture2D>("Textures/GUI/comfy_bar"));
         TextureMap.Add("fireplace_bar", Content.Load<Texture2D>("Textures/GUI/fireplace_bar"));

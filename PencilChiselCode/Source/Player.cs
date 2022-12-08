@@ -184,7 +184,7 @@ public class Player
 
         if (nearestCampfire != null && !_popupButtons.ContainsKey("F"))
         {
-            _popupButtons["F"] = new PopupButton(_state, Game.TextureMap["f_button"]);
+            _popupButtons["F"] = new PopupButton(_state, Game.TextureMap["f_key"]);
         }
 
         if (nearestCampfire == null)
@@ -208,7 +208,7 @@ public class Player
 
         if (nearestPickupable != null && !_popupButtons.ContainsKey("E"))
         {
-            _popupButtons["E"] = new PopupButton(_state, Game.TextureMap["e_button"]);
+            _popupButtons["E"] = new PopupButton(_state, Game.TextureMap["e_key"]);
         }
 
         foreach (var (_, value) in _popupButtons)

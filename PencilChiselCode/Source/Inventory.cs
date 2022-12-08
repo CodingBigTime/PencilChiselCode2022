@@ -80,7 +80,7 @@ namespace PencilChiselCode.Source
                     {
                         "twigEButton",
                         new Icon(new Vector2(Game.Width - 60, 50),
-                            Game.TextureMap["e_button"],
+                            Game.TextureMap["e_key"],
                             2F)
                     },
                     {
@@ -91,7 +91,7 @@ namespace PencilChiselCode.Source
                     {
                         "berryEButton",
                         new Icon(new Vector2(Game.Width - 60, 100),
-                            Game.TextureMap["e_button"],
+                            Game.TextureMap["e_key"],
                             2F)
                     },
                     {
@@ -107,7 +107,7 @@ namespace PencilChiselCode.Source
                     {
                         "camfireXButton",
                         new Icon(new Vector2(Game.Width - 60, 150),
-                            Game.TextureMap["x_button"],
+                            Game.TextureMap["x_key"],
                             2F)
                     },
                     {
@@ -123,7 +123,7 @@ namespace PencilChiselCode.Source
                     {
                         "camfireRefuelFButton",
                         new Icon(new Vector2(Game.Width - 60, 200),
-                            Game.TextureMap["f_button"],
+                            Game.TextureMap["f_key"],
                             2F)
                     },
                     {
@@ -139,7 +139,7 @@ namespace PencilChiselCode.Source
                     {
                         "followerFeedFButton",
                         new Icon(new Vector2(Game.Width - 60, 250),
-                            Game.TextureMap["q_button"],
+                            Game.TextureMap["q_key"],
                             2F)
                     },
                     {
@@ -150,7 +150,7 @@ namespace PencilChiselCode.Source
                     {
                         "followerFollowStandSpace",
                         new Icon(new Vector2(Game.Width - 75, 300),
-                            Game.TextureMap["space_button"], 2)
+                            Game.TextureMap["space_key"], 2)
                     }
                 };
         }
