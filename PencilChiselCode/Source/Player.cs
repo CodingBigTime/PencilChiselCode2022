@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -140,13 +141,8 @@ public class Player
     public void Update(GameTime gameTime)
     {
         var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        var keyState = Keyboard.GetState();
-        var left = keyState.IsKeyDown(Keys.A) || keyState.IsKeyDown(Keys.Left);
-        var up = keyState.IsKeyDown(Keys.W) || keyState.IsKeyDown(Keys.Up);
-        var down = keyState.IsKeyDown(Keys.S) || keyState.IsKeyDown(Keys.Down);
-        var right = keyState.IsKeyDown(Keys.D) || keyState.IsKeyDown(Keys.Right);
-        var mx = Convert.ToSingle(right) - Convert.ToSingle(left);
-        var my = Convert.ToSingle(down) - Convert.ToSingle(up);
+        var (mx, my) = Game.Controls.GetMovement();
+
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
 
         Spotlight.Rotation = angle;
@@ -196,7 +192,7 @@ public class Player
             _popupButtons.Remove("F");
         }
 
-        if (!_state.PreviousPressedKeys.Contains(Keys.F) && keyState.IsKeyDown(Keys.F) && nearestCampfire != null &&
+        if (_state.Game.Controls.JustPressed(ControlKeys.REFUEL) && nearestCampfire != null &&
             Twigs > 0)
         {
             nearestCampfire.FeedFire(25F);
@@ -220,7 +216,7 @@ public class Player
             value.Update(gameTime);
         }
 
-        if (!_state.PreviousPressedKeys.Contains(Keys.E) && keyState.IsKeyDown(Keys.E) && nearestPickupable != null)
+        if (Game.Controls.JustPressed(ControlKeys.COLLECT) && nearestPickupable != null)
         {
             switch (nearestPickupable.Type)
             {

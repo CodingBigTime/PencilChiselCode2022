@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
@@ -17,7 +16,6 @@ public class IngameState : BonfireGameState
     public Player Player { get; private set; }
     private Companion _companion;
     private bool _showDebug;
-    public readonly HashSet<Keys> PreviousPressedKeys = new();
     private float _cameraSpeed = 10F;
     private Inventory _inventory;
     private int _fps;
@@ -123,8 +121,10 @@ public class IngameState : BonfireGameState
             Utils.GetCenterStartCoords(restartButtonSize, Game.GetWindowDimensions()),
             () =>
             {
-                Game.ScreenManager.LoadScreen(new IngameState(Game),
-                    new FadeTransition(Game.GraphicsDevice, Color.Black));
+                Game.ScreenManager.LoadScreen(
+                    new IngameState(Game),
+                    new FadeTransition(Game.GraphicsDevice, Color.Black)
+                );
                 Game.ResetPenumbra();
             }
         );
@@ -155,9 +155,6 @@ public class IngameState : BonfireGameState
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
     }
-
-
-    public static KeyboardState KeyState => Keyboard.GetState();
 
     public static void TryGenerate(Func<bool> generator, double chance = 1, int attempts = 10)
     {
@@ -246,7 +243,7 @@ public class IngameState : BonfireGameState
 
     public override void Update(GameTime gameTime)
     {
-        if (!_deathState && KeyState.IsKeyDown(Keys.Escape) && !PreviousPressedKeys.Contains(Keys.Escape))
+        if (!_deathState && Game.Controls.JustPressed(ControlKeys.PAUSE))
         {
             _pauseState = !_pauseState;
         }
@@ -307,25 +304,24 @@ public class IngameState : BonfireGameState
             }
         }
 
-        if (KeyState.IsKeyDown(Keys.F3) && !PreviousPressedKeys.Contains(Keys.F3))
+        if (Game.Controls.JustPressed(ControlKeys.DEBUG))
         {
             _showDebug = !_showDebug;
         }
 
-        if (KeyState.IsKeyDown(Keys.Space) && !PreviousPressedKeys.Contains(Keys.Space))
+        if (Game.Controls.JustPressed(ControlKeys.STOP_FOLLOWER))
         {
             _companion.ToggleSitting();
         }
 
-        if (KeyState.IsKeyDown(Keys.X) && !PreviousPressedKeys.Contains(Keys.X) && Player.CanCreateFire())
+        if (Game.Controls.JustPressed(ControlKeys.START_FIRE) && Player.CanCreateFire())
         {
             Player.CreateFire(10);
             Game.SoundMap["light_fire"].Play();
             Campfires.Add(new CampFire(this, new Vector2(Player.Position.X + 20, Player.Position.Y - 20)));
         }
 
-        PreviousPressedKeys.Clear();
-        PreviousPressedKeys.UnionWith(KeyState.GetPressedKeys());
+        Game.Controls.Update();
         _debugData[1] = $"Translation: {Game.Camera.GetViewMatrix().Translation}";
         _debugData[2] = $"Map Index: {MapIndex}";
     }

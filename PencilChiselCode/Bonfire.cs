@@ -7,11 +7,13 @@ using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
+using PencilChiselCode.Source;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
 
@@ -34,6 +36,7 @@ public class Bonfire : Game
     public List<TiledMap> TiledMaps = new();
     public const int TreeVariations = 3;
     public Dictionary<string, Song> SongMap { get; } = new();
+    public Controls Controls;
 
     public Bonfire()
     {
@@ -47,6 +50,7 @@ public class Bonfire : Game
         Window.AllowUserResizing = false;
         Graphics.SynchronizeWithVerticalRetrace = false;
         IsFixedTimeStep = false;
+        Controls = new();
     }
 
     protected override void Initialize()
@@ -133,6 +137,15 @@ public class Bonfire : Game
         }
 
         TiledMapRenderer = new TiledMapRenderer(GraphicsDevice, TiledMaps[0]);
+    }
+
+    public void Start()
+    {
+        ScreenManager.LoadScreen(
+            new IngameState(this),
+            new FadeTransition(GraphicsDevice, Color.Black)
+        );
+        ResetPenumbra();
     }
 
     public void ResetPenumbra()
