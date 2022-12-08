@@ -86,8 +86,9 @@ public class Bonfire : Game
         TextureMap.Add("menu_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/menu_button_pressed"));
         TextureMap.Add("restart_button_normal", Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_normal"));
         TextureMap.Add("restart_button_hover", Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_hover"));
-        TextureMap.Add("restart_button_pressed",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_pressed"));
+        TextureMap.Add("restart_button_pressed", Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_pressed"));
+
+        TextureMap.Add("logo", Content.Load<Texture2D>("Textures/GUI/logo"));
 
         TextureMap.Add("x_button", Content.Load<Texture2D>("Textures/GUI/x_button"));
         TextureMap.Add("y_button", Content.Load<Texture2D>("Textures/GUI/y_button"));
