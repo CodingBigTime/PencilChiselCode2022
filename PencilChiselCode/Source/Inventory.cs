@@ -158,7 +158,7 @@ public class Inventory
     public void Update()
     {
         _textIcons["twigCount"].Text = _state.Player.Inventory[PickupableTypes.Twig].ToString();
-        _textIcons["berryCount"].Text = _state.Player.Inventory[PickupableTypes.Bush].ToString();
+        _textIcons["berryCount"].Text = _state.Player.Inventory[PickupableTypes.BerryBush].ToString();
     }
 
     public void Draw(SpriteBatch spriteBatch)

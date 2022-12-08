@@ -26,6 +26,7 @@ public class CampFire : GroundEntity
     private readonly AnimatedSprite _animatedSprite;
     private readonly float _maxScale = 300F;
     private readonly ParticleGenerator _particleGenerator;
+    public const uint TwigCost = 10U;
 
     public CampFire(IngameState state, Vector2 position) : base(state, null, position, new(1F), 0F)
     {
@@ -34,16 +35,19 @@ public class CampFire : GroundEntity
         _animatedSprite.Play("burn");
         var attributeTexture = Game.TextureMap["attribute_bar"];
         var fireplaceAttributeTexture = Game.TextureMap["fireplace_bar"];
-        _attribute = new Attribute(
-            Position + new Vector2(_animatedSprite.TextureRegion.Width,
-                _animatedSprite.TextureRegion.Height * 3 + attributeTexture.Height),
-            0.5F,
-            attributeTexture,
-            fireplaceAttributeTexture,
-            attributeTexture.Bounds.Center.ToVector2() + new Vector2(30, 5),
-            100F,
-            -5F
-        );
+        _attribute = Attribute.Builder
+            .WithPosition(
+                Position +
+                new Vector2(
+                    _animatedSprite.TextureRegion.Width,
+                    _animatedSprite.TextureRegion.Height * 3 + attributeTexture.Height
+                )
+            )
+            .WithTextures(attributeTexture, fireplaceAttributeTexture)
+            .WithScale(0.5F)
+            .WithOffset(attributeTexture.Bounds.Center.ToVector2() + new Vector2(30, 5))
+            .WithChangeRate(-5F)
+            .Build();
         Game.Penumbra.Lights.Add(PointLight);
         _particleGenerator = new ParticleGenerator(
             () => new Particle(

@@ -12,6 +12,7 @@ namespace PencilChiselCode.Source;
 
 public class Player
 {
+    public Companion Companion => _state.Companion;
     public Vector2 Size => new(_animatedSprite.TextureRegion.Width * _scale,
         _animatedSprite.TextureRegion.Height * _scale);
 
@@ -75,10 +76,7 @@ public class Player
         }
     }
 
-    ~Player()
-    {
-        Cleanup();
-    }
+    ~Player() => Cleanup();
 
     public Light PointLight { get; } = new PointLight
     {
@@ -127,18 +125,21 @@ public class Player
         });
     }
 
-    public void CreateFire(uint amount)
+    public void CreateFire()
     {
-        Inventory[PickupableTypes.Twig] -= amount;
+        if (!CanCreateFire()) return;
+        Game.SoundMap["light_fire"].Play();
+        _state.AddCampfire(Position + new Vector2(20, -20));
+        Inventory[PickupableTypes.Twig] -= CampFire.TwigCost;
     }
 
     public void ReduceBerries(uint amount)
     {
-        if (Inventory[PickupableTypes.Bush] < amount) return;
-        Inventory[PickupableTypes.Bush] -= amount;
+        if (Inventory[PickupableTypes.BerryBush] < amount) return;
+        Inventory[PickupableTypes.BerryBush] -= amount;
     }
 
-    public bool CanCreateFire() => Inventory[PickupableTypes.Twig] >= 10;
+    public bool CanCreateFire() => Inventory[PickupableTypes.Twig] >= CampFire.TwigCost;
 
     public void Update(GameTime gameTime)
     {
@@ -167,6 +168,14 @@ public class Player
         _speed.X = Math.Clamp(_speed.X, -_maxSpeed * biasX, _maxSpeed * biasX);
         _speed.Y = Math.Clamp(_speed.Y, -_maxSpeed * biasY, _maxSpeed * biasY);
         Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
+
+        if (_state.Game.Controls.JustPressed(ControlKeys.FEED) &&
+            Vector2.Distance(Companion.Position, Position) <= 100 &&
+            _state.Player.Inventory[PickupableTypes.BerryBush] > 0)
+        {
+            _state.Player.ReduceBerries(1);
+            Companion.ComfyMeter += 10F;
+        }
 
         if (Position.X >= Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F)
         {

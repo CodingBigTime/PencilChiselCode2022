@@ -12,7 +12,7 @@ public class BerryBush : Pickupable
         float rotation = 0
     ) : base(
         state,
-        PickupableTypes.Bush,
+        PickupableTypes.BerryBush,
         state.Game.TextureMap["bush_berry"],
         state.Game.SoundMap["pickup_branches"],
         position,

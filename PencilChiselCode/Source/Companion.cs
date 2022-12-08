@@ -19,7 +19,7 @@ public class Companion
     private bool _isStationary;
     private readonly IngameState _state;
     private Bonfire Game => _state.Game;
-    public readonly Attribute ComfyMeter;
+    public Attribute ComfyMeter;
 
     public Companion(IngameState state, Vector2 position, float speed)
     {
@@ -29,24 +29,23 @@ public class Companion
         _movementSpeed.Y = speed;
         Position = position;
         var textureCompanionDown = Game.TextureMap["follower"];
-        Size = new(textureCompanionDown.Width * _scale, textureCompanionDown.Height * _scale);
+        Size = new Vector2(textureCompanionDown.Width * _scale, textureCompanionDown.Height * _scale);
         var attributeTexture = Game.TextureMap["attribute_bar"];
         var comfyAttributeTexture = Game.TextureMap["comfy_bar"];
-        ComfyMeter =
-            new Attribute(
-                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() - attributeTexture.Height * 3F),
-                3F,
-                attributeTexture,
-                comfyAttributeTexture,
-                attributeTexture.Bounds.Center.ToVector2(),
-                100,
-                -2F
-            );
+        ComfyMeter = Attribute.Builder
+            .WithPosition(
+                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() - attributeTexture.Height * 3F)
+            )
+            .WithTextures(attributeTexture, comfyAttributeTexture)
+            .WithScale(3F)
+            .WithOffset(attributeTexture.Bounds.Center.ToVector2())
+            .WithChangeRate(-2F)
+            .Build();
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        float angle = (float)Math.Atan2(_speed.Y, _speed.X);
+        var angle = (float)Math.Atan2(_speed.Y, _speed.X);
         var (texture, spriteEffect) = angle switch
         {
             >= -PI / 4 and <= PI / 4 => (Game.TextureMap["follower"], SpriteEffects.FlipHorizontally),
@@ -100,30 +99,20 @@ public class Companion
             Position.Y -= _movementSpeed.X * (height / h) * delta;
         }
 
-        var followerPlayerDistance = Vector2.Distance(_state.Player.Position, Position);
-
         if (Position.X < Game.Camera.Position.X + IngameState.DarknessEndOffset)
         {
-            ComfyMeter.ChangeValue(-24F * gameTime.GetElapsedSeconds());
+            ComfyMeter -= 24F * gameTime.GetElapsedSeconds();
         }
         else if (_state.Campfires.Any(campfire => campfire.IsInRange(Position)))
         {
-            ComfyMeter.ChangeValue(8F * gameTime.GetElapsedSeconds());
+            ComfyMeter += 8F * gameTime.GetElapsedSeconds();
         }
-        else if (followerPlayerDistance > IngameState.MinimumFollowerPlayerDistance)
+        else if (Vector2.Distance(_state.Player.Position, Position) > IngameState.MinimumFollowerPlayerDistance)
         {
-            ComfyMeter.ChangeValue(-4F * gameTime.GetElapsedSeconds());
+            ComfyMeter -= 4F * gameTime.GetElapsedSeconds();
         }
-
-        if (
-            !_state.Game.Controls.JustPressed(ControlKeys.FEED) ||
-            followerPlayerDistance > 100 ||
-            _state.Player.Inventory[PickupableTypes.Bush] < 1
-        ) return;
-        _state.Player.ReduceBerries(1);
-        ComfyMeter.ChangeValue(10F);
     }
 
-    public bool IsAnxious() => ComfyMeter.Value <= 0;
+    public bool IsAnxious() => ComfyMeter <= 0;
     public void ToggleSitting() => _isStationary = !_isStationary;
 }
