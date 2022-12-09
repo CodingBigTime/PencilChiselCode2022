@@ -35,7 +35,7 @@ namespace PencilChiselCode.Source
             {
                 entity.Update(gameTime);
             }
-            RemoveDead();
+            RemoveMarked();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -46,7 +46,7 @@ namespace PencilChiselCode.Source
             }
         }
 
-        public void RemoveDead()
+        public void RemoveMarked()
         {
             foreach (var entity in this.Where(entity => entity.ShouldRemove())) {
                 entity.Cleanup();
