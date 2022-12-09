@@ -14,10 +14,11 @@ public class Player
 {
     public Companion Companion => _state.Companion;
 
-    public Vector2 Size => new(
-        _animatedSprite.TextureRegion.Width * _scale,
-        _animatedSprite.TextureRegion.Height * _scale
-    );
+    public Vector2 Size =>
+        new(
+            _animatedSprite.TextureRegion.Width * _scale,
+            _animatedSprite.TextureRegion.Height * _scale
+        );
 
     public Vector2 Position
     {
@@ -56,17 +57,22 @@ public class Player
         Game.Penumbra.Lights.Add(PointLight);
         Game.Penumbra.Lights.Add(Spotlight);
         _particleGenerator = new ParticleGenerator(
-            () => new Particle(
-                3,
-                Position + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10) +
-                Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
-                Vector2.UnitY * Utils.RANDOM.NextSingle(-5, 5) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
-                time => (3 - time) / 3 * 1F,
-                _ => Color.LightBlue
-            ),
+            () =>
+                new Particle(
+                    3,
+                    Position
+                        + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10)
+                        + Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
+                    Vector2.UnitY * Utils.RANDOM.NextSingle(-5, 5)
+                        - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                    time => (3 - time) / 3 * 1F,
+                    _ => Color.LightBlue
+                ),
             3F
         );
-        Enum.GetValues(typeof(PickupableTypes)).Cast<PickupableTypes>().ToList()
+        Enum.GetValues(typeof(PickupableTypes))
+            .Cast<PickupableTypes>()
+            .ToList()
             .ForEach(type => Inventory.Add(type, 0));
     }
 
@@ -79,20 +85,22 @@ public class Player
         }
     }
 
-    public Light PointLight { get; } = new PointLight
-    {
-        Scale = new Vector2(PointLightScale),
-        Color = Color.White,
-        ShadowType = ShadowType.Occluded
-    };
+    public Light PointLight { get; } =
+        new PointLight
+        {
+            Scale = new Vector2(PointLightScale),
+            Color = Color.White,
+            ShadowType = ShadowType.Occluded
+        };
 
-    public Light Spotlight { get; } = new Spotlight
-    {
-        Scale = new Vector2(SpotLightScale),
-        Color = Color.White,
-        ShadowType = ShadowType.Occluded,
-        ConeDecay = 2.5F
-    };
+    public Light Spotlight { get; } =
+        new Spotlight
+        {
+            Scale = new Vector2(SpotLightScale),
+            Color = Color.White,
+            ShadowType = ShadowType.Occluded,
+            ConeDecay = 2.5F
+        };
 
     public void Draw(SpriteBatch spriteBatch)
     {
@@ -119,16 +127,23 @@ public class Player
     public void DrawPopupButton(SpriteBatch spriteBatch)
     {
         var i = 0;
-        _popupButtons.Values.ToList().ForEach(button =>
-        {
-            button?.Draw(spriteBatch, Position + new Vector2(i * (button.Texture.Width * 1.5F), 0), Size);
-            ++i;
-        });
+        _popupButtons.Values
+            .ToList()
+            .ForEach(button =>
+            {
+                button?.Draw(
+                    spriteBatch,
+                    Position + new Vector2(i * (button.Texture.Width * 1.5F), 0),
+                    Size
+                );
+                ++i;
+            });
     }
 
     public void CreateFire()
     {
-        if (!CanCreateFire()) return;
+        if (!CanCreateFire())
+            return;
         Game.SoundMap["light_fire"].Play();
         _state.AddCampfire(Position + new Vector2(20, -20));
         Inventory[PickupableTypes.Twig] -= CampFire.TwigCost;
@@ -136,7 +151,8 @@ public class Player
 
     public void ReduceBerries(uint amount)
     {
-        if (Inventory[PickupableTypes.BerryBush] < amount) return;
+        if (Inventory[PickupableTypes.BerryBush] < amount)
+            return;
         Inventory[PickupableTypes.BerryBush] -= amount;
     }
 
@@ -164,15 +180,19 @@ public class Player
 
         _speed += new Vector2(ax, ay);
         _speed += -(_speed * _friction * delta);
-        var biasX = Math.Abs(_speed.X) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
-        var biasY = Math.Abs(_speed.Y) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+        var biasX =
+            Math.Abs(_speed.X) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+        var biasY =
+            Math.Abs(_speed.Y) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
         _speed.X = Math.Clamp(_speed.X, -_maxSpeed * biasX, _maxSpeed * biasX);
         _speed.Y = Math.Clamp(_speed.Y, -_maxSpeed * biasY, _maxSpeed * biasY);
         Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
 
-        if (_state.Game.Controls.JustPressed(ControlKeys.FEED) &&
-            Vector2.Distance(Companion.Position, Position) <= 100 &&
-            _state.Player.Inventory[PickupableTypes.BerryBush] > 0)
+        if (
+            _state.Game.Controls.JustPressed(ControlKeys.FEED)
+            && Vector2.Distance(Companion.Position, Position) <= 100
+            && _state.Player.Inventory[PickupableTypes.BerryBush] > 0
+        )
         {
             _state.Player.ReduceBerries(1);
             Companion.ComfyMeter.Value += 10F;
@@ -181,18 +201,26 @@ public class Player
         if (Position.X >= Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F)
         {
             _speed.X = 0;
-            Position = new(Math.Min(Position.X, Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F), Position.Y);
+            Position = new(
+                Math.Min(Position.X, Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F),
+                Position.Y
+            );
         }
 
         if (Position.Y <= Size.Y / 2F || Position.Y >= Game.Height - Size.Y / 2F)
         {
             _speed.Y = 0;
-            Position = new(Position.X, Math.Clamp(Position.Y, Size.Y / 2F, Game.Height - Size.Y / 2F));
+            Position = new(
+                Position.X,
+                Math.Clamp(Position.Y, Size.Y / 2F, Game.Height - Size.Y / 2F)
+            );
         }
 
         var nearestCampfire = _state.Campfires
             .OrderBy(campfire => Vector2.DistanceSquared(campfire.Position, Position))
-            .FirstOrDefault(campfire => Vector2.DistanceSquared(campfire.Position, Position) < 100 * 100);
+            .FirstOrDefault(
+                campfire => Vector2.DistanceSquared(campfire.Position, Position) < 100 * 100
+            );
 
         if (nearestCampfire != null && !_popupButtons.ContainsKey("F"))
         {
@@ -204,19 +232,26 @@ public class Player
             _popupButtons.Remove("F");
         }
 
-        if (_state.Game.Controls.JustPressed(ControlKeys.REFUEL) && nearestCampfire != null &&
-            Inventory[PickupableTypes.Twig] > 0)
+        if (
+            _state.Game.Controls.JustPressed(ControlKeys.REFUEL)
+            && nearestCampfire != null
+            && Inventory[PickupableTypes.Twig] > 0
+        )
         {
             nearestCampfire.FeedFire(25F);
             --Inventory[PickupableTypes.Twig];
         }
 
-        if (nearestCampfire == null || Inventory[PickupableTypes.Twig] <= 0) _popupButtons.Remove("F");
+        if (nearestCampfire == null || Inventory[PickupableTypes.Twig] <= 0)
+            _popupButtons.Remove("F");
 
         var nearestPickupable = _state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
-            .FirstOrDefault(pickupable =>
-                Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100 && pickupable.IsConsumable);
+            .FirstOrDefault(
+                pickupable =>
+                    Vector2.DistanceSquared(pickupable.Position, Position) < 100 * 100
+                    && pickupable.IsConsumable
+            );
 
         if (nearestPickupable != null && !_popupButtons.ContainsKey("E"))
         {
@@ -233,7 +268,10 @@ public class Player
             nearestPickupable.IsConsumable = false;
         }
 
-        if (nearestPickupable == null && (nearestCampfire == null || Inventory[PickupableTypes.Twig] <= 0))
+        if (
+            nearestPickupable == null
+            && (nearestCampfire == null || Inventory[PickupableTypes.Twig] <= 0)
+        )
         {
             _popupButtons.Clear();
         }

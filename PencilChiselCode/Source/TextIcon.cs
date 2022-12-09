@@ -17,5 +17,6 @@ public class TextIcon
         _font = font;
     }
 
-    public void Draw(SpriteBatch spriteBatch) => spriteBatch.DrawString(_font, Text, _position, Color.White);
+    public void Draw(SpriteBatch spriteBatch) =>
+        spriteBatch.DrawString(_font, Text, _position, Color.White);
 }

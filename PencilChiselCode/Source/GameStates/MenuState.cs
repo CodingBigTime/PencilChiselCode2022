@@ -24,30 +24,46 @@ public class MenuState : BonfireGameState
         var textureMap = Game.TextureMap;
         var startButton = textureMap["start_button_normal"];
         var startButtonSize = new Vector2(startButton.Width, startButton.Height);
-        _buttons.Add(new Button(this,
-            startButton,
-            textureMap["start_button_hover"],
-            textureMap["start_button_pressed"],
-            Utils.GetCenterStartCoords(startButtonSize, Game.GetWindowDimensions()),
-            Game.Start
-        ));
+        _buttons.Add(
+            new Button(
+                this,
+                startButton,
+                textureMap["start_button_hover"],
+                textureMap["start_button_pressed"],
+                Utils.GetCenterStartCoords(startButtonSize, Game.GetWindowDimensions()),
+                Game.Start
+            )
+        );
         var exitButton = textureMap["exit_button_normal"];
         var exitButtonSize = new Vector2(exitButton.Width, exitButton.Height);
-        _buttons.Add(new Button(this,
-            exitButton,
-            textureMap["exit_button_hover"],
-            textureMap["exit_button_pressed"],
-            Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions()) + Vector2.UnitY * 100,
-            Game.Exit
-        ));
+        _buttons.Add(
+            new Button(
+                this,
+                exitButton,
+                textureMap["exit_button_hover"],
+                textureMap["exit_button_pressed"],
+                Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions())
+                    + Vector2.UnitY * 100,
+                Game.Exit
+            )
+        );
     }
-
 
     public override void Draw(GameTime gameTime)
     {
         Game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         Game.GraphicsDevice.Clear(BgColor);
-        Game.SpriteBatch.Draw(_logo, _logoPosition, null, Color.White, 0F, Vector2.Zero, LogoScale, SpriteEffects.None, 0F);
+        Game.SpriteBatch.Draw(
+            _logo,
+            _logoPosition,
+            null,
+            Color.White,
+            0F,
+            Vector2.Zero,
+            LogoScale,
+            SpriteEffects.None,
+            0F
+        );
         _buttons.ForEach(button => button.Draw(Game.SpriteBatch));
         Game.SpriteBatch.End();
     }

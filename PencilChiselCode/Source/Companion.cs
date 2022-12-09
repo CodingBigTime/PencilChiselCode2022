@@ -29,12 +29,18 @@ public class Companion
         _movementSpeed.Y = speed;
         Position = position;
         var textureCompanionDown = Game.TextureMap["follower"];
-        Size = new Vector2(textureCompanionDown.Width * _scale, textureCompanionDown.Height * _scale);
+        Size = new Vector2(
+            textureCompanionDown.Width * _scale,
+            textureCompanionDown.Height * _scale
+        );
         var attributeTexture = Game.TextureMap["attribute_bar"];
         var comfyAttributeTexture = Game.TextureMap["comfy_bar"];
         ComfyMeter = Attribute.Builder
             .WithPosition(
-                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() - attributeTexture.Height * 3F)
+                new Vector2(
+                    Game.GetWindowWidth() / 2F,
+                    Game.GetWindowHeight() - attributeTexture.Height * 3F
+                )
             )
             .WithTextures(attributeTexture, comfyAttributeTexture)
             .WithScale(3F)
@@ -48,7 +54,9 @@ public class Companion
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
         var (texture, spriteEffect) = angle switch
         {
-            >= -PI / 4 and <= PI / 4 => (Game.TextureMap["follower"], SpriteEffects.FlipHorizontally),
+            >= -PI / 4
+            and <= PI / 4
+                => (Game.TextureMap["follower"], SpriteEffects.FlipHorizontally),
             > PI / 4 and < 3 * PI / 4 => (Game.TextureMap["follower"], SpriteEffects.None),
             >= 3 * PI / 4 or <= -3 * PI / 4 => (Game.TextureMap["follower"], SpriteEffects.None),
             > -3 * PI / 4 and < -PI / 4 => (Game.TextureMap["follower"], SpriteEffects.None),
@@ -77,9 +85,10 @@ public class Companion
         var height = Math.Abs(Position.Y - playerPosY);
         var h = (float)Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
 
-        _movementSpeed.X = Math.Sqrt(width * width + height * height) > MinimumFollowDistance && !_isStationary
-            ? _movementSpeed.Y
-            : 0;
+        _movementSpeed.X =
+            Math.Sqrt(width * width + height * height) > MinimumFollowDistance && !_isStationary
+                ? _movementSpeed.Y
+                : 0;
 
         if (playerPosX > Position.X)
         {
@@ -107,12 +116,16 @@ public class Companion
         {
             ComfyMeter.Value += 8F * gameTime.GetElapsedSeconds();
         }
-        else if (Vector2.Distance(_state.Player.Position, Position) > IngameState.MinimumFollowerPlayerDistance)
+        else if (
+            Vector2.Distance(_state.Player.Position, Position)
+            > IngameState.MinimumFollowerPlayerDistance
+        )
         {
             ComfyMeter.Value -= 4F * gameTime.GetElapsedSeconds();
         }
     }
 
     public bool IsAnxious() => ComfyMeter <= 0;
+
     public void ToggleSitting() => _isStationary = !_isStationary;
 }

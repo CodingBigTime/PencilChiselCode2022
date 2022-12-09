@@ -18,6 +18,16 @@ public class Icon
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_texture, _position, null, Color.White, 0F, Vector2.Zero, _scale, SpriteEffects.None, 0F);
+        spriteBatch.Draw(
+            _texture,
+            _position,
+            null,
+            Color.White,
+            0F,
+            Vector2.Zero,
+            _scale,
+            SpriteEffects.None,
+            0F
+        );
     }
 }

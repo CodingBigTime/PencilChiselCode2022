@@ -13,7 +13,8 @@ public abstract class Pickupable : GroundEntity
     private const float RenderOffset = 32;
 
     public override bool ShouldRemove() =>
-        base.ShouldRemove() || Game.Camera.Position.X > Position.X + Size.X * Scale.X + RenderOffset;
+        base.ShouldRemove()
+        || Game.Camera.Position.X > Position.X + Size.X * Scale.X + RenderOffset;
 
     public Pickupable(
         IngameState state,
@@ -23,13 +24,7 @@ public abstract class Pickupable : GroundEntity
         Vector2 position,
         Vector2 scale,
         float rotation = 0F
-    ) : base(
-        state,
-        texture,
-        position,
-        scale,
-        rotation
-    )
+    ) : base(state, texture, position, scale, rotation)
     {
         IsConsumable = true;
         Type = type;

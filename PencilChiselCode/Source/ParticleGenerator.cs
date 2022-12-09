@@ -11,7 +11,6 @@ public class ParticleGenerator
     private readonly Func<Particle> _particleGenerator;
     private float _frequency;
 
-
     public ParticleGenerator(Func<Particle> particleGenerator, float frequency)
     {
         _particles = new();
@@ -21,7 +20,9 @@ public class ParticleGenerator
 
     public void Update(GameTime gameTime, bool addNew)
     {
-        if (addNew && Utils.RANDOM.NextDouble() < _frequency * gameTime.ElapsedGameTime.TotalSeconds)
+        if (
+            addNew && Utils.RANDOM.NextDouble() < _frequency * gameTime.ElapsedGameTime.TotalSeconds
+        )
         {
             _particles.Add(_particleGenerator());
         }
@@ -30,5 +31,6 @@ public class ParticleGenerator
         _particles.RemoveAll(particle => particle.IsExpired());
     }
 
-    public void Draw(SpriteBatch spriteBatch) => _particles.ForEach(particle => particle.Draw(spriteBatch));
+    public void Draw(SpriteBatch spriteBatch) =>
+        _particles.ForEach(particle => particle.Draw(spriteBatch));
 }

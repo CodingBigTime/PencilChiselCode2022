@@ -37,11 +37,11 @@ public class CampFire : GroundEntity
         var fireplaceAttributeTexture = Game.TextureMap["fireplace_bar"];
         _attribute = Attribute.Builder
             .WithPosition(
-                Position +
-                new Vector2(
-                    _animatedSprite.TextureRegion.Width,
-                    _animatedSprite.TextureRegion.Height * 3 + attributeTexture.Height
-                )
+                Position
+                    + new Vector2(
+                        _animatedSprite.TextureRegion.Width,
+                        _animatedSprite.TextureRegion.Height * 3 + attributeTexture.Height
+                    )
             )
             .WithTextures(attributeTexture, fireplaceAttributeTexture)
             .WithScale(0.5F)
@@ -50,14 +50,17 @@ public class CampFire : GroundEntity
             .Build();
         Game.Penumbra.Lights.Add(PointLight);
         _particleGenerator = new ParticleGenerator(
-            () => new Particle(
-                Utils.RANDOM.NextSingle(1, 2),
-                Position + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) +
-                Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
-                Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10) - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
-                time => time,
-                _ => IsLow() ? Color.Black : Color.Red
-            ),
+            () =>
+                new Particle(
+                    Utils.RANDOM.NextSingle(1, 2),
+                    Position
+                        + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10)
+                        + Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                    Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10)
+                        - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                    time => time,
+                    _ => IsLow() ? Color.Black : Color.Red
+                ),
             5F
         );
     }
@@ -71,19 +74,18 @@ public class CampFire : GroundEntity
     }
 
     public bool IsLit() => !_attribute.IsEmpty();
+
     public override bool ShouldRemove() => base.ShouldRemove() || !IsLit();
 
     public bool IsLow() => _attribute.Percent() < 0.1;
 
-    public Light PointLight { get; } = new PointLight
-    {
-        Color = Color.DarkOrange,
-        ShadowType = ShadowType.Occluded
-    };
+    public Light PointLight { get; } =
+        new PointLight { Color = Color.DarkOrange, ShadowType = ShadowType.Occluded };
 
     public override Vector2 Scale => new(_maxScale * _attribute.Percent());
 
-    public bool IsInRange(Vector2 sourcePosition) => Vector2.Distance(Position, sourcePosition) < Scale.X;
+    public bool IsInRange(Vector2 sourcePosition) =>
+        Vector2.Distance(Position, sourcePosition) < Scale.X;
 
     public void FeedFire(float amount)
     {
@@ -93,7 +95,8 @@ public class CampFire : GroundEntity
 
     public override void Update(GameTime gameTime)
     {
-        if (ShouldRemove()) return;
+        if (ShouldRemove())
+            return;
 
         _animatedSprite.Update(gameTime);
         _attribute.Update(gameTime);
@@ -103,20 +106,17 @@ public class CampFire : GroundEntity
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        if (ShouldRemove()) return;
+        if (ShouldRemove())
+            return;
         var textureScale = _attribute.Percent() * 4F;
-        _animatedSprite.Draw(
-            spriteBatch,
-            Position,
-            0F,
-            new(textureScale)
-        );
+        _animatedSprite.Draw(spriteBatch, Position, 0F, new(textureScale));
         _particleGenerator.Draw(spriteBatch);
     }
 
     public void DrawUI(SpriteBatch spriteBatch)
     {
-        if (ShouldRemove()) return;
+        if (ShouldRemove())
+            return;
         _attribute.Draw(spriteBatch);
     }
 }

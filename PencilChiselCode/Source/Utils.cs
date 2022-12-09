@@ -14,18 +14,33 @@ public static class Utils
         new((containerSize.X - drawableSize.X) / 2, (containerSize.Y - drawableSize.Y) / 2);
 
     public static bool IsPointInRectangle(Vector2 point, Rectangle rectangle) =>
-        point.X >= rectangle.X && point.X <= rectangle.X + rectangle.Width &&
-        point.Y >= rectangle.Y && point.Y <= rectangle.Y + rectangle.Height;
+        point.X >= rectangle.X
+        && point.X <= rectangle.X + rectangle.Width
+        && point.Y >= rectangle.Y
+        && point.Y <= rectangle.Y + rectangle.Height;
 
-    public static bool IsPointInRectangle(Vector2 point, Vector2 rectanglePosition, Vector2 rectangleSize) =>
-        IsPointInRectangle(point,
-            new Rectangle((int)rectanglePosition.X, (int)rectanglePosition.Y, (int)rectangleSize.X,
-                (int)rectangleSize.Y));
+    public static bool IsPointInRectangle(
+        Vector2 point,
+        Vector2 rectanglePosition,
+        Vector2 rectangleSize
+    ) =>
+        IsPointInRectangle(
+            point,
+            new Rectangle(
+                (int)rectanglePosition.X,
+                (int)rectanglePosition.Y,
+                (int)rectangleSize.X,
+                (int)rectangleSize.Y
+            )
+        );
 
-    public static bool Intersects(Rectangle rectangle1, Rectangle rectangle2) => rectangle1.Intersects(rectangle2);
+    public static bool Intersects(Rectangle rectangle1, Rectangle rectangle2) =>
+        rectangle1.Intersects(rectangle2);
 
     public static int GetRandomInt(int min, int max) => new Random().Next(min, max);
+
     public static Vector2 ToVector2(this Point point) => new(point.X, point.Y);
+
     public static Point ToPoint(this Vector2 vector) => new((int)vector.X, (int)vector.Y);
 
     public static float GetAverageSize(this Vector2 vector) => (vector.X + vector.Y) / 2;
@@ -46,12 +61,19 @@ public static class Utils
         return CreateRectangle(position, size);
     }
 
-    public static CircleF Expand(this CircleF circle, int radius) => new(circle.Center, circle.Radius + radius);
+    public static CircleF Expand(this CircleF circle, int radius) =>
+        new(circle.Center, circle.Radius + radius);
 
-    public static void DrawOutlinedString(this SpriteBatch spriteBatch, BitmapFont font, string text, Vector2 position,
+    public static void DrawOutlinedString(
+        this SpriteBatch spriteBatch,
+        BitmapFont font,
+        string text,
+        Vector2 position,
         Color frontColor,
-        Color backColor, HorizontalFontAlignment horizontalFontAlignment = HorizontalFontAlignment.Left,
-        VerticalFontAlignment verticalFontAlignment = VerticalFontAlignment.Top)
+        Color backColor,
+        HorizontalFontAlignment horizontalFontAlignment = HorizontalFontAlignment.Left,
+        VerticalFontAlignment verticalFontAlignment = VerticalFontAlignment.Top
+    )
     {
         var (x, y) = font.MeasureString(text);
 

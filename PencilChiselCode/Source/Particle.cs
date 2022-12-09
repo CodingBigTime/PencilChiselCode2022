@@ -17,8 +17,13 @@ public class Particle
     private Color _color;
     private bool _expired;
 
-    public Particle(float duration, Vector2 startPosition, Vector2 velocity, Func<float, float> scaleFunction,
-        Func<float, Color> colorFunction)
+    public Particle(
+        float duration,
+        Vector2 startPosition,
+        Vector2 velocity,
+        Func<float, float> scaleFunction,
+        Func<float, Color> colorFunction
+    )
     {
         _duration = duration;
         _position = startPosition;
@@ -48,18 +53,22 @@ public class Particle
 
         var elapsedTime = (float)gameTime.TotalGameTime.TotalSeconds - _startTime;
 
-        if (IsExpired()) return;
+        if (IsExpired())
+            return;
 
         _position += _velocity * deltaTime;
         _scale = _scaleFunction(elapsedTime);
         _color = _colorFunction(elapsedTime);
-        _color.A = (byte)(Byte.MaxValue *
-                          (1 - Math.Pow((gameTime.TotalGameTime.TotalSeconds - _startTime) / _duration, 2)));
+        _color.A = (byte)(
+            Byte.MaxValue
+            * (1 - Math.Pow((gameTime.TotalGameTime.TotalSeconds - _startTime) / _duration, 2))
+        );
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        if (IsExpired()) return;
+        if (IsExpired())
+            return;
         var size = new Vector2(10, 10) * _scale;
         spriteBatch.FillRectangle(_position - size / 2, size, _color);
     }

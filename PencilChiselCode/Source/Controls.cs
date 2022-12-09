@@ -21,7 +21,10 @@ public class Controls
         PreviousPressedButtons.Clear();
         PreviousPressedKeys.UnionWith(KeyState.GetPressedKeys());
         var buttons = Enum.GetValues(typeof(Buttons)).Cast<Buttons>();
-        buttons.Where(button => GamepadState.IsButtonDown(button)).ToList().ForEach(button => PreviousPressedButtons.Add(button));
+        buttons
+            .Where(button => GamepadState.IsButtonDown(button))
+            .ToList()
+            .ForEach(button => PreviousPressedButtons.Add(button));
     }
 
     public Controls()
@@ -38,7 +41,7 @@ public class Controls
         KeyBindings.Add(ControlKeys.REFUEL, Keys.F);
         KeyBindings.Add(ControlKeys.START_FIRE, Keys.X);
         KeyBindings.Add(ControlKeys.START, Keys.Space);
-        
+
         ControllerBindings.Add(ControlKeys.STOP_FOLLOWER, Buttons.LeftShoulder);
         ControllerBindings.Add(ControlKeys.PAUSE, Buttons.Start);
         ControllerBindings.Add(ControlKeys.FEED, Buttons.X);
@@ -47,37 +50,56 @@ public class Controls
         ControllerBindings.Add(ControlKeys.START_FIRE, Buttons.Y);
         ControllerBindings.Add(ControlKeys.START, Buttons.A);
     }
-    
+
     public Vector2 GetMovement()
     {
         var left = IsPressed(ControlKeys.MOVE_LEFT);
         var up = IsPressed(ControlKeys.MOVE_UP);
         var down = IsPressed(ControlKeys.MOVE_DOWN);
         var right = IsPressed(ControlKeys.MOVE_RIGHT);
-        var mx = GamepadState.ThumbSticks.Left.X != 0 ? GamepadState.ThumbSticks.Left.X : Convert.ToSingle(right) - Convert.ToSingle(left);
-        var my = GamepadState.ThumbSticks.Left.Y != 0 ? -GamepadState.ThumbSticks.Left.Y : Convert.ToSingle(down) - Convert.ToSingle(up);
+        var mx =
+            GamepadState.ThumbSticks.Left.X != 0
+                ? GamepadState.ThumbSticks.Left.X
+                : Convert.ToSingle(right) - Convert.ToSingle(left);
+        var my =
+            GamepadState.ThumbSticks.Left.Y != 0
+                ? -GamepadState.ThumbSticks.Left.Y
+                : Convert.ToSingle(down) - Convert.ToSingle(up);
         return new Vector2(mx, my);
     }
-    
+
     public bool IsPressed(ControlKeys key)
     {
-        return KeyBindings.ContainsKey(key) && KeyState.IsKeyDown(KeyBindings[key]) ||
-               ControllerBindings.ContainsKey(key) && GamepadState.IsButtonDown(ControllerBindings[key]);
+        return KeyBindings.ContainsKey(key) && KeyState.IsKeyDown(KeyBindings[key])
+            || ControllerBindings.ContainsKey(key)
+                && GamepadState.IsButtonDown(ControllerBindings[key]);
     }
 
     public bool JustPressed(ControlKeys key)
     {
-        return (KeyBindings.ContainsKey(key) && !PreviousPressedKeys.Contains(KeyBindings[key]) &&
-                KeyState.IsKeyDown(KeyBindings[key])) ||
-               (ControllerBindings.ContainsKey(key) && !PreviousPressedButtons.Contains(ControllerBindings[key]) &&
-                GamepadState.IsButtonDown(ControllerBindings[key]));
+        return (
+                KeyBindings.ContainsKey(key)
+                && !PreviousPressedKeys.Contains(KeyBindings[key])
+                && KeyState.IsKeyDown(KeyBindings[key])
+            )
+            || (
+                ControllerBindings.ContainsKey(key)
+                && !PreviousPressedButtons.Contains(ControllerBindings[key])
+                && GamepadState.IsButtonDown(ControllerBindings[key])
+            );
     }
 
     public bool JustReleased(ControlKeys key)
     {
-        return (KeyBindings.ContainsKey(key) && PreviousPressedKeys.Contains(KeyBindings[key]) &&
-                !KeyState.IsKeyDown(KeyBindings[key])) ||
-               (ControllerBindings.ContainsKey(key) && PreviousPressedButtons.Contains(ControllerBindings[key]) &&
-                !GamepadState.IsButtonDown(ControllerBindings[key]));
+        return (
+                KeyBindings.ContainsKey(key)
+                && PreviousPressedKeys.Contains(KeyBindings[key])
+                && !KeyState.IsKeyDown(KeyBindings[key])
+            )
+            || (
+                ControllerBindings.ContainsKey(key)
+                && PreviousPressedButtons.Contains(ControllerBindings[key])
+                && !GamepadState.IsButtonDown(ControllerBindings[key])
+            );
     }
 }
