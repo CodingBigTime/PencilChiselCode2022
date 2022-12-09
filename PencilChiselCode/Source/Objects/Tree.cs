@@ -28,7 +28,8 @@ public class Tree : GroundEntity
     private const float RenderOffset = 32;
 
     public override bool ShouldRemove() =>
-        base.ShouldRemove() || Game.Camera.Position.X > Position.X + Size.X * Scale.X + RenderOffset;
+        base.ShouldRemove()
+        || Game.Camera.Position.X > Position.X + Size.X * Scale.X + RenderOffset;
 
     public Tree(
         IngameState state,
@@ -37,13 +38,7 @@ public class Tree : GroundEntity
         Vector2 scale,
         Color glow,
         float rotation = 0F
-    ) : base(
-        state,
-        texture,
-        position,
-        scale,
-        rotation
-    )
+    ) : base(state, texture, position, scale, rotation)
     {
         Game.Penumbra.Lights.Add(PointLight);
         PointLight.Color = glow;
@@ -72,13 +67,7 @@ public class Tree : GroundEntity
         Vector2 position,
         Vector2 scale,
         float rotation = 0F
-    ) : base(
-        state,
-        texture,
-        position,
-        scale,
-        rotation
-    )
+    ) : base(state, texture, position, scale, rotation)
     {
         Game.Penumbra.Hulls.Add(Hull);
     }
@@ -105,7 +94,8 @@ public class Tree : GroundEntity
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        if (ShouldRemove()) return;
+        if (ShouldRemove())
+            return;
 
         spriteBatch.Draw(
             Texture,
@@ -130,11 +120,12 @@ public class Tree : GroundEntity
 
         var playerPosition = State.Player.Position;
         _lightSizeTweener?.Update(gameTime.GetElapsedSeconds());
-        _color.A = Size.Y > 32
-                   && playerPosition.Y < _position.Y + 32
-                   && playerPosition.Y > _position.Y - 64
-                   && Math.Abs(playerPosition.X - _position.X) < 32
-            ? (byte)150
-            : (byte)255;
+        _color.A =
+            Size.Y > 32
+            && playerPosition.Y < _position.Y + 32
+            && playerPosition.Y > _position.Y - 64
+            && Math.Abs(playerPosition.X - _position.X) < 32
+                ? (byte)150
+                : (byte)255;
     }
 }

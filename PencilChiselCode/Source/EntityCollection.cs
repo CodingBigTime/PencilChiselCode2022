@@ -6,8 +6,7 @@ using PencilChiselCode.Source.Objects;
 
 namespace PencilChiselCode.Source
 {
-    public class EntityCollection<T>: List<T>
-        where T : GroundEntity
+    public class EntityCollection<T> : List<T> where T : GroundEntity
     {
         new public void Add(T entity)
         {
@@ -48,7 +47,8 @@ namespace PencilChiselCode.Source
 
         public void RemoveMarked()
         {
-            foreach (var entity in this.Where(entity => entity.ShouldRemove())) {
+            foreach (var entity in this.Where(entity => entity.ShouldRemove()))
+            {
                 entity.Cleanup();
             }
             RemoveAll(entity => entity.ShouldRemove());

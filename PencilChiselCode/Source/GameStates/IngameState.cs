@@ -45,14 +45,15 @@ public class IngameState : BonfireGameState
     public const int DarknessEndOffset = 64;
 
     private int MapIndex =>
-        (int)Math.Abs(Math.Floor(Game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
+        (int)
+            Math.Abs(
+                Math.Floor(Game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels)
+            );
 
+    public IngameState(Game game) : base(game) { }
 
-    public IngameState(Game game) : base(game)
+    public void Cleanup()
     {
-    }
-
-    public void Cleanup() {
         Pickupables.Clear();
         GroundEntities.Clear();
         Campfires.Clear();
@@ -69,60 +70,101 @@ public class IngameState : BonfireGameState
         base.LoadContent();
         for (var i = 0; i < TwigCount; i++)
         {
-            SpawnRandomTwig(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
-                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10), chance: 1, attempts: 30);
+            SpawnRandomTwig(
+                Utils.GetRandomInt(
+                    (int)Game.Camera.Position.X,
+                    Game.GetWindowWidth() + SpawnOffset
+                ),
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
+                chance: 1,
+                attempts: 30
+            );
         }
 
         for (var i = 0; i < BushCount; i++)
         {
-            SpawnRandomBush(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
-                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10), chance: 1, attempts: 30);
+            SpawnRandomBush(
+                Utils.GetRandomInt(
+                    (int)Game.Camera.Position.X,
+                    Game.GetWindowWidth() + SpawnOffset
+                ),
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
+                chance: 1,
+                attempts: 30
+            );
         }
 
         for (var i = 0; i < TreeCount; i++)
         {
-            SpawnRandomTree(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
-                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10), chance: 1, attempts: 64);
+            SpawnRandomTree(
+                Utils.GetRandomInt(
+                    (int)Game.Camera.Position.X,
+                    Game.GetWindowWidth() + SpawnOffset
+                ),
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
+                chance: 1,
+                attempts: 64
+            );
         }
 
         for (var i = 0; i < GlowFlowerCount; i++)
         {
-            SpawnRandomPlant(Utils.GetRandomInt((int)Game.Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
-                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10), chance: 1, attempts: 30);
+            SpawnRandomPlant(
+                Utils.GetRandomInt(
+                    (int)Game.Camera.Position.X,
+                    Game.GetWindowWidth() + SpawnOffset
+                ),
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
+                chance: 1,
+                attempts: 30
+            );
         }
 
         var resumeButton = Game.TextureMap["resume_button_normal"];
         var resumeButtonSize = new Size2(resumeButton.Width, resumeButton.Height);
-        _pauseButton = new Button(this,
+        _pauseButton = new Button(
+            this,
             resumeButton,
             Game.TextureMap["resume_button_hover"],
             Game.TextureMap["resume_button_pressed"],
             Utils.GetCenterStartCoords(resumeButtonSize, Game.GetWindowDimensions()),
-            () => { _pauseState = false; }
+            () =>
+            {
+                _pauseState = false;
+            }
         );
         var exitButton = Game.TextureMap["exit_button_normal"];
         var exitButtonSize = new Size2(exitButton.Width, exitButton.Height);
-        _exitButton = new Button(this,
+        _exitButton = new Button(
+            this,
             exitButton,
             Game.TextureMap["exit_button_hover"],
             Game.TextureMap["exit_button_pressed"],
-            Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions()) + Vector2.UnitY * 100,
+            Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions())
+                + Vector2.UnitY * 100,
             Game.Exit
         );
 
         var menuButton = Game.TextureMap["menu_button_normal"];
         var menuButtonSize = new Size2(menuButton.Width, menuButton.Height);
-        _menuButton = new Button(this,
+        _menuButton = new Button(
+            this,
             menuButton,
             Game.TextureMap["menu_button_hover"],
             Game.TextureMap["menu_button_pressed"],
-            Utils.GetCenterStartCoords(menuButtonSize, Game.GetWindowDimensions()) + Vector2.UnitY * 100,
-            () => Game.ScreenManager.LoadScreen(new MenuState(Game),
-                new FadeTransition(Game.GraphicsDevice, Color.Black)));
+            Utils.GetCenterStartCoords(menuButtonSize, Game.GetWindowDimensions())
+                + Vector2.UnitY * 100,
+            () =>
+                Game.ScreenManager.LoadScreen(
+                    new MenuState(Game),
+                    new FadeTransition(Game.GraphicsDevice, Color.Black)
+                )
+        );
 
         var restartButton = Game.TextureMap["restart_button_normal"];
         var restartButtonSize = new Size2(restartButton.Width, restartButton.Height);
-        _restartButton = new Button(this,
+        _restartButton = new Button(
+            this,
             restartButton,
             Game.TextureMap["restart_button_hover"],
             Game.TextureMap["restart_button_pressed"],
@@ -150,13 +192,14 @@ public class IngameState : BonfireGameState
         }
 
         _darknessParticles = new ParticleGenerator(
-            () => new Particle(
-                2F,
-                new(0, Utils.RANDOM.Next(0, Game.Height)),
-                new(Utils.RANDOM.Next(0, 20), Utils.RANDOM.Next(-10, 10)),
-                time => 2 + time,
-                _ => Color.Black
-            ),
+            () =>
+                new Particle(
+                    2F,
+                    new(0, Utils.RANDOM.Next(0, Game.Height)),
+                    new(Utils.RANDOM.Next(0, 20), Utils.RANDOM.Next(-10, 10)),
+                    time => 2 + time,
+                    _ => Color.Black
+                ),
             100F
         );
         _inventory = new Inventory(this);
@@ -167,7 +210,8 @@ public class IngameState : BonfireGameState
 
     public static void TryGenerate(Func<bool> generator, double chance = 1, int attempts = 10)
     {
-        if (Utils.RANDOM.NextDouble() > chance) return;
+        if (Utils.RANDOM.NextDouble() > chance)
+            return;
         for (var i = 0; i < attempts; ++i)
         {
             if (generator())
@@ -177,85 +221,113 @@ public class IngameState : BonfireGameState
         }
     }
 
-    public void SpawnRandomBush(float x, float y, double chance = BushSpawnChance, int attempts = 10) =>
-        TryGenerate(() =>
-        {
-            var position = new Vector2(x, y);
-            var size = Vector2.One * 2F;
-            if (
-                GroundEntities.Any((entity) => entity.Intersects(position, size)) ||
-                Pickupables.Any((entity) => entity.Intersects(position, size))
-            ) return false;
-            var pickupable = new BerryBush(
-                this,
-                position,
-                size
-            );
-            Pickupables.Add(pickupable);
-            return true;
-        }, chance, attempts);
+    public void SpawnRandomBush(
+        float x,
+        float y,
+        double chance = BushSpawnChance,
+        int attempts = 10
+    ) =>
+        TryGenerate(
+            () =>
+            {
+                var position = new Vector2(x, y);
+                var size = Vector2.One * 2F;
+                if (
+                    GroundEntities.Any((entity) => entity.Intersects(position, size))
+                    || Pickupables.Any((entity) => entity.Intersects(position, size))
+                )
+                    return false;
+                var pickupable = new BerryBush(this, position, size);
+                Pickupables.Add(pickupable);
+                return true;
+            },
+            chance,
+            attempts
+        );
 
-    public void SpawnRandomTree(float x, float y, int treeType = 0, double chance = TreeSpawnChance,
-        int attempts = 10) =>
-        TryGenerate(() =>
-        {
-            if (treeType == 0) treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
-            var position = new Vector2(x, y);
-            var size = Vector2.One * 2F;
-            if (
-                GroundEntities.Any((entity) => entity.Intersects(position, size)) ||
-                Pickupables.Any((entity) => entity.Intersects(position, size))
-            ) return false;
-            var tree = new Tree(
-                this,
-                Game.TextureMap[$"tree_{treeType}"],
-                position,
-                size
-            );
-            GroundEntities.Add(tree);
-            return true;
-        }, chance, attempts);
+    public void SpawnRandomTree(
+        float x,
+        float y,
+        int treeType = 0,
+        double chance = TreeSpawnChance,
+        int attempts = 10
+    ) =>
+        TryGenerate(
+            () =>
+            {
+                if (treeType == 0)
+                    treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
+                var position = new Vector2(x, y);
+                var size = Vector2.One * 2F;
+                if (
+                    GroundEntities.Any((entity) => entity.Intersects(position, size))
+                    || Pickupables.Any((entity) => entity.Intersects(position, size))
+                )
+                    return false;
+                var tree = new Tree(this, Game.TextureMap[$"tree_{treeType}"], position, size);
+                GroundEntities.Add(tree);
+                return true;
+            },
+            chance,
+            attempts
+        );
 
-    public void SpawnRandomPlant(float x, float y, double chance = TreeSpawnChance, int attempts = 10) =>
-        TryGenerate(() =>
-        {
-            var position = new Vector2(x, y);
-            var size = Vector2.One * 1.5F;
-            if (
-                GroundEntities.Any((entity) => entity.Intersects(position, size)) ||
-                Pickupables.Any((entity) => entity.Intersects(position, size))
-            ) return false;
-            var plant = new Tree(
-                this,
-                Game.TextureMap["flower_lamp_1"],
-                position,
-                size,
-                new Color(0F, 0.3F, 0.75F)
-            );
-            GroundEntities.Add(plant);
-            return true;
-        }, chance, attempts);
+    public void SpawnRandomPlant(
+        float x,
+        float y,
+        double chance = TreeSpawnChance,
+        int attempts = 10
+    ) =>
+        TryGenerate(
+            () =>
+            {
+                var position = new Vector2(x, y);
+                var size = Vector2.One * 1.5F;
+                if (
+                    GroundEntities.Any((entity) => entity.Intersects(position, size))
+                    || Pickupables.Any((entity) => entity.Intersects(position, size))
+                )
+                    return false;
+                var plant = new Tree(
+                    this,
+                    Game.TextureMap["flower_lamp_1"],
+                    position,
+                    size,
+                    new Color(0F, 0.3F, 0.75F)
+                );
+                GroundEntities.Add(plant);
+                return true;
+            },
+            chance,
+            attempts
+        );
 
-    public void SpawnRandomTwig(float x, float y, double chance = TwigSpawnChance, int attempts = 10) =>
-        TryGenerate(() =>
-        {
-            var position = new Vector2(x, y);
-            var size = Vector2.One;
-            if (
-                GroundEntities.Any((entity) => entity.Intersects(position, size)) ||
-                Pickupables.Any((entity) => entity.Intersects(position, size))
-            ) return false;
-            var pickupable = new Twig(
-                this,
-                position,
-                size,
-                Utils.RANDOM.NextAngle()
-            );
-            Pickupables.Add(pickupable);
-            return true;
-        }, chance, attempts);
+    public void SpawnRandomTwig(
+        float x,
+        float y,
+        double chance = TwigSpawnChance,
+        int attempts = 10
+    ) =>
+        TryGenerate(
+            () =>
+            {
+                var position = new Vector2(x, y);
+                var size = Vector2.One;
+                if (
+                    GroundEntities.Any((entity) => entity.Intersects(position, size))
+                    || Pickupables.Any((entity) => entity.Intersects(position, size))
+                )
+                    return false;
+                var pickupable = new Twig(this, position, size, Utils.RANDOM.NextAngle());
+                Pickupables.Add(pickupable);
+                return true;
+            },
+            chance,
+            attempts
+        );
 
-    private void AddRandomMap() => _maps.Add(Game.TiledMaps[Utils.RANDOM.Next(0, Game.TiledMaps.Count)]);
+    private void AddRandomMap() =>
+        _maps.Add(Game.TiledMaps[Utils.RANDOM.Next(0, Game.TiledMaps.Count)]);
 
     public override void Update(GameTime gameTime)
     {
@@ -278,14 +350,22 @@ public class IngameState : BonfireGameState
         {
             if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
             {
-                SpawnRandomTwig(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight()));
-                SpawnRandomBush(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight()));
-                SpawnRandomTree(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight()));
-                SpawnRandomPlant(Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight()));
+                SpawnRandomTwig(
+                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                    Utils.GetRandomInt(5, Game.GetWindowHeight())
+                );
+                SpawnRandomBush(
+                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                    Utils.GetRandomInt(5, Game.GetWindowHeight())
+                );
+                SpawnRandomTree(
+                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                    Utils.GetRandomInt(5, Game.GetWindowHeight())
+                );
+                SpawnRandomPlant(
+                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                    Utils.GetRandomInt(5, Game.GetWindowHeight())
+                );
                 _pickupableCounterGameTime = gameTime.TotalGameTime;
             }
 
@@ -340,7 +420,11 @@ public class IngameState : BonfireGameState
     public override void Draw(GameTime gameTime)
     {
         Game.Penumbra.BeginDraw();
-        Game.Penumbra.Transform = Matrix.CreateTranslation(-Game.Camera.Position.X, -Game.Camera.Position.Y, 0);
+        Game.Penumbra.Transform = Matrix.CreateTranslation(
+            -Game.Camera.Position.X,
+            -Game.Camera.Position.Y,
+            0
+        );
         Game.GraphicsDevice.Clear(BgColor);
         var transformMatrix = Game.Camera.GetViewMatrix();
 
@@ -348,10 +432,15 @@ public class IngameState : BonfireGameState
         {
             Game.TiledMapRenderer.LoadMap(_maps[i]);
             Game.TiledMapRenderer.Draw(
-                transformMatrix * Matrix.CreateTranslation(_maps[i].WidthInPixels * (i + MapIndex - 1), 0, 0));
+                transformMatrix
+                    * Matrix.CreateTranslation(_maps[i].WidthInPixels * (i + MapIndex - 1), 0, 0)
+            );
         }
 
-        Game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        Game.SpriteBatch.Begin(
+            transformMatrix: transformMatrix,
+            samplerState: SamplerState.PointClamp
+        );
 
         Pickupables.ForEach(pickupable => pickupable.Draw(Game.SpriteBatch));
         Campfires.ForEach(campfire => campfire.Draw(Game.SpriteBatch));
@@ -379,15 +468,22 @@ public class IngameState : BonfireGameState
     private void DrawUI(GameTime gameTime)
     {
         var transformMatrix = Game.Camera.GetViewMatrix();
-        Game.SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        Game.SpriteBatch.Begin(
+            transformMatrix: transformMatrix,
+            samplerState: SamplerState.PointClamp
+        );
         Player.DrawPopupButton(Game.SpriteBatch);
         Campfires.ForEach(campfire => campfire.DrawUI(Game.SpriteBatch));
         Game.SpriteBatch.End();
 
         Game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         Companion.ComfyMeter.Draw(Game.SpriteBatch);
-        Game.SpriteBatch.DrawString(Game.FontMap["32"], "Comfy meter",
-            new Vector2(Game.GetWindowWidth() / 2 - 350, Game.GetWindowHeight() - 100), Color.Orange);
+        Game.SpriteBatch.DrawString(
+            Game.FontMap["32"],
+            "Comfy meter",
+            new Vector2(Game.GetWindowWidth() / 2 - 350, Game.GetWindowHeight() - 100),
+            Color.Orange
+        );
         _inventory.Draw(Game.SpriteBatch);
 
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
@@ -396,7 +492,6 @@ public class IngameState : BonfireGameState
             _fpsCounterGameTime = gameTime.TotalGameTime;
             _debugData[0] = $"FPS: {_fps}";
         }
-
         else if (_pauseState)
         {
             _pauseButton.Draw(Game.SpriteBatch);
@@ -405,12 +500,24 @@ public class IngameState : BonfireGameState
         else if (_deathState)
         {
             var finalScore = (int)Math.Ceiling(_score / 10);
-            Game.SpriteBatch.DrawOutlinedString(Game.FontMap["32"], "Your companion got too anxious!",
-                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() / 3F - 60F), Color.Red, Color.Black,
-                Utils.HorizontalFontAlignment.Center, Utils.VerticalFontAlignment.Center);
-            Game.SpriteBatch.DrawOutlinedString(Game.FontMap["24"], $"Final score {finalScore}",
-                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() / 3F), Color.Red, Color.Black,
-                Utils.HorizontalFontAlignment.Center, Utils.VerticalFontAlignment.Center);
+            Game.SpriteBatch.DrawOutlinedString(
+                Game.FontMap["32"],
+                "Your companion got too anxious!",
+                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() / 3F - 60F),
+                Color.Red,
+                Color.Black,
+                Utils.HorizontalFontAlignment.Center,
+                Utils.VerticalFontAlignment.Center
+            );
+            Game.SpriteBatch.DrawOutlinedString(
+                Game.FontMap["24"],
+                $"Final score {finalScore}",
+                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() / 3F),
+                Color.Red,
+                Color.Black,
+                Utils.HorizontalFontAlignment.Center,
+                Utils.VerticalFontAlignment.Center
+            );
             _restartButton.Draw(Game.SpriteBatch);
             _exitButton.Draw(Game.SpriteBatch);
         }
@@ -419,8 +526,12 @@ public class IngameState : BonfireGameState
         {
             for (var i = 0; i < _debugData.Count; ++i)
             {
-                Game.SpriteBatch.DrawString(Game.FontMap["16"], _debugData[i],
-                    new Vector2(16, 16 * (i + 1)), Color.White);
+                Game.SpriteBatch.DrawString(
+                    Game.FontMap["16"],
+                    _debugData[i],
+                    new Vector2(16, 16 * (i + 1)),
+                    Color.White
+                );
             }
         }
 

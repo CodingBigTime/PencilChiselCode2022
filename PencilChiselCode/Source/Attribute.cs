@@ -51,13 +51,19 @@ public class Attribute
     }
 
     public static float operator +(Attribute a, float b) => a.Value + b;
+
     public static float operator -(Attribute a, float b) => a.Value - b;
+
     public static bool operator >(Attribute a, float b) => a.Value > b;
+
     public static bool operator <(Attribute a, float b) => a.Value < b;
+
     public static bool operator >=(Attribute a, float b) => a.Value >= b;
+
     public static bool operator <=(Attribute a, float b) => a.Value <= b;
 
     public float Percent() => Value / MaxValue;
+
     public bool IsEmpty() => Value <= 0;
 
     public void Update(GameTime gameTime) => Value += ChangeRate * gameTime.GetElapsedSeconds();
@@ -66,15 +72,37 @@ public class Attribute
     {
         if (_texture != null)
         {
-            spriteBatch.Draw(_texture, _position, null, _color, 0F, _offset, _scale, SpriteEffects.None, 0F);
-            spriteBatch.Draw(_filledTexture, _position,
-                new Rectangle(0, 0, (int)(_texture.Width * (Value / MaxValue)), _texture.Height), _color, 0F,
-                _offset, _scale, SpriteEffects.None, 0F);
+            spriteBatch.Draw(
+                _texture,
+                _position,
+                null,
+                _color,
+                0F,
+                _offset,
+                _scale,
+                SpriteEffects.None,
+                0F
+            );
+            spriteBatch.Draw(
+                _filledTexture,
+                _position,
+                new Rectangle(0, 0, (int)(_texture.Width * (Value / MaxValue)), _texture.Height),
+                _color,
+                0F,
+                _offset,
+                _scale,
+                SpriteEffects.None,
+                0F
+            );
         }
         else
         {
             spriteBatch.FillRectangle(_position, _size, Color.Black);
-            spriteBatch.FillRectangle(_position, new(_size.X * (Value / MaxValue), _size.Y), _color);
+            spriteBatch.FillRectangle(
+                _position,
+                new(_size.X * (Value / MaxValue), _size.Y),
+                _color
+            );
         }
     }
 
@@ -158,6 +186,19 @@ public class Attribute
             _changeRate = changeRate;
             return this;
         }
-        public Attribute Build() => new(_position, _scale, _baseTexture, _filledTexture, _offset, _size * _scale, _color, _maxValue, _value, _changeRate);
+
+        public Attribute Build() =>
+            new(
+                _position,
+                _scale,
+                _baseTexture,
+                _filledTexture,
+                _offset,
+                _size * _scale,
+                _color,
+                _maxValue,
+                _value,
+                _changeRate
+            );
     }
 }

@@ -24,14 +24,26 @@ public class PopupButton
         Texture = texture;
         _size = new Vector2(Texture.Width, Texture.Height);
         _scaleTweener = new Tweener();
-        _scaleTweener.TweenTo(target: this, expression: button => button.scale, toValue: 1.25F, duration: 1.5F,
-                delay: 0F)
+        _scaleTweener
+            .TweenTo(
+                target: this,
+                expression: button => button.scale,
+                toValue: 1.25F,
+                duration: 1.5F,
+                delay: 0F
+            )
             .RepeatForever(repeatDelay: 0.2f)
             .AutoReverse()
             .Easing(EasingFunctions.SineInOut);
         _rotationTweener = new Tweener();
-        _rotationTweener.TweenTo(target: this, expression: button => button.rotation, toValue: 0.33F, duration: 3F,
-                delay: 0F)
+        _rotationTweener
+            .TweenTo(
+                target: this,
+                expression: button => button.rotation,
+                toValue: 0.33F,
+                duration: 3F,
+                delay: 0F
+            )
             .RepeatForever(repeatDelay: 0.2f)
             .AutoReverse()
             .Easing(EasingFunctions.SineInOut);

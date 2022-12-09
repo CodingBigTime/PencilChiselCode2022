@@ -18,8 +18,14 @@ public class Button
     private readonly BonfireGameState _state;
     private Bonfire Game => _state.Game;
 
-    public Button(BonfireGameState state, Texture2D normal, Texture2D hovered, Texture2D pressed, Vector2 position,
-        Action action)
+    public Button(
+        BonfireGameState state,
+        Texture2D normal,
+        Texture2D hovered,
+        Texture2D pressed,
+        Vector2 position,
+        Action action
+    )
     {
         _state = state;
         _normalTexture = normal;
@@ -38,8 +44,10 @@ public class Button
     public void Update(GameTime gameTime)
     {
         var mouseState = Mouse.GetState();
-        var inside = Utils.IsPointInRectangle(mouseState.Position.ToVector2(),
-            new Rectangle(Position.ToPoint(), Size.ToPoint()));
+        var inside = Utils.IsPointInRectangle(
+            mouseState.Position.ToVector2(),
+            new Rectangle(Position.ToPoint(), Size.ToPoint())
+        );
         var released = mouseState.LeftButton == ButtonState.Released;
 
         var pressSound = Game.SoundMap["button_press"];
