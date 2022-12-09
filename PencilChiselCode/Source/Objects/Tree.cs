@@ -83,7 +83,7 @@ public class Tree : GroundEntity
         Game.Penumbra.Hulls.Add(Hull);
     }
 
-    private void Cleanup()
+    public override void Cleanup()
     {
         lock (Game.Penumbra)
         {

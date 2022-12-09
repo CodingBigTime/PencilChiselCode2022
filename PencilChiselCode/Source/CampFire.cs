@@ -62,7 +62,7 @@ public class CampFire : GroundEntity
         );
     }
 
-    private void Cleanup()
+    public override void Cleanup()
     {
         lock (Game.Penumbra)
         {

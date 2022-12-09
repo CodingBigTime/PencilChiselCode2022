@@ -52,9 +52,9 @@ public class IngameState : BonfireGameState
     {
     }
 
-    public List<Pickupable> Pickupables { get; } = new();
-    public List<GroundEntity> GroundEntities { get; } = new();
-    public List<CampFire> Campfires { get; } = new();
+    public EntityCollection<Pickupable> Pickupables { get; } = new();
+    public EntityCollection<GroundEntity> GroundEntities { get; } = new();
+    public EntityCollection<CampFire> Campfires { get; } = new();
 
     public override void LoadContent()
     {
@@ -284,14 +284,15 @@ public class IngameState : BonfireGameState
             Game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
             Companion.Update(gameTime, Player.Position);
             Player.Update(gameTime);
-            Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
-            Pickupables.RemoveAll(pickupable => pickupable.ShouldRemove());
 
-            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime));
-            GroundEntities.RemoveAll(groundEntity => groundEntity.ShouldRemove());
+            Pickupables.Update(gameTime);
+            Pickupables.RemoveDead();
 
-            Campfires.ForEach(campfire => campfire.Update(gameTime));
-            Campfires.RemoveAll(campfire => campfire.ShouldRemove());
+            GroundEntities.Update(gameTime);
+            GroundEntities.RemoveDead();
+
+            Campfires.Update(gameTime);
+            Campfires.RemoveDead();
 
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);
