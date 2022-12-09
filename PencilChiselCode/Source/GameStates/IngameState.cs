@@ -8,13 +8,14 @@ using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
+using PencilChiselCode.Source.Objects;
 
 namespace PencilChiselCode.Source.GameStates;
 
 public class IngameState : BonfireGameState
 {
     public Player Player { get; private set; }
-    private Companion _companion;
+    public Companion Companion;
     private bool _showDebug;
     private float _cameraSpeed = 10F;
     private Inventory _inventory;
@@ -129,7 +130,7 @@ public class IngameState : BonfireGameState
             }
         );
 
-        _companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 50F);
+        Companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 50F);
         Player = new Player(this, new Vector2(96, Game.GetWindowHeight() / 2F));
 
         Campfires.Add(new CampFire(this, new Vector2(500, 400))); // TEMP
@@ -171,10 +172,8 @@ public class IngameState : BonfireGameState
     public void SpawnRandomBush(float x, float y, double chance = BushSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
-            var pickupable = new Pickupable(this,
-                PickupableTypes.Bush,
-                Game.TextureMap["bush_berry"],
-                Game.SoundMap["pickup_branches"],
+            var pickupable = new BerryBush(
+                this,
                 new Vector2(x, y),
                 Vector2.One * 2
             );
@@ -191,7 +190,7 @@ public class IngameState : BonfireGameState
         TryGenerate(() =>
         {
             if (treeType == 0) treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
-            var tree = new GroundEntity(
+            var tree = new Tree(
                 this,
                 Game.TextureMap[$"tree_{treeType}"],
                 new Vector2(x, y),
@@ -208,7 +207,7 @@ public class IngameState : BonfireGameState
     public void SpawnRandomPlant(float x, float y, double chance = TreeSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
-            var plant = new GroundEntity(
+            var plant = new Tree(
                 this,
                 Game.TextureMap["flower_lamp_1"],
                 new Vector2(x, y),
@@ -226,11 +225,11 @@ public class IngameState : BonfireGameState
     public void SpawnRandomTwig(float x, float y, double chance = TwigSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
-            var pickupable = new Pickupable(this, PickupableTypes.Twig,
-                Game.TextureMap["twigs"],
-                Game.SoundMap["pickup_branches"],
+            var pickupable = new Twig(
+                this,
                 new Vector2(x, y),
-                Vector2.One, Utils.RANDOM.NextAngle());
+                Vector2.One, Utils.RANDOM.NextAngle()
+            );
             if (
                 GroundEntities.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size)) ||
                 Pickupables.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size))
@@ -276,22 +275,23 @@ public class IngameState : BonfireGameState
             var oldMapIndex = MapIndex;
             Game.TiledMapRenderer.Update(gameTime);
 
-            if (_companion.IsAnxious())
+            if (Companion.IsAnxious())
             {
                 _deathState = true;
+                return;
             }
 
             Game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
-            _companion.Update(gameTime, Player.Position);
+            Companion.Update(gameTime, Player.Position);
             Player.Update(gameTime);
             Pickupables.ForEach(pickupable => pickupable.Update(gameTime));
-            Pickupables.RemoveAll(pickupable => pickupable.ShouldRemove);
+            Pickupables.RemoveAll(pickupable => pickupable.ShouldRemove());
 
-            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime, Player.Position));
-            GroundEntities.RemoveAll(groundEntity => groundEntity.ShouldRemove);
+            GroundEntities.ForEach(groundEntity => groundEntity.Update(gameTime));
+            GroundEntities.RemoveAll(groundEntity => groundEntity.ShouldRemove());
 
             Campfires.ForEach(campfire => campfire.Update(gameTime));
-            Campfires.RemoveAll(campfire => campfire.ShouldRemove);
+            Campfires.RemoveAll(campfire => campfire.ShouldRemove());
 
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);
@@ -302,23 +302,19 @@ public class IngameState : BonfireGameState
                 _maps.RemoveAt(0);
                 AddRandomMap();
             }
+            if (Game.Controls.JustPressed(ControlKeys.STOP_FOLLOWER))
+            {
+                Companion.ToggleSitting();
+            }
+            if (Game.Controls.JustPressed(ControlKeys.START_FIRE))
+            {
+                Player.CreateFire();
+            }
         }
 
         if (Game.Controls.JustPressed(ControlKeys.DEBUG))
         {
             _showDebug = !_showDebug;
-        }
-
-        if (Game.Controls.JustPressed(ControlKeys.STOP_FOLLOWER))
-        {
-            _companion.ToggleSitting();
-        }
-
-        if (Game.Controls.JustPressed(ControlKeys.START_FIRE) && Player.CanCreateFire())
-        {
-            Player.CreateFire(10);
-            Game.SoundMap["light_fire"].Play();
-            Campfires.Add(new CampFire(this, new Vector2(Player.Position.X + 20, Player.Position.Y - 20)));
         }
 
         Game.Controls.Update();
@@ -346,7 +342,7 @@ public class IngameState : BonfireGameState
         Campfires.ForEach(campfire => campfire.Draw(Game.SpriteBatch));
         GroundEntities.ForEach(groundEntity => groundEntity.Draw(Game.SpriteBatch));
 
-        _companion.Draw(Game.SpriteBatch);
+        Companion.Draw(Game.SpriteBatch);
         Player.Draw(Game.SpriteBatch);
 
         Game.SpriteBatch.End();
@@ -374,7 +370,7 @@ public class IngameState : BonfireGameState
         Game.SpriteBatch.End();
 
         Game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        _companion.ComfyMeter.Draw(Game.SpriteBatch);
+        Companion.ComfyMeter.Draw(Game.SpriteBatch);
         Game.SpriteBatch.DrawString(Game.FontMap["32"], "Comfy meter",
             new Vector2(Game.GetWindowWidth() / 2 - 350, Game.GetWindowHeight() - 100), Color.Orange);
         _inventory.Draw(Game.SpriteBatch);
@@ -415,4 +411,6 @@ public class IngameState : BonfireGameState
 
         Game.SpriteBatch.End();
     }
+
+    public void AddCampfire(Vector2 position) => Campfires.Add(new CampFire(this, position));
 }

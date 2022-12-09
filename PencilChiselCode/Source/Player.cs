@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using PencilChiselCode.Source.GameStates;
@@ -14,7 +12,12 @@ namespace PencilChiselCode.Source;
 
 public class Player
 {
-    public Vector2 Size;
+    public Companion Companion => _state.Companion;
+
+    public Vector2 Size => new(
+        _animatedSprite.TextureRegion.Width * _scale,
+        _animatedSprite.TextureRegion.Height * _scale
+    );
 
     public Vector2 Position
     {
@@ -39,8 +42,7 @@ public class Player
     private readonly float _acceleration = 1000F;
     private readonly float _friction = 2.75F;
     private readonly Dictionary<string, PopupButton> _popupButtons = new();
-    public uint Twigs { get; private set; }
-    public int Berries { get; private set; }
+    public readonly Dictionary<PickupableTypes, uint> Inventory = new();
     private readonly ParticleGenerator _particleGenerator;
     private readonly IngameState _state;
     private Bonfire Game => _state.Game;
@@ -51,7 +53,6 @@ public class Player
         Position = position;
         _animatedSprite = new AnimatedSprite(Game.SpriteSheetMap["player"]);
         _animatedSprite.Play("right");
-        Size = new(_animatedSprite.TextureRegion.Width * _scale, _animatedSprite.TextureRegion.Height * _scale);
         Game.Penumbra.Lights.Add(PointLight);
         Game.Penumbra.Lights.Add(Spotlight);
         _particleGenerator = new ParticleGenerator(
@@ -65,7 +66,10 @@ public class Player
             ),
             3F
         );
+        Enum.GetValues(typeof(PickupableTypes)).Cast<PickupableTypes>().ToList()
+            .ForEach(type => Inventory.Add(type, 0));
     }
+
     private void Cleanup()
     {
         lock (Game.Penumbra)
@@ -74,10 +78,8 @@ public class Player
             Game.Penumbra.Lights.Remove(Spotlight);
         }
     }
-    ~Player()
-    {
-        Cleanup();
-    }
+
+    ~Player() => Cleanup();
 
     public Light PointLight { get; } = new PointLight
     {
@@ -119,24 +121,28 @@ public class Player
     public void DrawPopupButton(SpriteBatch spriteBatch)
     {
         var i = 0;
-        foreach (var (_, value) in _popupButtons)
+        _popupButtons.Values.ToList().ForEach(button =>
         {
-            value?.Draw(spriteBatch, Position + new Vector2(i * (value.Texture.Width * 1.5F), 0), Size);
+            button?.Draw(spriteBatch, Position + new Vector2(i * (button.Texture.Width * 1.5F), 0), Size);
             ++i;
-        }
+        });
     }
 
-    public void CreateFire(uint amount)
+    public void CreateFire()
     {
-        Twigs -= amount;
+        if (!CanCreateFire()) return;
+        Game.SoundMap["light_fire"].Play();
+        _state.AddCampfire(Position + new Vector2(20, -20));
+        Inventory[PickupableTypes.Twig] -= CampFire.TwigCost;
     }
 
-    public void ReduceBerries(int amount)
+    public void ReduceBerries(uint amount)
     {
-        Berries -= amount;
+        if (Inventory[PickupableTypes.BerryBush] < amount) return;
+        Inventory[PickupableTypes.BerryBush] -= amount;
     }
 
-    public bool CanCreateFire() => Twigs >= 10;
+    public bool CanCreateFire() => Inventory[PickupableTypes.Twig] >= CampFire.TwigCost;
 
     public void Update(GameTime gameTime)
     {
@@ -166,6 +172,14 @@ public class Player
         _speed.Y = Math.Clamp(_speed.Y, -_maxSpeed * biasY, _maxSpeed * biasY);
         Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
 
+        if (_state.Game.Controls.JustPressed(ControlKeys.FEED) &&
+            Vector2.Distance(Companion.Position, Position) <= 100 &&
+            _state.Player.Inventory[PickupableTypes.BerryBush] > 0)
+        {
+            _state.Player.ReduceBerries(1);
+            Companion.ComfyMeter.Value += 10F;
+        }
+
         if (Position.X >= Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F)
         {
             _speed.X = 0;
@@ -193,13 +207,13 @@ public class Player
         }
 
         if (_state.Game.Controls.JustPressed(ControlKeys.REFUEL) && nearestCampfire != null &&
-            Twigs > 0)
+            Inventory[PickupableTypes.Twig] > 0)
         {
             nearestCampfire.FeedFire(25F);
-            --Twigs;
+            --Inventory[PickupableTypes.Twig];
         }
 
-        if (nearestCampfire == null || Twigs <= 0) _popupButtons.Remove("F");
+        if (nearestCampfire == null || Inventory[PickupableTypes.Twig] <= 0) _popupButtons.Remove("F");
 
         var nearestPickupable = _state.Pickupables
             .OrderBy(pickupable => Vector2.DistanceSquared(pickupable.Position, Position))
@@ -211,32 +225,17 @@ public class Player
             _popupButtons["E"] = new PopupButton(_state, Game.TextureMap["e_key"]);
         }
 
-        foreach (var (_, value) in _popupButtons)
-        {
-            value.Update(gameTime);
-        }
+        _popupButtons.Values.ToList().ForEach(button => button?.Update(gameTime));
 
         if (Game.Controls.JustPressed(ControlKeys.COLLECT) && nearestPickupable != null)
         {
-            switch (nearestPickupable.Type)
-            {
-                case PickupableTypes.Twig:
-                    ++Twigs;
-                    nearestPickupable.PickupSound.Play();
-                    _state.Pickupables.Remove(nearestPickupable);
-                    break;
-                case PickupableTypes.Bush:
-                    ++Berries;
-                    nearestPickupable.PickupSound.Play();
-                    nearestPickupable.Texture = Game.TextureMap["bush_empty"];
-                    break;
-            }
-
+            ++Inventory[nearestPickupable.Type];
+            nearestPickupable.OnPickup();
             _popupButtons.Remove("E");
             nearestPickupable.IsConsumable = false;
         }
 
-        if (nearestPickupable == null && (nearestCampfire == null || Twigs <= 0))
+        if (nearestPickupable == null && (nearestCampfire == null || Inventory[PickupableTypes.Twig] <= 0))
         {
             _popupButtons.Clear();
         }

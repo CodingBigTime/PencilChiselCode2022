@@ -6,14 +6,13 @@ using MonoGame.Extended.Tweening;
 using PencilChiselCode.Source.GameStates;
 using Penumbra;
 
-namespace PencilChiselCode.Source;
+namespace PencilChiselCode.Source.Objects;
 
-public class GroundEntity
+public class Tree : GroundEntity
 {
-    public Texture2D Texture { get; set; }
-    public Vector2 Size => new(Texture.Width, Texture.Height);
+    private Vector2 _position;
 
-    public Vector2 Position
+    public override Vector2 Position
     {
         get => _position;
         set
@@ -24,41 +23,28 @@ public class GroundEntity
         }
     }
 
-    private Vector2 _position;
-    public float Rotation;
-    private Vector2 _scale;
     private Color _color = Color.White;
     private readonly Tweener _lightSizeTweener;
-    private BonfireGameState _state;
-    private Bonfire Game => _state.Game;
     private const float RenderOffset = 32;
-    public bool ShouldRemove => Game.Camera.Position.X > Position.X + Size.X * _scale.X + RenderOffset;
 
-    private void Init(
-        BonfireGameState state,
-        Texture2D texture,
-        Vector2 position,
-        Vector2 scale,
-        float rotation
-    )
-    {
-        _state = state;
-        Texture = texture;
-        Position = position;
-        Rotation = rotation;
-        _scale = scale;
-    }
+    public override bool ShouldRemove() =>
+        base.ShouldRemove() || Game.Camera.Position.X > Position.X + Size.X * Scale.X + RenderOffset;
 
-    public GroundEntity(
-        BonfireGameState state,
+    public Tree(
+        IngameState state,
         Texture2D texture,
         Vector2 position,
         Vector2 scale,
         Color glow,
         float rotation = 0F
+    ) : base(
+        state,
+        texture,
+        position,
+        scale,
+        rotation
     )
     {
-        Init(state, texture, position, scale, rotation);
         Game.Penumbra.Lights.Add(PointLight);
         PointLight.Color = glow;
         _lightSizeTweener = new Tweener();
@@ -80,6 +66,23 @@ public class GroundEntity
         }
     }
 
+    public Tree(
+        IngameState state,
+        Texture2D texture,
+        Vector2 position,
+        Vector2 scale,
+        float rotation = 0F
+    ) : base(
+        state,
+        texture,
+        position,
+        scale,
+        rotation
+    )
+    {
+        Game.Penumbra.Hulls.Add(Hull);
+    }
+
     private void Cleanup()
     {
         lock (Game.Penumbra)
@@ -89,22 +92,7 @@ public class GroundEntity
         }
     }
 
-    ~GroundEntity()
-    {
-        Cleanup();
-    }
-
-    public GroundEntity(
-        BonfireGameState state,
-        Texture2D texture,
-        Vector2 position,
-        Vector2 scale,
-        float rotation = 0F
-    )
-    {
-        Init(state, texture, position, scale, rotation);
-        Game.Penumbra.Hulls.Add(Hull);
-    }
+    ~Tree() => Cleanup();
 
     public Light PointLight { get; } =
         new PointLight
@@ -114,12 +102,12 @@ public class GroundEntity
             ShadowType = ShadowType.Occluded
         };
 
-    // public Hull Hull { get; } = Hull.CreateCircle(radius: 7);
+    // TODO: Make the shape more dynamic
     public Hull Hull { get; } = Hull.CreateRectangle(scale: new(8, 16));
 
-    public void Draw(SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        if (ShouldRemove) return;
+        if (ShouldRemove()) return;
 
         spriteBatch.Draw(
             Texture,
@@ -128,36 +116,27 @@ public class GroundEntity
             _color,
             Rotation,
             Size / 2,
-            _scale,
+            Scale,
             SpriteEffects.None,
             0
         );
     }
 
-    public void Update(GameTime gameTime, Vector2 playerPosition)
+    public override void Update(GameTime gameTime)
     {
-        if (ShouldRemove)
+        if (ShouldRemove())
         {
             Cleanup();
             return;
         }
 
+        var playerPosition = State.Player.Position;
         _lightSizeTweener?.Update(gameTime.GetElapsedSeconds());
-        if (
-            Size.Y > 32
-            && playerPosition.Y < _position.Y + 32
-            && playerPosition.Y > _position.Y - 64
-            && Math.Abs(playerPosition.X - _position.X) < 32
-        )
-        {
-            _color.A = 150;
-        }
-        else
-        {
-            _color.A = 255;
-        }
+        _color.A = Size.Y > 32
+                   && playerPosition.Y < _position.Y + 32
+                   && playerPosition.Y > _position.Y - 64
+                   && Math.Abs(playerPosition.X - _position.X) < 32
+            ? (byte)150
+            : (byte)255;
     }
-
-    public bool Intersects(Vector2 position, Vector2 size) => Utils.Intersects(
-        new Rectangle(Position.ToPoint(), Size.ToPoint()), new Rectangle(position.ToPoint(), size.ToPoint()));
 }
