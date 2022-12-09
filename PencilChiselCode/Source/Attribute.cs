@@ -50,18 +50,8 @@ public class Attribute
         ChangeRate = changeRate;
     }
 
-    public static Attribute operator +(Attribute a, float b)
-    {
-        a.Value += b;
-        return a;
-    }
-
-    public static Attribute operator -(Attribute a, float b)
-    {
-        a.Value -= b;
-        return a;
-    }
-
+    public static float operator +(Attribute a, float b) => a.Value + b;
+    public static float operator -(Attribute a, float b) => a.Value - b;
     public static bool operator >(Attribute a, float b) => a.Value > b;
     public static bool operator <(Attribute a, float b) => a.Value < b;
     public static bool operator >=(Attribute a, float b) => a.Value >= b;

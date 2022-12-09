@@ -19,7 +19,7 @@ public class Companion
     private bool _isStationary;
     private readonly IngameState _state;
     private Bonfire Game => _state.Game;
-    public Attribute ComfyMeter;
+    public readonly Attribute ComfyMeter;
 
     public Companion(IngameState state, Vector2 position, float speed)
     {
@@ -101,15 +101,15 @@ public class Companion
 
         if (Position.X < Game.Camera.Position.X + IngameState.DarknessEndOffset)
         {
-            ComfyMeter -= 24F * gameTime.GetElapsedSeconds();
+            ComfyMeter.Value -= 24F * gameTime.GetElapsedSeconds();
         }
         else if (_state.Campfires.Any(campfire => campfire.IsInRange(Position)))
         {
-            ComfyMeter += 8F * gameTime.GetElapsedSeconds();
+            ComfyMeter.Value += 8F * gameTime.GetElapsedSeconds();
         }
         else if (Vector2.Distance(_state.Player.Position, Position) > IngameState.MinimumFollowerPlayerDistance)
         {
-            ComfyMeter -= 4F * gameTime.GetElapsedSeconds();
+            ComfyMeter.Value -= 4F * gameTime.GetElapsedSeconds();
         }
     }
 

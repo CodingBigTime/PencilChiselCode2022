@@ -177,7 +177,7 @@ public class Player
             _state.Player.Inventory[PickupableTypes.BerryBush] > 0)
         {
             _state.Player.ReduceBerries(1);
-            Companion.ComfyMeter += 10F;
+            Companion.ComfyMeter.Value += 10F;
         }
 
         if (Position.X >= Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F)
