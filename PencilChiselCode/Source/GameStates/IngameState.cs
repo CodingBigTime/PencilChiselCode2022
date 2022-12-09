@@ -52,6 +52,13 @@ public class IngameState : BonfireGameState
     {
     }
 
+    public void Cleanup() {
+        Pickupables.Clear();
+        GroundEntities.Clear();
+        Campfires.Clear();
+        Player.Cleanup();
+    }
+
     public EntityCollection<Pickupable> Pickupables { get; } = new();
     public EntityCollection<GroundEntity> GroundEntities { get; } = new();
     public EntityCollection<CampFire> Campfires { get; } = new();
@@ -122,6 +129,7 @@ public class IngameState : BonfireGameState
             Utils.GetCenterStartCoords(restartButtonSize, Game.GetWindowDimensions()),
             () =>
             {
+                Cleanup();
                 Game.ScreenManager.LoadScreen(
                     new IngameState(Game),
                     new FadeTransition(Game.GraphicsDevice, Color.Black)
@@ -172,15 +180,17 @@ public class IngameState : BonfireGameState
     public void SpawnRandomBush(float x, float y, double chance = BushSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
+            var position = new Vector2(x, y);
+            var size = Vector2.One * 2F;
+            if (
+                GroundEntities.Any((entity) => entity.Intersects(position, size)) ||
+                Pickupables.Any((entity) => entity.Intersects(position, size))
+            ) return false;
             var pickupable = new BerryBush(
                 this,
-                new Vector2(x, y),
-                Vector2.One * 2
+                position,
+                size
             );
-            if (
-                GroundEntities.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size)) ||
-                Pickupables.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size))
-            ) return false;
             Pickupables.Add(pickupable);
             return true;
         }, chance, attempts);
@@ -190,16 +200,18 @@ public class IngameState : BonfireGameState
         TryGenerate(() =>
         {
             if (treeType == 0) treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
+            var position = new Vector2(x, y);
+            var size = Vector2.One * 2F;
+            if (
+                GroundEntities.Any((entity) => entity.Intersects(position, size)) ||
+                Pickupables.Any((entity) => entity.Intersects(position, size))
+            ) return false;
             var tree = new Tree(
                 this,
                 Game.TextureMap[$"tree_{treeType}"],
-                new Vector2(x, y),
-                Vector2.One * 2F
+                position,
+                size
             );
-            if (
-                GroundEntities.Any((entity) => entity.Intersects(tree.Position, tree.Size)) ||
-                Pickupables.Any((entity) => entity.Intersects(tree.Position, tree.Size))
-            ) return false;
             GroundEntities.Add(tree);
             return true;
         }, chance, attempts);
@@ -207,17 +219,19 @@ public class IngameState : BonfireGameState
     public void SpawnRandomPlant(float x, float y, double chance = TreeSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
+            var position = new Vector2(x, y);
+            var size = Vector2.One * 1.5F;
+            if (
+                GroundEntities.Any((entity) => entity.Intersects(position, size)) ||
+                Pickupables.Any((entity) => entity.Intersects(position, size))
+            ) return false;
             var plant = new Tree(
                 this,
                 Game.TextureMap["flower_lamp_1"],
-                new Vector2(x, y),
-                Vector2.One * 1.5F,
+                position,
+                size,
                 new Color(0F, 0.3F, 0.75F)
             );
-            if (
-                GroundEntities.Any((entity) => entity.Intersects(plant.Position, plant.Size)) ||
-                Pickupables.Any((entity) => entity.Intersects(plant.Position, plant.Size))
-            ) return false;
             GroundEntities.Add(plant);
             return true;
         }, chance, attempts);
@@ -225,15 +239,18 @@ public class IngameState : BonfireGameState
     public void SpawnRandomTwig(float x, float y, double chance = TwigSpawnChance, int attempts = 10) =>
         TryGenerate(() =>
         {
+            var position = new Vector2(x, y);
+            var size = Vector2.One;
+            if (
+                GroundEntities.Any((entity) => entity.Intersects(position, size)) ||
+                Pickupables.Any((entity) => entity.Intersects(position, size))
+            ) return false;
             var pickupable = new Twig(
                 this,
-                new Vector2(x, y),
-                Vector2.One, Utils.RANDOM.NextAngle()
+                position,
+                size,
+                Utils.RANDOM.NextAngle()
             );
-            if (
-                GroundEntities.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size)) ||
-                Pickupables.Any((entity) => entity.Intersects(pickupable.Position, pickupable.Size))
-            ) return false;
             Pickupables.Add(pickupable);
             return true;
         }, chance, attempts);
@@ -286,13 +303,10 @@ public class IngameState : BonfireGameState
             Player.Update(gameTime);
 
             Pickupables.Update(gameTime);
-            Pickupables.RemoveDead();
 
             GroundEntities.Update(gameTime);
-            GroundEntities.RemoveDead();
 
             Campfires.Update(gameTime);
-            Campfires.RemoveDead();
 
             _inventory.Update();
             _darknessParticles.Update(gameTime, true);

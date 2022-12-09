@@ -35,6 +35,7 @@ namespace PencilChiselCode.Source
             {
                 entity.Update(gameTime);
             }
+            RemoveDead();
         }
 
         public void Draw(SpriteBatch spriteBatch)

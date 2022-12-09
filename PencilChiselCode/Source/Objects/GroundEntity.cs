@@ -47,13 +47,5 @@ public abstract class GroundEntity
     public bool Intersects(Vector2 position, Vector2 size) => Utils.Intersects(
         new Rectangle(Position.ToPoint(), Size.ToPoint()), new Rectangle(position.ToPoint(), size.ToPoint()));
 
-    public static IComparer<GroundEntity> YComparer { get; } = new YComparerImpl();
-
-    public class YComparerImpl : IComparer<GroundEntity>
-    {
-        public int Compare(GroundEntity x, GroundEntity y)
-        {
-            return x.Position.Y.CompareTo(y.Position.Y);
-        }
-    }
+    public static IComparer<GroundEntity> YComparer { get; } = Comparer<GroundEntity>.Create((x, y) => x.Position.Y.CompareTo(y.Position.Y));
 }

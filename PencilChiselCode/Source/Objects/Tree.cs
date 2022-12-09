@@ -92,8 +92,6 @@ public class Tree : GroundEntity
         }
     }
 
-    ~Tree() => Cleanup();
-
     public Light PointLight { get; } =
         new PointLight
         {

@@ -70,8 +70,6 @@ public class CampFire : GroundEntity
         }
     }
 
-    ~CampFire() => Cleanup();
-
     public bool IsLit() => !_attribute.IsEmpty();
     public override bool ShouldRemove() => base.ShouldRemove() || !IsLit();
 
@@ -95,11 +93,7 @@ public class CampFire : GroundEntity
 
     public override void Update(GameTime gameTime)
     {
-        if (ShouldRemove())
-        {
-            Cleanup();
-            return;
-        }
+        if (ShouldRemove()) return;
 
         _animatedSprite.Update(gameTime);
         _attribute.Update(gameTime);
