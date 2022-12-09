@@ -70,7 +70,7 @@ public class Player
             .ForEach(type => Inventory.Add(type, 0));
     }
 
-    private void Cleanup()
+    public void Cleanup()
     {
         lock (Game.Penumbra)
         {
@@ -78,8 +78,6 @@ public class Player
             Game.Penumbra.Lights.Remove(Spotlight);
         }
     }
-
-    ~Player() => Cleanup();
 
     public Light PointLight { get; } = new PointLight
     {

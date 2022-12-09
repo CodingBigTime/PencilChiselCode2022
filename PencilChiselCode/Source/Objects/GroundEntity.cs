@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PencilChiselCode.Source.GameStates;
 
@@ -32,6 +33,9 @@ public abstract class GroundEntity
         Scale = scale;
     }
 
+    public virtual void Cleanup() {
+    }
+
     public virtual void Update(GameTime gameTime)
     {
     }
@@ -42,4 +46,6 @@ public abstract class GroundEntity
 
     public bool Intersects(Vector2 position, Vector2 size) => Utils.Intersects(
         new Rectangle(Position.ToPoint(), Size.ToPoint()), new Rectangle(position.ToPoint(), size.ToPoint()));
+
+    public static IComparer<GroundEntity> YComparer { get; } = Comparer<GroundEntity>.Create((x, y) => x.Position.Y.CompareTo(y.Position.Y));
 }

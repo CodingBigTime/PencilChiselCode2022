@@ -155,8 +155,10 @@ public class Bonfire : Game
 
     public void ResetPenumbra()
     {
-        Penumbra = new PenumbraComponent(this);
-        Penumbra.AmbientColor = Color.Black;
+        Penumbra = new PenumbraComponent(this)
+        {
+            AmbientColor = Color.Black
+        };
         Camera = new OrthographicCamera(GetViewportAdapter());
         Penumbra.Initialize();
     }
