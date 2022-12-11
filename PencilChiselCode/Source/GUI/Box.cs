@@ -29,12 +29,10 @@ public class Box
         Size = size;
     }
 
-    public Box(Bonfire game, Vector2 position, Vector2 size)
-    {
-        _game = game;
-        Position = position;
-        Size = () => size;
-    }
+    public Box(Bonfire game, Vector2 position, Vector2 size) : this(game, position, () => size) { }
+
+    public Box(Bonfire game, Vector2 position, IUiElement drawableElement)
+        : this(game, position, drawableElement.Size) => DrawableElement = drawableElement;
 
     public Box(Box parent, Box child)
     {

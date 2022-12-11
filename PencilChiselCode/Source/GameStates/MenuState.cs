@@ -24,9 +24,8 @@ public class MenuState : BonfireGameState
             SelfAlignment = Alignments.MiddleCenter
         };
         menuBox.AddChild(
-            new Box(Game, new Vector2(0F, 120F), logo.Size)
+            new Box(Game, new Vector2(0F, 120F), logo)
             {
-                DrawableElement = logo,
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
                 BoxAlignment = Alignments.TopCenter,
@@ -48,9 +47,8 @@ public class MenuState : BonfireGameState
             SelfAlignment = Alignments.BottomCenter
         };
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0), startButton.Size)
+            new Box(Game, new Vector2(0), startButton)
             {
-                DrawableElement = startButton,
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
                 BoxAlignment = Alignments.MiddleCenter,
@@ -65,9 +63,8 @@ public class MenuState : BonfireGameState
             Game.Exit
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F, -85F), exitButton.Size)
+            new Box(Game, new Vector2(0F, -85F), exitButton)
             {
-                DrawableElement = exitButton,
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
                 BoxAlignment = Alignments.MiddleCenter,

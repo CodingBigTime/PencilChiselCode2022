@@ -142,9 +142,8 @@ public class IngameState : BonfireGameState
             SelfAlignment = Alignments.MiddleCenter
         };
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F, 80F), resumeButton.Size)
+            new Box(Game, new Vector2(0F, 80F), resumeButton)
             {
-                DrawableElement = resumeButton,
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
                 BoxAlignment = Alignments.BottomCenter,
@@ -153,9 +152,8 @@ public class IngameState : BonfireGameState
             }
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F), menuButton.Size)
+            new Box(Game, new Vector2(0F), menuButton)
             {
-                DrawableElement = menuButton,
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
                 BoxAlignment = Alignments.BottomCenter,
@@ -164,9 +162,8 @@ public class IngameState : BonfireGameState
             }
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F, 80F), restartButton.Size)
+            new Box(Game, new Vector2(0F, 80F), restartButton)
             {
-                DrawableElement = restartButton,
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
                 BoxAlignment = Alignments.BottomCenter,
@@ -189,9 +186,8 @@ public class IngameState : BonfireGameState
             SelfAlignment = Alignments.MiddleCenter,
         };
         textInfoBox.AddChild(
-            new Box(Game, new Vector2(0F), gameOverText.Size)
+            new Box(Game, new Vector2(0F), gameOverText)
             {
-                DrawableElement = gameOverText,
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
                 BoxAlignment = Alignments.TopCenter,
@@ -207,9 +203,8 @@ public class IngameState : BonfireGameState
             Color.Black
         );
         textInfoBox.AddChild(
-            new Box(Game, new Vector2(0F, 50F), finalScoreText.Size)
+            new Box(Game, new Vector2(0F, 50F), finalScoreText)
             {
-                DrawableElement = finalScoreText,
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
                 BoxAlignment = Alignments.TopCenter,
