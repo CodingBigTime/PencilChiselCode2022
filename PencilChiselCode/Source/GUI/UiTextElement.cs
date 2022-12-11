@@ -11,6 +11,7 @@ public class UiTextElement : IUiElement
     public Color Color { get; set; }
     public Color? OutlineColor { get; set; }
     public BitmapFont Font { get; set; }
+
     public Vector2 Size() => Font.MeasureString(GetText());
 
     public UiTextElement(

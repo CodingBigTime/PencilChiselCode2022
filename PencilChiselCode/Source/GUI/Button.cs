@@ -9,7 +9,9 @@ namespace PencilChiselCode.Source.GUI;
 public class Button : IUiElement
 {
     public Texture2D Texture { get; set; }
+
     public Vector2 Size() => new(Texture.Width, Texture.Height);
+
     private readonly Texture2D _normalTexture;
     private readonly Texture2D _hoveredTexture;
     private readonly Texture2D _pressedTexture;

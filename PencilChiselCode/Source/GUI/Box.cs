@@ -28,6 +28,7 @@ public class Box
         Position = position;
         Size = size;
     }
+
     public Box(Bonfire game, Vector2 position, Vector2 size)
     {
         _game = game;
