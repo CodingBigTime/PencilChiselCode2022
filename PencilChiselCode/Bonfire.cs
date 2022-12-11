@@ -11,7 +11,6 @@ using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
-using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source;
 using PencilChiselCode.Source.GameStates;
 using PencilChiselCode.Source.GUI;
@@ -64,9 +63,6 @@ public class Bonfire : Game
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }
-
-    public BoxingViewportAdapter ViewportAdapter =>
-        new(Window, GraphicsDevice, GetWindowWidth(), GetWindowHeight());
 
     protected override void LoadContent()
     {

@@ -61,7 +61,7 @@ public class IngameState : BonfireGameState
 
     public override void LoadContent()
     {
-        Camera = new OrthographicCamera(Game.ViewportAdapter);
+        Camera = new OrthographicCamera(Game.GraphicsDevice);
         _deathState = false;
         base.LoadContent();
         for (var i = 0; i < TwigCount; i++)
@@ -374,69 +374,69 @@ public class IngameState : BonfireGameState
         {
             _pauseState = !_pauseState;
         }
+
         RootBox.Update(gameTime);
 
-        if (!_deathState && !_pauseState)
+        if (_deathState || _pauseState)
+            return;
+        if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
         {
-            if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
-            {
-                SpawnRandomTwig(
-                    Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight())
-                );
-                SpawnRandomBush(
-                    Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight())
-                );
-                SpawnRandomTree(
-                    Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight())
-                );
-                SpawnRandomPlant(
-                    Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight())
-                );
-                _pickupableCounterGameTime = gameTime.TotalGameTime;
-            }
+            SpawnRandomTwig(
+                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())
+            );
+            SpawnRandomBush(
+                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())
+            );
+            SpawnRandomTree(
+                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())
+            );
+            SpawnRandomPlant(
+                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())
+            );
+            _pickupableCounterGameTime = gameTime.TotalGameTime;
+        }
 
-            var oldMapIndex = MapIndex;
-            Game.TiledMapRenderer.Update(gameTime);
+        var oldMapIndex = MapIndex;
+        Game.TiledMapRenderer.Update(gameTime);
 
-            if (Companion.IsAnxious())
-            {
-                _deathState = true;
-                return;
-            }
+        if (Companion.IsAnxious())
+        {
+            _deathState = true;
+            return;
+        }
 
-            Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
-            Companion.Update(gameTime, Player.Position);
-            Player.Update(gameTime);
+        Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+        Companion.Update(gameTime, Player.Position);
+        Player.Update(gameTime);
 
-            Pickupables.Update(gameTime);
+        Pickupables.Update(gameTime);
 
-            GroundEntities.Update(gameTime);
+        GroundEntities.Update(gameTime);
 
-            Campfires.Update(gameTime);
+        Campfires.Update(gameTime);
 
-            _inventory.Update();
-            _darknessParticles.Update(gameTime, true);
-            _score += gameTime.ElapsedGameTime.Milliseconds;
+        _inventory.Update();
+        _darknessParticles.Update(gameTime, true);
+        _score += gameTime.ElapsedGameTime.Milliseconds;
 
-            if (oldMapIndex != MapIndex)
-            {
-                _maps.RemoveAt(0);
-                AddRandomMap();
-            }
+        if (oldMapIndex != MapIndex)
+        {
+            _maps.RemoveAt(0);
+            AddRandomMap();
+        }
 
-            if (Game.Controls.JustPressed(ControlKeys.STOP_FOLLOWER))
-            {
-                Companion.ToggleSitting();
-            }
+        if (Game.Controls.JustPressed(ControlKeys.STOP_FOLLOWER))
+        {
+            Companion.ToggleSitting();
+        }
 
-            if (Game.Controls.JustPressed(ControlKeys.START_FIRE))
-            {
-                Player.CreateFire();
-            }
+        if (Game.Controls.JustPressed(ControlKeys.START_FIRE))
+        {
+            Player.CreateFire();
         }
 
         _debugData[1] = $"Translation: {Camera.GetViewMatrix().Translation}";
