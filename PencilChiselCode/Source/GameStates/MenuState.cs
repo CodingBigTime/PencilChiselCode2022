@@ -1,70 +1,88 @@
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PencilChiselCode.Source.GUI;
 
 namespace PencilChiselCode.Source.GameStates;
 
 public class MenuState : BonfireGameState
 {
-    private readonly List<Button> _buttons = new();
-    private readonly Texture2D _logo;
-    private Vector2 _logoPosition;
-    private const float LogoScale = 2.5F;
+    public Box RootBox;
 
-    public MenuState(Game game) : base(game)
-    {
-        _logo = Game.TextureMap["logo"];
-        _logoPosition = new Vector2((Game.GetWindowWidth() - _logo.Width * LogoScale) / 2F, 100);
+    public MenuState(Game game) : base(game) =>
         BgColor = new Color(9F / 255F, 10F / 255F, 20F / 255F);
-    }
 
     public override void LoadContent()
     {
         base.LoadContent();
         var textureMap = Game.TextureMap;
-        var startButton = textureMap["start_button_normal"];
-        var startButtonSize = new Vector2(startButton.Width, startButton.Height);
-        _buttons.Add(
-            new Button(
-                this,
-                startButton,
-                textureMap["start_button_hover"],
-                textureMap["start_button_pressed"],
-                Utils.GetCenterStartCoords(startButtonSize, Game.GetWindowDimensions()),
-                Game.Start
-            )
+        RootBox = Game.GetRootBox();
+        var logo = new UiTextureElement(textureMap["logo"]);
+        var menuBox = new Box(Game, new Vector2(0F), new Vector2(0.75F))
+        {
+            IsPositionAbsolute = true,
+            BoxAlignment = Alignments.MiddleCenter,
+            SelfAlignment = Alignments.MiddleCenter
+        };
+        menuBox.AddChild(
+            new Box(Game, new Vector2(0F, 120F), logo.Size)
+            {
+                DrawableElement = logo,
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.TopCenter,
+                SelfAlignment = Alignments.MiddleCenter,
+                Scale = new(2.5F)
+            }
         );
-        var exitButton = textureMap["exit_button_normal"];
-        var exitButtonSize = new Vector2(exitButton.Width, exitButton.Height);
-        _buttons.Add(
-            new Button(
-                this,
-                exitButton,
-                textureMap["exit_button_hover"],
-                textureMap["exit_button_pressed"],
-                Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions())
-                    + Vector2.UnitY * 100,
-                Game.Exit
-            )
+        var startButton = new Button(
+            this,
+            textureMap["start_button_normal"],
+            textureMap["start_button_hover"],
+            textureMap["start_button_pressed"],
+            Game.Start
         );
+        var buttonBox = new Box(Game, new Vector2(0F), new Vector2(0.75F))
+        {
+            IsPositionAbsolute = true,
+            BoxAlignment = Alignments.BottomCenter,
+            SelfAlignment = Alignments.BottomCenter
+        };
+        buttonBox.AddChild(
+            new Box(Game, new Vector2(0), startButton.Size)
+            {
+                DrawableElement = startButton,
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.MiddleCenter,
+                SelfAlignment = Alignments.MiddleCenter
+            }
+        );
+        var exitButton = new Button(
+            this,
+            textureMap["exit_button_normal"],
+            textureMap["exit_button_hover"],
+            textureMap["exit_button_pressed"],
+            Game.Exit
+        );
+        buttonBox.AddChild(
+            new Box(Game, new Vector2(0F, -85F), exitButton.Size)
+            {
+                DrawableElement = exitButton,
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.MiddleCenter,
+                SelfAlignment = Alignments.MiddleCenter
+            }
+        );
+        menuBox.AddChild(buttonBox);
+        RootBox.AddChild(menuBox);
     }
 
     public override void Draw(GameTime gameTime)
     {
         Game.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         Game.GraphicsDevice.Clear(BgColor);
-        Game.SpriteBatch.Draw(
-            _logo,
-            _logoPosition,
-            null,
-            Color.White,
-            0F,
-            Vector2.Zero,
-            LogoScale,
-            SpriteEffects.None,
-            0F
-        );
-        _buttons.ForEach(button => button.Draw(Game.SpriteBatch));
+        RootBox.Draw(Game.SpriteBatch);
         Game.SpriteBatch.End();
     }
 
@@ -76,6 +94,6 @@ public class MenuState : BonfireGameState
             return;
         }
 
-        _buttons.ForEach(button => button.Update(gameTime));
+        RootBox.Update(gameTime);
     }
 }

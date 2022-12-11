@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.Screens;
@@ -15,6 +14,7 @@ using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
 using PencilChiselCode.Source;
 using PencilChiselCode.Source.GameStates;
+using PencilChiselCode.Source.GUI;
 using Penumbra;
 
 namespace PencilChiselCode;
@@ -31,12 +31,12 @@ public class Bonfire : Game
     public Dictionary<string, BitmapFont> FontMap { get; } = new();
     public Dictionary<string, SpriteSheet> SpriteSheetMap { get; } = new();
     public readonly ScreenManager ScreenManager;
-    public OrthographicCamera Camera;
     public TiledMapRenderer TiledMapRenderer;
     public List<TiledMap> TiledMaps = new();
     public const int TreeVariations = 3;
     public Dictionary<string, Song> SongMap { get; } = new();
     public Controls Controls;
+    public bool DebugMode { get; set; }
 
     public Bonfire()
     {
@@ -47,7 +47,7 @@ public class Bonfire : Game
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content/Resources";
         IsMouseVisible = true;
-        Window.AllowUserResizing = false;
+        Window.AllowUserResizing = true;
         Graphics.SynchronizeWithVerticalRetrace = false;
         IsFixedTimeStep = false;
         Controls = new();
@@ -59,14 +59,14 @@ public class Bonfire : Game
         Graphics.PreferredBackBufferWidth = Width;
         Graphics.PreferredBackBufferHeight = Height;
         Graphics.ApplyChanges();
-        Camera = new OrthographicCamera(GetViewportAdapter());
         Penumbra.Initialize();
         Window.Title = "Bonfire";
         base.Initialize();
         ScreenManager.LoadScreen(new MenuState(this));
     }
 
-    public BoxingViewportAdapter GetViewportAdapter() => new(Window, GraphicsDevice, Width, Height);
+    public BoxingViewportAdapter ViewportAdapter =>
+        new(Window, GraphicsDevice, GetWindowWidth(), GetWindowHeight());
 
     protected override void LoadContent()
     {
@@ -207,13 +207,17 @@ public class Bonfire : Game
     public void ResetPenumbra()
     {
         Penumbra = new PenumbraComponent(this) { AmbientColor = Color.Black };
-        Camera = new OrthographicCamera(GetViewportAdapter());
         Penumbra.Initialize();
     }
 
     protected override void Update(GameTime gameTime)
     {
+        if (Controls.JustPressed(ControlKeys.DEBUG))
+        {
+            DebugMode = !DebugMode;
+        }
         ScreenManager.Update(gameTime);
+        Controls.Update();
         base.Update(gameTime);
     }
 
@@ -229,4 +233,6 @@ public class Bonfire : Game
     public int GetWindowHeight() => Window.ClientBounds.Height;
 
     public Vector2 GetWindowDimensions() => new(GetWindowWidth(), GetWindowHeight());
+
+    public Box GetRootBox() => new(this, new Vector2(0), GetWindowDimensions);
 }

@@ -4,13 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PencilChiselCode.Source.GameStates;
 
-namespace PencilChiselCode.Source;
+namespace PencilChiselCode.Source.GUI;
 
-public class Button
+public class Button : IUiElement
 {
-    public Vector2 Position;
-    public Vector2 Size => new(Texture.Width, Texture.Height);
     public Texture2D Texture { get; set; }
+    public Vector2 Size() => new(Texture.Width, Texture.Height);
     private readonly Texture2D _normalTexture;
     private readonly Texture2D _hoveredTexture;
     private readonly Texture2D _pressedTexture;
@@ -23,7 +22,6 @@ public class Button
         Texture2D normal,
         Texture2D hovered,
         Texture2D pressed,
-        Vector2 position,
         Action action
     )
     {
@@ -32,21 +30,28 @@ public class Button
         _hoveredTexture = hovered;
         _pressedTexture = pressed;
         Texture = normal;
-        Position = position;
         _action = action;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
-    {
-        spriteBatch.Draw(Texture, Position, Color.White);
-    }
+    public void Draw(SpriteBatch spriteBatch, Box parent) =>
+        spriteBatch.Draw(
+            Texture,
+            parent.Position,
+            null,
+            Color.White,
+            0F,
+            Vector2.Zero,
+            parent.Scale,
+            SpriteEffects.None,
+            0F
+        );
 
-    public void Update(GameTime gameTime)
+    public void Update(GameTime gameTime, Box parent)
     {
         var mouseState = Mouse.GetState();
         var inside = Utils.IsPointInRectangle(
             mouseState.Position.ToVector2(),
-            new Rectangle(Position.ToPoint(), Size.ToPoint())
+            new Rectangle(parent.Position.ToPoint(), parent.Size().ToPoint())
         );
         var released = mouseState.LeftButton == ButtonState.Released;
 

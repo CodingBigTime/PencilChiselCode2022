@@ -198,11 +198,11 @@ public class Player
             Companion.ComfyMeter.Value += 10F;
         }
 
-        if (Position.X >= Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F)
+        if (Position.X >= _state.Camera.Center.X + Game.Width / 2F - Size.X / 2F)
         {
             _speed.X = 0;
             Position = new(
-                Math.Min(Position.X, Game.Camera.Center.X + Game.Width / 2F - Size.X / 2F),
+                Math.Min(Position.X, _state.Camera.Center.X + Game.Width / 2F - Size.X / 2F),
                 Position.Y
             );
         }

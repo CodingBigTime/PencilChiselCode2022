@@ -14,7 +14,7 @@ public abstract class Pickupable : GroundEntity
 
     public override bool ShouldRemove() =>
         base.ShouldRemove()
-        || Game.Camera.Position.X > Position.X + Size.X * Scale.X + RenderOffset;
+        || State.Camera.Position.X > Position.X + Size.X * Scale.X + RenderOffset;
 
     public Pickupable(
         IngameState state,
