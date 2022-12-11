@@ -8,6 +8,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
+using PencilChiselCode.Source.GUI;
 using PencilChiselCode.Source.Objects;
 
 namespace PencilChiselCode.Source.GameStates;
@@ -16,17 +17,12 @@ public class IngameState : BonfireGameState
 {
     public Player Player { get; private set; }
     public Companion Companion;
-    private bool _showDebug;
     private float _cameraSpeed = 10F;
     private Inventory _inventory;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private TimeSpan _pickupableCounterGameTime;
     private bool _pauseState;
-    private Button _pauseButton;
-    private Button _exitButton;
-    private Button _menuButton;
-    private Button _restartButton;
     private const double TwigSpawnChance = 0.14;
     private const double BushSpawnChance = 0.14;
     private const double TreeSpawnChance = 0.24;
@@ -43,12 +39,11 @@ public class IngameState : BonfireGameState
     private float _score;
     private const int SpawnOffset = 128;
     public const int DarknessEndOffset = 64;
+    public OrthographicCamera Camera { get; private set; }
+    public Box RootBox;
 
     private int MapIndex =>
-        (int)
-            Math.Abs(
-                Math.Floor(Game.Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels)
-            );
+        (int)Math.Abs(Math.Floor(Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
 
     public IngameState(Game game) : base(game) { }
 
@@ -66,15 +61,13 @@ public class IngameState : BonfireGameState
 
     public override void LoadContent()
     {
+        Camera = new OrthographicCamera(Game.GraphicsDevice);
         _deathState = false;
         base.LoadContent();
         for (var i = 0; i < TwigCount; i++)
         {
             SpawnRandomTwig(
-                Utils.GetRandomInt(
-                    (int)Game.Camera.Position.X,
-                    Game.GetWindowWidth() + SpawnOffset
-                ),
+                Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
                 chance: 1,
                 attempts: 30
@@ -84,10 +77,7 @@ public class IngameState : BonfireGameState
         for (var i = 0; i < BushCount; i++)
         {
             SpawnRandomBush(
-                Utils.GetRandomInt(
-                    (int)Game.Camera.Position.X,
-                    Game.GetWindowWidth() + SpawnOffset
-                ),
+                Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
                 chance: 1,
                 attempts: 30
@@ -97,10 +87,7 @@ public class IngameState : BonfireGameState
         for (var i = 0; i < TreeCount; i++)
         {
             SpawnRandomTree(
-                Utils.GetRandomInt(
-                    (int)Game.Camera.Position.X,
-                    Game.GetWindowWidth() + SpawnOffset
-                ),
+                Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
                 chance: 1,
                 attempts: 64
@@ -110,65 +97,32 @@ public class IngameState : BonfireGameState
         for (var i = 0; i < GlowFlowerCount; i++)
         {
             SpawnRandomPlant(
-                Utils.GetRandomInt(
-                    (int)Game.Camera.Position.X,
-                    Game.GetWindowWidth() + SpawnOffset
-                ),
+                Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
                 chance: 1,
                 attempts: 30
             );
         }
 
-        var resumeButton = Game.TextureMap["resume_button_normal"];
-        var resumeButtonSize = new Size2(resumeButton.Width, resumeButton.Height);
-        _pauseButton = new Button(
+        var resumeButton = new Button(
             this,
-            resumeButton,
+            Game.TextureMap["resume_button_normal"],
             Game.TextureMap["resume_button_hover"],
             Game.TextureMap["resume_button_pressed"],
-            Utils.GetCenterStartCoords(resumeButtonSize, Game.GetWindowDimensions()),
-            () =>
-            {
-                _pauseState = false;
-            }
+            () => _pauseState = false
         );
-        var exitButton = Game.TextureMap["exit_button_normal"];
-        var exitButtonSize = new Size2(exitButton.Width, exitButton.Height);
-        _exitButton = new Button(
+        var menuButton = new Button(
             this,
-            exitButton,
-            Game.TextureMap["exit_button_hover"],
-            Game.TextureMap["exit_button_pressed"],
-            Utils.GetCenterStartCoords(exitButtonSize, Game.GetWindowDimensions())
-                + Vector2.UnitY * 100,
-            Game.Exit
-        );
-
-        var menuButton = Game.TextureMap["menu_button_normal"];
-        var menuButtonSize = new Size2(menuButton.Width, menuButton.Height);
-        _menuButton = new Button(
-            this,
-            menuButton,
+            Game.TextureMap["menu_button_normal"],
             Game.TextureMap["menu_button_hover"],
             Game.TextureMap["menu_button_pressed"],
-            Utils.GetCenterStartCoords(menuButtonSize, Game.GetWindowDimensions())
-                + Vector2.UnitY * 100,
-            () =>
-                Game.ScreenManager.LoadScreen(
-                    new MenuState(Game),
-                    new FadeTransition(Game.GraphicsDevice, Color.Black)
-                )
+            () => ScreenManager.LoadScreen(new MenuState(Game))
         );
-
-        var restartButton = Game.TextureMap["restart_button_normal"];
-        var restartButtonSize = new Size2(restartButton.Width, restartButton.Height);
-        _restartButton = new Button(
+        var restartButton = new Button(
             this,
-            restartButton,
+            Game.TextureMap["restart_button_normal"],
             Game.TextureMap["restart_button_hover"],
             Game.TextureMap["restart_button_pressed"],
-            Utils.GetCenterStartCoords(restartButtonSize, Game.GetWindowDimensions()),
             () =>
             {
                 Cleanup();
@@ -179,6 +133,91 @@ public class IngameState : BonfireGameState
                 Game.ResetPenumbra();
             }
         );
+
+        RootBox = Game.GetRootBox();
+        var buttonBox = new Box(Game, new Vector2(0F, 0F), new Vector2(0.5F))
+        {
+            IsPositionAbsolute = true,
+            BoxAlignment = Alignments.MiddleCenter,
+            SelfAlignment = Alignments.MiddleCenter
+        };
+        buttonBox.AddChild(
+            new Box(Game, new Vector2(0F, 80F), resumeButton.Size)
+            {
+                DrawableElement = resumeButton,
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.BottomCenter,
+                SelfAlignment = Alignments.BottomCenter,
+                IsVisible = () => _pauseState
+            }
+        );
+        buttonBox.AddChild(
+            new Box(Game, new Vector2(0F), menuButton.Size)
+            {
+                DrawableElement = menuButton,
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.BottomCenter,
+                SelfAlignment = Alignments.BottomCenter,
+                IsVisible = () => _pauseState || _deathState
+            }
+        );
+        buttonBox.AddChild(
+            new Box(Game, new Vector2(0F, 80F), restartButton.Size)
+            {
+                DrawableElement = restartButton,
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.BottomCenter,
+                SelfAlignment = Alignments.BottomCenter,
+                IsVisible = () => _deathState
+            }
+        );
+        RootBox.AddChild(buttonBox);
+
+        var gameOverText = new UiTextElement(
+            Game.FontMap["32"],
+            () => "Your companion got too anxious!",
+            Color.Red,
+            Color.Black
+        );
+        var textInfoBox = new Box(Game, new Vector2(0F, 0F), new Vector2(0.5F, 0.25F))
+        {
+            IsPositionAbsolute = true,
+            BoxAlignment = Alignments.MiddleCenter,
+            SelfAlignment = Alignments.MiddleCenter,
+        };
+        textInfoBox.AddChild(
+            new Box(Game, new Vector2(0F), gameOverText.Size)
+            {
+                DrawableElement = gameOverText,
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.TopCenter,
+                SelfAlignment = Alignments.TopCenter,
+                IsVisible = () => _deathState
+            }
+        );
+        var finalScoreText = new UiTextElement(
+            Game.FontMap["24"],
+            () =>
+                $"{(_deathState ? "Final score" : "Current score")}: {(int)Math.Ceiling(_score / 10)}",
+            Color.Red,
+            Color.Black
+        );
+        textInfoBox.AddChild(
+            new Box(Game, new Vector2(0F, 50F), finalScoreText.Size)
+            {
+                DrawableElement = finalScoreText,
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.TopCenter,
+                SelfAlignment = Alignments.TopCenter,
+                IsVisible = () => _deathState || _pauseState
+            }
+        );
+        RootBox.AddChild(textInfoBox);
 
         Companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 50F);
         Player = new Player(this, new Vector2(96, Game.GetWindowHeight() / 2F));
@@ -336,84 +375,71 @@ public class IngameState : BonfireGameState
             _pauseState = !_pauseState;
         }
 
-        if (_deathState)
+        RootBox.Update(gameTime);
+
+        if (_deathState || _pauseState)
+            return;
+        if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
         {
-            _restartButton.Update(gameTime);
-            _exitButton.Update(gameTime);
-        }
-        else if (_pauseState)
-        {
-            _pauseButton.Update(gameTime);
-            _menuButton.Update(gameTime);
-        }
-        else
-        {
-            if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
-            {
-                SpawnRandomTwig(
-                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight())
-                );
-                SpawnRandomBush(
-                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight())
-                );
-                SpawnRandomTree(
-                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight())
-                );
-                SpawnRandomPlant(
-                    Game.Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                    Utils.GetRandomInt(5, Game.GetWindowHeight())
-                );
-                _pickupableCounterGameTime = gameTime.TotalGameTime;
-            }
-
-            var oldMapIndex = MapIndex;
-            Game.TiledMapRenderer.Update(gameTime);
-
-            if (Companion.IsAnxious())
-            {
-                _deathState = true;
-                return;
-            }
-
-            Game.Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
-            Companion.Update(gameTime, Player.Position);
-            Player.Update(gameTime);
-
-            Pickupables.Update(gameTime);
-
-            GroundEntities.Update(gameTime);
-
-            Campfires.Update(gameTime);
-
-            _inventory.Update();
-            _darknessParticles.Update(gameTime, true);
-            _score += gameTime.ElapsedGameTime.Milliseconds;
-
-            if (oldMapIndex != MapIndex)
-            {
-                _maps.RemoveAt(0);
-                AddRandomMap();
-            }
-            if (Game.Controls.JustPressed(ControlKeys.STOP_FOLLOWER))
-            {
-                Companion.ToggleSitting();
-            }
-            if (Game.Controls.JustPressed(ControlKeys.START_FIRE))
-            {
-                Player.CreateFire();
-            }
+            SpawnRandomTwig(
+                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())
+            );
+            SpawnRandomBush(
+                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())
+            );
+            SpawnRandomTree(
+                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())
+            );
+            SpawnRandomPlant(
+                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                Utils.GetRandomInt(5, Game.GetWindowHeight())
+            );
+            _pickupableCounterGameTime = gameTime.TotalGameTime;
         }
 
-        if (Game.Controls.JustPressed(ControlKeys.DEBUG))
+        var oldMapIndex = MapIndex;
+        Game.TiledMapRenderer.Update(gameTime);
+
+        if (Companion.IsAnxious())
         {
-            _showDebug = !_showDebug;
+            _deathState = true;
+            return;
         }
 
-        Game.Controls.Update();
-        _debugData[1] = $"Translation: {Game.Camera.GetViewMatrix().Translation}";
+        Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+        Companion.Update(gameTime, Player.Position);
+        Player.Update(gameTime);
+
+        Pickupables.Update(gameTime);
+
+        GroundEntities.Update(gameTime);
+
+        Campfires.Update(gameTime);
+
+        _inventory.Update();
+        _darknessParticles.Update(gameTime, true);
+        _score += gameTime.ElapsedGameTime.Milliseconds;
+
+        if (oldMapIndex != MapIndex)
+        {
+            _maps.RemoveAt(0);
+            AddRandomMap();
+        }
+
+        if (Game.Controls.JustPressed(ControlKeys.STOP_FOLLOWER))
+        {
+            Companion.ToggleSitting();
+        }
+
+        if (Game.Controls.JustPressed(ControlKeys.START_FIRE))
+        {
+            Player.CreateFire();
+        }
+
+        _debugData[1] = $"Translation: {Camera.GetViewMatrix().Translation}";
         _debugData[2] = $"Map Index: {MapIndex}";
     }
 
@@ -421,12 +447,12 @@ public class IngameState : BonfireGameState
     {
         Game.Penumbra.BeginDraw();
         Game.Penumbra.Transform = Matrix.CreateTranslation(
-            -Game.Camera.Position.X,
-            -Game.Camera.Position.Y,
+            -Camera.Position.X,
+            -Camera.Position.Y,
             0
         );
         Game.GraphicsDevice.Clear(BgColor);
-        var transformMatrix = Game.Camera.GetViewMatrix();
+        var transformMatrix = Camera.GetViewMatrix();
 
         for (var i = 0; i < _maps.Count; ++i)
         {
@@ -467,7 +493,7 @@ public class IngameState : BonfireGameState
 
     private void DrawUI(GameTime gameTime)
     {
-        var transformMatrix = Game.Camera.GetViewMatrix();
+        var transformMatrix = Camera.GetViewMatrix();
         Game.SpriteBatch.Begin(
             transformMatrix: transformMatrix,
             samplerState: SamplerState.PointClamp
@@ -492,37 +518,10 @@ public class IngameState : BonfireGameState
             _fpsCounterGameTime = gameTime.TotalGameTime;
             _debugData[0] = $"FPS: {_fps}";
         }
-        else if (_pauseState)
-        {
-            _pauseButton.Draw(Game.SpriteBatch);
-            _menuButton.Draw(Game.SpriteBatch);
-        }
-        else if (_deathState)
-        {
-            var finalScore = (int)Math.Ceiling(_score / 10);
-            Game.SpriteBatch.DrawOutlinedString(
-                Game.FontMap["32"],
-                "Your companion got too anxious!",
-                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() / 3F - 60F),
-                Color.Red,
-                Color.Black,
-                Utils.HorizontalFontAlignment.Center,
-                Utils.VerticalFontAlignment.Center
-            );
-            Game.SpriteBatch.DrawOutlinedString(
-                Game.FontMap["24"],
-                $"Final score {finalScore}",
-                new Vector2(Game.GetWindowWidth() / 2F, Game.GetWindowHeight() / 3F),
-                Color.Red,
-                Color.Black,
-                Utils.HorizontalFontAlignment.Center,
-                Utils.VerticalFontAlignment.Center
-            );
-            _restartButton.Draw(Game.SpriteBatch);
-            _exitButton.Draw(Game.SpriteBatch);
-        }
 
-        if (_showDebug)
+        RootBox.Draw(Game.SpriteBatch);
+
+        if (Game.DebugMode)
         {
             for (var i = 0; i < _debugData.Count; ++i)
             {

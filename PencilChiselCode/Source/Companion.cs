@@ -108,7 +108,7 @@ public class Companion
             Position.Y -= _movementSpeed.X * (height / h) * delta;
         }
 
-        if (Position.X < Game.Camera.Position.X + IngameState.DarknessEndOffset)
+        if (Position.X < _state.Camera.Position.X + IngameState.DarknessEndOffset)
         {
             ComfyMeter.Value -= 24F * gameTime.GetElapsedSeconds();
         }
