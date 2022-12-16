@@ -140,6 +140,14 @@ public class Bonfire : Game
             "restart_button_pressed",
             Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_pressed")
         );
+        TextureMap.Add(
+            "checkbox_empty",
+            Content.Load<Texture2D>("Textures/GUI/checkbox_empty")
+        );
+        TextureMap.Add(
+            "checkbox_selected",
+            Content.Load<Texture2D>("Textures/GUI/checkbox_selected")
+        );
 
         TextureMap.Add("logo", Content.Load<Texture2D>("Textures/GUI/logo"));
 
