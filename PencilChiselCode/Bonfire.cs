@@ -35,7 +35,7 @@ public class Bonfire : Game
     public const int TreeVariations = 3;
     public Dictionary<string, Song> SongMap { get; } = new();
     public Controls Controls;
-    public bool DebugMode { get; set; }
+    public int DebugMode { get; set; }
 
     public Bonfire()
     {
@@ -79,6 +79,18 @@ public class Bonfire : Game
         TextureMap.Add(
             "start_button_pressed",
             Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_pressed")
+        );
+        TextureMap.Add(
+            "settings_button_normal",
+            Content.Load<Texture2D>("Textures/GUI/Buttons/settings_button_normal")
+        );
+        TextureMap.Add(
+            "settings_button_hover",
+            Content.Load<Texture2D>("Textures/GUI/Buttons/settings_button_hover")
+        );
+        TextureMap.Add(
+            "settings_button_pressed",
+            Content.Load<Texture2D>("Textures/GUI/Buttons/settings_button_pressed")
         );
         TextureMap.Add(
             "exit_button_normal",
@@ -210,7 +222,7 @@ public class Bonfire : Game
     {
         if (Controls.JustPressed(ControlKeys.DEBUG))
         {
-            DebugMode = !DebugMode;
+            DebugMode = (DebugMode + 1) % 3;
         }
         ScreenManager.Update(gameTime);
         Controls.Update();

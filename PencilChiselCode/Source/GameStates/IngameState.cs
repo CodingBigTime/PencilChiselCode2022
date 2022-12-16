@@ -104,25 +104,28 @@ public class IngameState : BonfireGameState
             );
         }
 
-        var resumeButton = new Button(
-            this,
+        var resumeButton = new TexturedButton(
             Game.TextureMap["resume_button_normal"],
             Game.TextureMap["resume_button_hover"],
             Game.TextureMap["resume_button_pressed"],
+            Game.SoundMap["button_press"],
+            Game.SoundMap["button_release"],
             () => _pauseState = false
         );
-        var menuButton = new Button(
-            this,
+        var menuButton = new TexturedButton(
             Game.TextureMap["menu_button_normal"],
             Game.TextureMap["menu_button_hover"],
             Game.TextureMap["menu_button_pressed"],
+            Game.SoundMap["button_press"],
+            Game.SoundMap["button_release"],
             () => ScreenManager.LoadScreen(new MenuState(Game))
         );
-        var restartButton = new Button(
-            this,
+        var restartButton = new TexturedButton(
             Game.TextureMap["restart_button_normal"],
             Game.TextureMap["restart_button_hover"],
             Game.TextureMap["restart_button_pressed"],
+            Game.SoundMap["button_press"],
+            Game.SoundMap["button_release"],
             () =>
             {
                 Cleanup();
@@ -516,7 +519,7 @@ public class IngameState : BonfireGameState
 
         RootBox.Draw(Game.SpriteBatch);
 
-        if (Game.DebugMode)
+        if (Game.DebugMode > 0)
         {
             for (var i = 0; i < _debugData.Count; ++i)
             {

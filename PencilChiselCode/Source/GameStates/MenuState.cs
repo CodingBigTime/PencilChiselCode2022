@@ -17,8 +17,10 @@ public class MenuState : BonfireGameState
         var textureMap = Game.TextureMap;
         RootBox = Game.GetRootBox();
         var logo = new UiTextureElement(textureMap["logo"]);
+        var showSettings = false;
         var menuBox = new Box(Game, new Vector2(0F), new Vector2(0.75F))
         {
+            IsVisible = () => !showSettings,
             IsPositionAbsolute = true,
             BoxAlignment = Alignments.MiddleCenter,
             SelfAlignment = Alignments.MiddleCenter
@@ -33,19 +35,20 @@ public class MenuState : BonfireGameState
                 Scale = new(2.5F)
             }
         );
-        var startButton = new Button(
-            this,
-            textureMap["start_button_normal"],
-            textureMap["start_button_hover"],
-            textureMap["start_button_pressed"],
-            Game.Start
-        );
         var buttonBox = new Box(Game, new Vector2(0F), new Vector2(0.75F))
         {
             IsPositionAbsolute = true,
             BoxAlignment = Alignments.BottomCenter,
             SelfAlignment = Alignments.BottomCenter
         };
+        var startButton = new TexturedButton(
+            textureMap["start_button_normal"],
+            textureMap["start_button_hover"],
+            textureMap["start_button_pressed"],
+            Game.SoundMap["button_press"],
+            Game.SoundMap["button_release"],
+            Game.Start
+        );
         buttonBox.AddChild(
             new Box(Game, new Vector2(0), startButton)
             {
@@ -55,15 +58,33 @@ public class MenuState : BonfireGameState
                 SelfAlignment = Alignments.MiddleCenter
             }
         );
-        var exitButton = new Button(
-            this,
+        var settingsButton = new TexturedButton(
+            textureMap["settings_button_normal"],
+            textureMap["settings_button_hover"],
+            textureMap["settings_button_pressed"],
+            Game.SoundMap["button_press"],
+            Game.SoundMap["button_release"],
+            () => showSettings = true
+        );
+        buttonBox.AddChild(
+            new Box(Game, new Vector2(0F, -85F), settingsButton)
+            {
+                IsSizeAbsolute = true,
+                IsPositionAbsolute = true,
+                BoxAlignment = Alignments.MiddleCenter,
+                SelfAlignment = Alignments.MiddleCenter
+            }
+        );
+        var exitButton = new TexturedButton(
             textureMap["exit_button_normal"],
             textureMap["exit_button_hover"],
             textureMap["exit_button_pressed"],
+            Game.SoundMap["button_press"],
+            Game.SoundMap["button_release"],
             Game.Exit
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F, -85F), exitButton)
+            new Box(Game, new Vector2(0F, -170F), exitButton)
             {
                 IsSizeAbsolute = true,
                 IsPositionAbsolute = true,
@@ -73,6 +94,9 @@ public class MenuState : BonfireGameState
         );
         menuBox.AddChild(buttonBox);
         RootBox.AddChild(menuBox);
+        var settingsBox = Menus.GetSettingsMenu(Game, () => showSettings = false);
+        settingsBox.IsVisible = () => showSettings;
+        RootBox.AddChild(settingsBox);
     }
 
     public override void Draw(GameTime gameTime)
