@@ -9,7 +9,7 @@ namespace PencilChiselCode.Source.GUI;
 public class Box
 {
     public readonly List<Box> Children = new();
-    public IUiElement DrawableElement;
+    public UiElement DrawableElement;
     public Vector2 Position { get; set; }
     public Func<Vector2> Size { get; set; }
     public Vector2 Scale { get; set; } = new(1F);
@@ -32,7 +32,7 @@ public class Box
 
     public Box(Bonfire game, Vector2 position, Vector2 size) : this(game, position, () => size) { }
 
-    public Box(Bonfire game, Vector2 position, IUiElement drawableElement)
+    public Box(Bonfire game, Vector2 position, UiElement drawableElement)
         : this(game, position, drawableElement.Size) => DrawableElement = drawableElement;
 
     public Box(Box parent, Box child)
@@ -122,12 +122,13 @@ public class Box
                     ),
             Alignments.MiddleRight
                 => parent.Position
-                   + new Vector2(
-                       parent.AdjustedSize.X - abs.Position.X,
-                       parent.AdjustedSize.Y / 2 - abs.Position.Y
-                   ),
+                    + new Vector2(
+                        parent.AdjustedSize.X - abs.Position.X,
+                        parent.AdjustedSize.Y / 2 - abs.Position.Y
+                    ),
             Alignments.BottomLeft
-                => parent.Position + new Vector2(abs.Position.X, parent.AdjustedSize.Y - abs.Position.Y),
+                => parent.Position
+                    + new Vector2(abs.Position.X, parent.AdjustedSize.Y - abs.Position.Y),
             Alignments.BottomCenter
                 => parent.Position
                     + new Vector2(
@@ -136,10 +137,10 @@ public class Box
                     ),
             Alignments.BottomRight
                 => parent.Position
-                   + new Vector2(
-                       parent.AdjustedSize.X - abs.Position.X,
-                       parent.AdjustedSize.Y - abs.Position.Y
-                   ),
+                    + new Vector2(
+                        parent.AdjustedSize.X - abs.Position.X,
+                        parent.AdjustedSize.Y - abs.Position.Y
+                    ),
             _ => abs.Position
         };
         abs.Position += SelfAlignment switch

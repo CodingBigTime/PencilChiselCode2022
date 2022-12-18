@@ -3,16 +3,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PencilChiselCode.Source.GUI;
 
-public class UiTextureElement : IUiElement
+public class UiTextureElement : UiElement
 {
-    public Vector2 Size() => new(_texture.Width, _texture.Height);
+    public override Vector2 Size() => new(_texture.Width, _texture.Height);
 
     private readonly Texture2D _texture;
     public Color Color { get; set; } = Color.White;
 
     public UiTextureElement(Texture2D texture) => _texture = texture;
 
-    public void Draw(SpriteBatch spriteBatch, Box parent) =>
+    public override void Draw(SpriteBatch spriteBatch, Box parent) =>
         spriteBatch.Draw(
             _texture,
             parent.Position,
@@ -24,6 +24,4 @@ public class UiTextureElement : IUiElement
             SpriteEffects.None,
             0F
         );
-
-    public void Update(GameTime gameTime, Box parent) { }
 }

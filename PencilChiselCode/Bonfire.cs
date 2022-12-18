@@ -35,12 +35,13 @@ public class Bonfire : Game
     public const int TreeVariations = 3;
     public Dictionary<string, Song> SongMap { get; } = new();
     public Controls Controls;
+    public MouseValues MouseValues { get; set; }
+
     public int DebugMode { get; set; }
 
     public Bonfire()
     {
         ScreenManager = new ScreenManager();
-        Components.Add(ScreenManager);
         Penumbra = new PenumbraComponent(this);
         Penumbra.AmbientColor = Color.Black;
         Graphics = new GraphicsDeviceManager(this);
@@ -50,6 +51,7 @@ public class Bonfire : Game
         Graphics.SynchronizeWithVerticalRetrace = false;
         IsFixedTimeStep = false;
         Controls = new();
+        MouseValues = new();
     }
 
     protected override void Initialize()
@@ -140,10 +142,7 @@ public class Bonfire : Game
             "restart_button_pressed",
             Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_pressed")
         );
-        TextureMap.Add(
-            "checkbox_empty",
-            Content.Load<Texture2D>("Textures/GUI/checkbox_empty")
-        );
+        TextureMap.Add("checkbox_empty", Content.Load<Texture2D>("Textures/GUI/checkbox_empty"));
         TextureMap.Add(
             "checkbox_selected",
             Content.Load<Texture2D>("Textures/GUI/checkbox_selected")
@@ -228,11 +227,14 @@ public class Bonfire : Game
 
     protected override void Update(GameTime gameTime)
     {
-        if (Controls.JustPressed(ControlKeys.DEBUG))
+        if (Controls.JustPressed(ControlKeys.Debug))
         {
             DebugMode = (DebugMode + 1) % 3;
         }
+
         ScreenManager.Update(gameTime);
+        ScreenManager.Update(gameTime);
+        MouseValues.Update();
         Controls.Update();
         base.Update(gameTime);
     }

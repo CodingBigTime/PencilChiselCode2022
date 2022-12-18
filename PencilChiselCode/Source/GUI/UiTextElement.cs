@@ -5,14 +5,14 @@ using MonoGame.Extended.BitmapFonts;
 
 namespace PencilChiselCode.Source.GUI;
 
-public class UiTextElement : IUiElement
+public class UiTextElement : UiElement
 {
     public Func<string> GetText { get; set; }
     public Color Color { get; set; }
     public Color? OutlineColor { get; set; }
     public BitmapFont Font { get; set; }
 
-    public Vector2 Size() => Font.MeasureString(GetText());
+    public override Vector2 Size() => Font.MeasureString(GetText());
 
     public UiTextElement(
         BitmapFont font,
@@ -27,7 +27,7 @@ public class UiTextElement : IUiElement
         OutlineColor = outlineColor ?? Color.Black;
     }
 
-    public void Draw(SpriteBatch spriteBatch, Box parent)
+    public override void Draw(SpriteBatch spriteBatch, Box parent)
     {
         if (OutlineColor.HasValue)
         {
@@ -44,6 +44,4 @@ public class UiTextElement : IUiElement
             spriteBatch.DrawString(Font, GetText(), parent.Position, Color);
         }
     }
-
-    public void Update(GameTime gameTime, Box parent) { }
 }

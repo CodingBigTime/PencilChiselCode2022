@@ -3,9 +3,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PencilChiselCode.Source.GUI;
 
-public interface IUiElement
+public abstract class UiElement
 {
-    public Vector2 Size();
-    void Draw(SpriteBatch spriteBatch, Box parent);
-    void Update(GameTime gameTime, Box parent);
+    public abstract Vector2 Size();
+    public abstract void Draw(SpriteBatch spriteBatch, Box parent);
+
+    public virtual void Update(GameTime gameTime, Box parent) { }
+
+    public virtual void OnClick(Box parent, MouseButton button) { }
+
+    public virtual void OnRelease(Box parent, MouseButton button) { }
+
+    public virtual void OnHovered(Box parent) { }
+
+    public virtual void OnUnhovered(Box parent) { }
 }

@@ -21,7 +21,7 @@ public class ParticleGenerator
     public void Update(GameTime gameTime, bool addNew)
     {
         if (
-            addNew && Utils.RANDOM.NextDouble() < _frequency * gameTime.ElapsedGameTime.TotalSeconds
+            addNew && Utils.Random.NextDouble() < _frequency * gameTime.ElapsedGameTime.TotalSeconds
         )
         {
             _particles.Add(_particleGenerator());

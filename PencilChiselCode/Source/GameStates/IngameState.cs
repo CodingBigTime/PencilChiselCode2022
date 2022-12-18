@@ -232,8 +232,8 @@ public class IngameState : BonfireGameState
             () =>
                 new Particle(
                     2F,
-                    new(0, Utils.RANDOM.Next(0, Game.Height)),
-                    new(Utils.RANDOM.Next(0, 20), Utils.RANDOM.Next(-10, 10)),
+                    new(0, Utils.Random.Next(0, Game.Height)),
+                    new(Utils.Random.Next(0, 20), Utils.Random.Next(-10, 10)),
                     time => 2 + time,
                     _ => Color.Black
                 ),
@@ -247,7 +247,7 @@ public class IngameState : BonfireGameState
 
     public static void TryGenerate(Func<bool> generator, double chance = 1, int attempts = 10)
     {
-        if (Utils.RANDOM.NextDouble() > chance)
+        if (Utils.Random.NextDouble() > chance)
             return;
         for (var i = 0; i < attempts; ++i)
         {
@@ -355,7 +355,7 @@ public class IngameState : BonfireGameState
                     || Pickupables.Any((entity) => entity.Intersects(position, size))
                 )
                     return false;
-                var pickupable = new Twig(this, position, size, Utils.RANDOM.NextAngle());
+                var pickupable = new Twig(this, position, size, Utils.Random.NextAngle());
                 Pickupables.Add(pickupable);
                 return true;
             },
@@ -364,11 +364,11 @@ public class IngameState : BonfireGameState
         );
 
     private void AddRandomMap() =>
-        _maps.Add(Game.TiledMaps[Utils.RANDOM.Next(0, Game.TiledMaps.Count)]);
+        _maps.Add(Game.TiledMaps[Utils.Random.Next(0, Game.TiledMaps.Count)]);
 
     public override void Update(GameTime gameTime)
     {
-        if (!_deathState && Game.Controls.JustPressed(ControlKeys.PAUSE))
+        if (!_deathState && Game.Controls.JustPressed(ControlKeys.Pause))
         {
             _pauseState = !_pauseState;
         }
@@ -427,12 +427,12 @@ public class IngameState : BonfireGameState
             AddRandomMap();
         }
 
-        if (Game.Controls.JustPressed(ControlKeys.STOP_FOLLOWER))
+        if (Game.Controls.JustPressed(ControlKeys.StopFollower))
         {
             Companion.ToggleSitting();
         }
 
-        if (Game.Controls.JustPressed(ControlKeys.START_FIRE))
+        if (Game.Controls.JustPressed(ControlKeys.StartFire))
         {
             Player.CreateFire();
         }

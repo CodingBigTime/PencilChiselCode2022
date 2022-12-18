@@ -109,7 +109,7 @@ public class MenuState : BonfireGameState
 
     public override void Update(GameTime gameTime)
     {
-        if (Game.Controls.JustPressed(ControlKeys.START))
+        if (Game.Controls.JustPressed(ControlKeys.Start))
         {
             Game.Start();
             return;

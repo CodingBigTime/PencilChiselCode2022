@@ -57,9 +57,19 @@ public static class Menus
                 game,
                 new Vector2(16, 112),
                 new TextButton(
-                    new UiTextElement(game.FontMap["32"], () => "Controls", Color.White, Color.Black),
+                    new UiTextElement(
+                        game.FontMap["32"],
+                        () => "Controls",
+                        Color.White,
+                        Color.Black
+                    ),
                     new UiTextElement(game.FontMap["32"], () => "Controls", Color.Red, Color.Black),
-                    new UiTextElement(game.FontMap["32"], () => "Controls", Color.Green, Color.Black),
+                    new UiTextElement(
+                        game.FontMap["32"],
+                        () => "Controls",
+                        Color.Green,
+                        Color.Black
+                    ),
                     game.SoundMap["button_press"],
                     game.SoundMap["button_release"],
                     () => page = 2
@@ -89,7 +99,11 @@ public static class Menus
             }
         );
         settingsMenu.AddChild(menuCategories);
-        var videoMenu = new Box(game, new Vector2(categoriesSize,0F), new Vector2(1 - categoriesSize, 1F))
+        var videoMenu = new Box(
+            game,
+            new Vector2(categoriesSize, 0F),
+            new Vector2(1 - categoriesSize, 1F)
+        )
         {
             BoxAlignment = Alignments.MiddleLeft,
             SelfAlignment = Alignments.MiddleLeft,
@@ -99,7 +113,12 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16),
-                new UiTextElement(game.FontMap["24"], () => "Resolution", Color.LimeGreen, Color.Green)
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => "Resolution",
+                    Color.LimeGreen,
+                    Color.Green
+                )
             )
             {
                 IsPositionAbsolute = true,
@@ -115,7 +134,11 @@ public static class Menus
                 IsSizeAbsolute = true
             }
         );
-        var soundMenu = new Box(game, new Vector2(categoriesSize,0F), new Vector2(1 - categoriesSize, 1F))
+        var soundMenu = new Box(
+            game,
+            new Vector2(categoriesSize, 0F),
+            new Vector2(1 - categoriesSize, 1F)
+        )
         {
             BoxAlignment = Alignments.MiddleLeft,
             SelfAlignment = Alignments.MiddleLeft,
@@ -125,7 +148,12 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16),
-                new UiTextElement(game.FontMap["24"], () => "Master Volume", Color.LimeGreen, Color.Green)
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => "Master Volume",
+                    Color.LimeGreen,
+                    Color.Green
+                )
             )
             {
                 IsPositionAbsolute = true,
@@ -150,7 +178,11 @@ public static class Menus
                 IsSizeAbsolute = true
             }
         );
-        var controlsMenu = new Box(game, new Vector2(categoriesSize,0F), new Vector2(1 - categoriesSize, 1F))
+        var controlsMenu = new Box(
+            game,
+            new Vector2(categoriesSize, 0F),
+            new Vector2(1 - categoriesSize, 1F)
+        )
         {
             BoxAlignment = Alignments.MiddleLeft,
             SelfAlignment = Alignments.MiddleLeft,
@@ -178,7 +210,12 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16, 80),
-                new UiTextElement(game.FontMap["24"], () => "Move Down", Color.LimeGreen, Color.Green)
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => "Move Down",
+                    Color.LimeGreen,
+                    Color.Green
+                )
             )
             {
                 IsPositionAbsolute = true,
@@ -187,7 +224,12 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16, 112),
-                new UiTextElement(game.FontMap["24"], () => "Move Left", Color.LimeGreen, Color.Green)
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => "Move Left",
+                    Color.LimeGreen,
+                    Color.Green
+                )
             )
             {
                 IsPositionAbsolute = true,
@@ -196,7 +238,12 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16, 144),
-                new UiTextElement(game.FontMap["24"], () => "Move Right", Color.LimeGreen, Color.Green)
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => "Move Right",
+                    Color.LimeGreen,
+                    Color.Green
+                )
             )
             {
                 IsPositionAbsolute = true,

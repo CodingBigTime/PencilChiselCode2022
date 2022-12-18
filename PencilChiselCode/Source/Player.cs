@@ -61,10 +61,10 @@ public class Player
                 new Particle(
                     3,
                     Position
-                        + Vector2.UnitY * Utils.RANDOM.NextSingle(-10, 10)
-                        + Vector2.UnitX * Utils.RANDOM.NextSingle(-10, 10),
-                    Vector2.UnitY * Utils.RANDOM.NextSingle(-5, 5)
-                        - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                        + Vector2.UnitY * Utils.Random.NextSingle(-10, 10)
+                        + Vector2.UnitX * Utils.Random.NextSingle(-10, 10),
+                    Vector2.UnitY * Utils.Random.NextSingle(-5, 5)
+                        - Vector2.UnitX * Utils.Random.NextSingle(-5, 5),
                     time => (3 - time) / 3 * 1F,
                     _ => Color.LightBlue
                 ),
@@ -186,10 +186,10 @@ public class Player
             Math.Abs(_speed.Y) / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
         _speed.X = Math.Clamp(_speed.X, -_maxSpeed * biasX, _maxSpeed * biasX);
         _speed.Y = Math.Clamp(_speed.Y, -_maxSpeed * biasY, _maxSpeed * biasY);
-        Position = new(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
+        Position = new Vector2(Position.X + _speed.X * delta, Position.Y + _speed.Y * delta);
 
         if (
-            _state.Game.Controls.JustPressed(ControlKeys.FEED)
+            _state.Game.Controls.JustPressed(ControlKeys.Feed)
             && Vector2.Distance(Companion.Position, Position) <= 100
             && _state.Player.Inventory[PickupableTypes.BerryBush] > 0
         )
@@ -233,7 +233,7 @@ public class Player
         }
 
         if (
-            _state.Game.Controls.JustPressed(ControlKeys.REFUEL)
+            _state.Game.Controls.JustPressed(ControlKeys.Refuel)
             && nearestCampfire != null
             && Inventory[PickupableTypes.Twig] > 0
         )
@@ -260,7 +260,7 @@ public class Player
 
         _popupButtons.Values.ToList().ForEach(button => button?.Update(gameTime));
 
-        if (Game.Controls.JustPressed(ControlKeys.COLLECT) && nearestPickupable != null)
+        if (Game.Controls.JustPressed(ControlKeys.Collect) && nearestPickupable != null)
         {
             ++Inventory[nearestPickupable.Type];
             nearestPickupable.OnPickup();
