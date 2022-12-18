@@ -12,7 +12,7 @@ public abstract class Button : UiElement
     protected readonly SoundEffect ReleaseSound;
     protected readonly Action Action;
 
-    private protected Button(Action action, SoundEffect pressSound, SoundEffect releaseSound)
+    protected Button(Action action, SoundEffect pressSound, SoundEffect releaseSound)
     {
         Action = action;
         PressSound = pressSound;
