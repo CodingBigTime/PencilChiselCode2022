@@ -1,96 +1,71 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using PencilChiselCode.Source.GameStates;
+using Microsoft.Xna.Framework.Audio;
 
 namespace PencilChiselCode.Source.GUI;
 
-public class Button : IUiElement
+public abstract class Button : UiElement
 {
-    public Texture2D Texture { get; set; }
+    public bool IsHighlighted { get; private set; }
+    public bool IsPressed { get; protected set; }
+    protected readonly SoundEffect PressSound;
+    protected readonly SoundEffect ReleaseSound;
+    protected readonly Action Action;
 
-    public Vector2 Size() => new(Texture.Width, Texture.Height);
-
-    private readonly Texture2D _normalTexture;
-    private readonly Texture2D _hoveredTexture;
-    private readonly Texture2D _pressedTexture;
-    private readonly Action _action;
-    private readonly BonfireGameState _state;
-    private Bonfire Game => _state.Game;
-
-    public Button(
-        BonfireGameState state,
-        Texture2D normal,
-        Texture2D hovered,
-        Texture2D pressed,
-        Action action
-    )
+    protected Button(Action action, SoundEffect pressSound, SoundEffect releaseSound)
     {
-        _state = state;
-        _normalTexture = normal;
-        _hoveredTexture = hovered;
-        _pressedTexture = pressed;
-        Texture = normal;
-        _action = action;
+        Action = action;
+        PressSound = pressSound;
+        ReleaseSound = releaseSound;
     }
 
-    public void Draw(SpriteBatch spriteBatch, Box parent) =>
-        spriteBatch.Draw(
-            Texture,
-            parent.Position,
-            null,
-            Color.White,
-            0F,
-            Vector2.Zero,
-            parent.Scale,
-            SpriteEffects.None,
-            0F
-        );
-
-    public void Update(GameTime gameTime, Box parent)
+    public override void Update(GameTime gameTime, Box parent)
     {
-        var mouseState = Mouse.GetState();
-        var inside = Utils.IsPointInRectangle(
-            mouseState.Position.ToVector2(),
-            new Rectangle(parent.Position.ToPoint(), parent.Size().ToPoint())
-        );
-        var released = mouseState.LeftButton == ButtonState.Released;
-
-        var pressSound = Game.SoundMap["button_press"];
-        var releaseSound = Game.SoundMap["button_release"];
-
-        if (inside)
+        var mouse = parent.Game.MouseValues;
+        var region = new Rectangle(parent.Position.ToPoint(), parent.Size().ToPoint());
+        IsHighlighted = Utils.IsPointInRectangle(mouse.CurrentState.Position.ToVector2(), region);
+        if (mouse.JustExited(region))
         {
-            if (released)
-            {
-                if (Texture == _pressedTexture)
-                {
-                    releaseSound.Play();
-                    Click();
-                }
-
-                Texture = _hoveredTexture;
-            }
-            else if (Texture == _hoveredTexture)
-            {
-                pressSound.Play();
-                Texture = _pressedTexture;
-            }
+            OnUnhovered(parent);
         }
-        else
+        else if (mouse.JustEntered(region))
         {
-            if (Texture == _pressedTexture)
-            {
-                releaseSound.Play();
-            }
+            OnHovered(parent);
+        }
 
-            Texture = _normalTexture;
+        if (mouse.JustPressed(MouseButton.Left))
+        {
+            OnClick(parent, MouseButton.Left);
+        }
+        else if (mouse.JustReleased(MouseButton.Left))
+        {
+            OnRelease(parent, MouseButton.Left);
         }
     }
 
-    private void Click()
+    public override void OnUnhovered(Box parent)
     {
-        _action.Invoke();
+        if (IsPressed)
+            ReleaseSound.Play();
+        IsPressed = false;
     }
+
+    public override void OnClick(Box parent, MouseButton button)
+    {
+        if (button != MouseButton.Left || !IsHighlighted)
+            return;
+        PressSound.Play();
+        IsPressed = true;
+    }
+
+    public override void OnRelease(Box parent, MouseButton button)
+    {
+        if (button != MouseButton.Left || !IsPressed || !IsHighlighted)
+            return;
+        ReleaseSound.Play();
+        Click();
+        IsPressed = false;
+    }
+
+    public void Click() => Action.Invoke();
 }

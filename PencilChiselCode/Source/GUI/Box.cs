@@ -9,7 +9,7 @@ namespace PencilChiselCode.Source.GUI;
 public class Box
 {
     public readonly List<Box> Children = new();
-    public IUiElement DrawableElement;
+    public UiElement DrawableElement;
     public Vector2 Position { get; set; }
     public Func<Vector2> Size { get; set; }
     public Vector2 Scale { get; set; } = new(1F);
@@ -20,23 +20,24 @@ public class Box
     public Alignments SelfAlignment { get; set; } = Alignments.TopLeft;
     public Func<bool> IsVisible { get; set; } = () => true;
     public Color DebugColor = Color.LightGreen;
-    private readonly Bonfire _game;
+    public Color InvisibleDebugColor = Color.OrangeRed;
+    public readonly Bonfire Game;
 
     public Box(Bonfire game, Vector2 position, Func<Vector2> size)
     {
-        _game = game;
+        Game = game;
         Position = position;
         Size = size;
     }
 
     public Box(Bonfire game, Vector2 position, Vector2 size) : this(game, position, () => size) { }
 
-    public Box(Bonfire game, Vector2 position, IUiElement drawableElement)
+    public Box(Bonfire game, Vector2 position, UiElement drawableElement)
         : this(game, position, drawableElement.Size) => DrawableElement = drawableElement;
 
     public Box(Box parent, Box child)
     {
-        _game = child._game;
+        Game = child.Game;
         Position = child.Position * (child.IsPositionAbsolute ? new(1F) : parent.AdjustedSize);
         Size = child.IsSizeAbsolute ? child.Size : () => parent.Size() * child.Size();
         Children = child.Children;
@@ -45,23 +46,34 @@ public class Box
         IsSizeAbsolute = child.IsSizeAbsolute;
         BoxAlignment = child.BoxAlignment;
         SelfAlignment = child.SelfAlignment;
-        IsVisible = child.IsVisible;
+        IsVisible = () => child.IsVisible() && parent.IsVisible();
         Scale = child.Scale;
     }
 
     public void AddChild(Box child) => Children.Add(child);
 
+    public void AddChild(params Box[] children) => Children.AddRange(children);
+
     public void Draw(SpriteBatch spriteBatch)
     {
-        if (IsVisible())
+        var visible = IsVisible();
+        if (visible)
         {
             DrawableElement?.Draw(spriteBatch, this);
+        }
+
+        if (visible || Game.DebugMode == 2)
+        {
             Children.ForEach(box => box.Draw(spriteBatch, this));
         }
 
-        if (_game.DebugMode)
+        if (Game.DebugMode == 2 || (Game.DebugMode == 1 && visible))
         {
-            spriteBatch.DrawRectangle(Position, AdjustedSize, DebugColor);
+            spriteBatch.DrawRectangle(
+                Position,
+                AdjustedSize,
+                visible ? DebugColor : InvisibleDebugColor
+            );
         }
     }
 
@@ -75,7 +87,7 @@ public class Box
 
     public void Draw(SpriteBatch spriteBatch, Box parent)
     {
-        if (!IsVisible())
+        if (!IsVisible() && Game.DebugMode != 2)
             return;
         GetAbsolute(parent).Draw(spriteBatch);
     }
@@ -92,7 +104,7 @@ public class Box
         var abs = new Box(parent, this);
         abs.Position = BoxAlignment switch
         {
-            Alignments.TopLeft => abs.Position,
+            Alignments.TopLeft => parent.Position + abs.Position,
             Alignments.TopCenter
                 => parent.Position
                     + new Vector2(parent.AdjustedSize.X / 2 - abs.Position.X, abs.Position.Y),
@@ -109,13 +121,14 @@ public class Box
                         parent.AdjustedSize.Y / 2 - abs.Position.Y
                     ),
             Alignments.MiddleRight
-                => abs.Position
+                => parent.Position
                     + new Vector2(
                         parent.AdjustedSize.X - abs.Position.X,
                         parent.AdjustedSize.Y / 2 - abs.Position.Y
                     ),
             Alignments.BottomLeft
-                => abs.Position + new Vector2(0, parent.AdjustedSize.Y - abs.Position.Y),
+                => parent.Position
+                    + new Vector2(abs.Position.X, parent.AdjustedSize.Y - abs.Position.Y),
             Alignments.BottomCenter
                 => parent.Position
                     + new Vector2(
@@ -123,7 +136,7 @@ public class Box
                         parent.AdjustedSize.Y - abs.Position.Y
                     ),
             Alignments.BottomRight
-                => abs.Position
+                => parent.Position
                     + new Vector2(
                         parent.AdjustedSize.X - abs.Position.X,
                         parent.AdjustedSize.Y - abs.Position.Y
@@ -139,9 +152,9 @@ public class Box
             Alignments.MiddleCenter
                 => new Vector2(-abs.AdjustedSize.X / 2, -abs.AdjustedSize.Y / 2),
             Alignments.MiddleRight => new Vector2(-abs.AdjustedSize.X, -abs.AdjustedSize.Y / 2),
-            Alignments.BottomLeft => new Vector2(0, abs.AdjustedSize.Y),
+            Alignments.BottomLeft => new Vector2(0, -abs.AdjustedSize.Y),
             Alignments.BottomCenter => new Vector2(-abs.AdjustedSize.X / 2, -abs.AdjustedSize.Y),
-            Alignments.BottomRight => new Vector2(-abs.AdjustedSize.X, abs.AdjustedSize.Y),
+            Alignments.BottomRight => new Vector2(-abs.AdjustedSize.X, -abs.AdjustedSize.Y),
             _ => Vector2.Zero
         };
         return abs;

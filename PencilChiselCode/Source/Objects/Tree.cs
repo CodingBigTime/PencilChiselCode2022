@@ -54,7 +54,7 @@ public class Tree : GroundEntity
             .RepeatForever(repeatDelay: 2f)
             .AutoReverse()
             .Easing(EasingFunctions.SineInOut);
-        var repeat = Utils.RANDOM.Next(24);
+        var repeat = Utils.Random.Next(24);
         for (var i = 0; i < repeat; ++i)
         {
             _lightSizeTweener.Update(1F);

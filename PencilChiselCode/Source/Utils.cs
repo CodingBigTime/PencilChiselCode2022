@@ -8,31 +8,19 @@ namespace PencilChiselCode.Source;
 
 public static class Utils
 {
-    public static readonly Random RANDOM = new();
+    public static readonly Random Random = new();
 
     public static Vector2 GetCenterStartCoords(Vector2 drawableSize, Vector2 containerSize) =>
         new((containerSize.X - drawableSize.X) / 2, (containerSize.Y - drawableSize.Y) / 2);
 
     public static bool IsPointInRectangle(Vector2 point, Rectangle rectangle) =>
-        point.X >= rectangle.X
-        && point.X <= rectangle.X + rectangle.Width
-        && point.Y >= rectangle.Y
-        && point.Y <= rectangle.Y + rectangle.Height;
+        rectangle.Contains(point);
 
     public static bool IsPointInRectangle(
         Vector2 point,
         Vector2 rectanglePosition,
         Vector2 rectangleSize
-    ) =>
-        IsPointInRectangle(
-            point,
-            new Rectangle(
-                (int)rectanglePosition.X,
-                (int)rectanglePosition.Y,
-                (int)rectangleSize.X,
-                (int)rectangleSize.Y
-            )
-        );
+    ) => new Rectangle(rectanglePosition.ToPoint(), rectangleSize.ToPoint()).Contains(point);
 
     public static bool Intersects(Rectangle rectangle1, Rectangle rectangle2) =>
         rectangle1.Intersects(rectangle2);

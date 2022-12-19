@@ -29,34 +29,34 @@ public class Controls
 
     public Controls()
     {
-        KeyBindings.Add(ControlKeys.MOVE_UP, Keys.W);
-        KeyBindings.Add(ControlKeys.MOVE_DOWN, Keys.S);
-        KeyBindings.Add(ControlKeys.MOVE_LEFT, Keys.A);
-        KeyBindings.Add(ControlKeys.MOVE_RIGHT, Keys.D);
-        KeyBindings.Add(ControlKeys.STOP_FOLLOWER, Keys.Space);
-        KeyBindings.Add(ControlKeys.PAUSE, Keys.Escape);
-        KeyBindings.Add(ControlKeys.DEBUG, Keys.F3);
-        KeyBindings.Add(ControlKeys.FEED, Keys.Q);
-        KeyBindings.Add(ControlKeys.COLLECT, Keys.E);
-        KeyBindings.Add(ControlKeys.REFUEL, Keys.F);
-        KeyBindings.Add(ControlKeys.START_FIRE, Keys.X);
-        KeyBindings.Add(ControlKeys.START, Keys.Space);
+        KeyBindings.Add(ControlKeys.MoveUp, Keys.W);
+        KeyBindings.Add(ControlKeys.MoveDown, Keys.S);
+        KeyBindings.Add(ControlKeys.MoveLeft, Keys.A);
+        KeyBindings.Add(ControlKeys.MoveRight, Keys.D);
+        KeyBindings.Add(ControlKeys.StopFollower, Keys.Space);
+        KeyBindings.Add(ControlKeys.Pause, Keys.Escape);
+        KeyBindings.Add(ControlKeys.Debug, Keys.F3);
+        KeyBindings.Add(ControlKeys.Feed, Keys.Q);
+        KeyBindings.Add(ControlKeys.Collect, Keys.E);
+        KeyBindings.Add(ControlKeys.Refuel, Keys.F);
+        KeyBindings.Add(ControlKeys.StartFire, Keys.X);
+        KeyBindings.Add(ControlKeys.Start, Keys.Space);
 
-        ControllerBindings.Add(ControlKeys.STOP_FOLLOWER, Buttons.LeftShoulder);
-        ControllerBindings.Add(ControlKeys.PAUSE, Buttons.Start);
-        ControllerBindings.Add(ControlKeys.FEED, Buttons.X);
-        ControllerBindings.Add(ControlKeys.COLLECT, Buttons.A);
-        ControllerBindings.Add(ControlKeys.REFUEL, Buttons.B);
-        ControllerBindings.Add(ControlKeys.START_FIRE, Buttons.Y);
-        ControllerBindings.Add(ControlKeys.START, Buttons.A);
+        ControllerBindings.Add(ControlKeys.StopFollower, Buttons.LeftShoulder);
+        ControllerBindings.Add(ControlKeys.Pause, Buttons.Start);
+        ControllerBindings.Add(ControlKeys.Feed, Buttons.X);
+        ControllerBindings.Add(ControlKeys.Collect, Buttons.A);
+        ControllerBindings.Add(ControlKeys.Refuel, Buttons.B);
+        ControllerBindings.Add(ControlKeys.StartFire, Buttons.Y);
+        ControllerBindings.Add(ControlKeys.Start, Buttons.A);
     }
 
     public Vector2 GetMovement()
     {
-        var left = IsPressed(ControlKeys.MOVE_LEFT);
-        var up = IsPressed(ControlKeys.MOVE_UP);
-        var down = IsPressed(ControlKeys.MOVE_DOWN);
-        var right = IsPressed(ControlKeys.MOVE_RIGHT);
+        var left = IsPressed(ControlKeys.MoveLeft);
+        var up = IsPressed(ControlKeys.MoveUp);
+        var down = IsPressed(ControlKeys.MoveDown);
+        var right = IsPressed(ControlKeys.MoveRight);
         var mx =
             GamepadState.ThumbSticks.Left.X != 0
                 ? GamepadState.ThumbSticks.Left.X

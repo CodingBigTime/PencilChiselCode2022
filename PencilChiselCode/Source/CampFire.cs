@@ -52,12 +52,12 @@ public class CampFire : GroundEntity
         _particleGenerator = new ParticleGenerator(
             () =>
                 new Particle(
-                    Utils.RANDOM.NextSingle(1, 2),
+                    Utils.Random.NextSingle(1, 2),
                     Position
-                        + Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10)
-                        + Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
-                    Vector2.UnitY * Utils.RANDOM.NextSingle(0, -10)
-                        - Vector2.UnitX * Utils.RANDOM.NextSingle(-5, 5),
+                        + Vector2.UnitY * Utils.Random.NextSingle(0, -10)
+                        + Vector2.UnitX * Utils.Random.NextSingle(-5, 5),
+                    Vector2.UnitY * Utils.Random.NextSingle(0, -10)
+                        - Vector2.UnitX * Utils.Random.NextSingle(-5, 5),
                     time => time,
                     _ => IsLow() ? Color.Black : Color.Red
                 ),
