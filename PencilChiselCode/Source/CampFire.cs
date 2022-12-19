@@ -46,13 +46,13 @@ public class CampFire : GroundEntity
             .WithTextures(attributeTexture, fireplaceAttributeTexture)
             .WithScale(0.5F)
             .WithOffset(attributeTexture.Bounds.Center.ToVector2() + new Vector2(30, 5))
-            .WithChangeRate(-5F)
+            .WithChangeRate(-10F)
             .Build();
         Game.Penumbra.Lights.Add(PointLight);
         _particleGenerator = new ParticleGenerator(
             () =>
                 new Particle(
-                    Utils.Random.NextSingle(1, 2),
+                    Utils.Random.NextSingle(1, 4),
                     Position
                         + Vector2.UnitY * Utils.Random.NextSingle(0, -10)
                         + Vector2.UnitX * Utils.Random.NextSingle(-5, 5),

@@ -17,7 +17,7 @@ public class IngameState : BonfireGameState
 {
     public Player Player { get; private set; }
     public Companion Companion;
-    private float _cameraSpeed = 10F;
+    private float _cameraSpeed = 20F;
     private Inventory _inventory;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
@@ -29,12 +29,12 @@ public class IngameState : BonfireGameState
     private const int TwigCount = 14;
     private const int BushCount = 14;
     private const int TreeCount = 36;
+    private const int GlowFlowerCount = 10;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "" };
     public const float MinimumFollowerPlayerDistance = 100F;
     private bool _deathState;
-    private const int GlowFlowerCount = 10;
     private Song _song;
     private float _score;
     private const int SpawnOffset = 128;
@@ -118,7 +118,11 @@ public class IngameState : BonfireGameState
             Game.TextureMap["menu_button_pressed"],
             Game.SoundMap["button_press"],
             Game.SoundMap["button_release"],
-            () => ScreenManager.LoadScreen(new MenuState(Game))
+            () =>
+                ScreenManager.LoadScreen(
+                    new MenuState(Game),
+                    new FadeTransition(GraphicsDevice, Color.Black, 0.5F)
+                )
         );
         var restartButton = new TexturedButton(
             Game.TextureMap["restart_button_normal"],
@@ -131,7 +135,7 @@ public class IngameState : BonfireGameState
                 Cleanup();
                 Game.ScreenManager.LoadScreen(
                     new IngameState(Game),
-                    new FadeTransition(Game.GraphicsDevice, Color.Black)
+                    new FadeTransition(Game.GraphicsDevice, Color.Black, 0.5F)
                 );
                 Game.ResetPenumbra();
             }
@@ -217,7 +221,7 @@ public class IngameState : BonfireGameState
         );
         RootBox.AddChild(textInfoBox);
 
-        Companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 50F);
+        Companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 100F);
         Player = new Player(this, new Vector2(96, Game.GetWindowHeight() / 2F));
 
         Campfires.Add(new CampFire(this, new Vector2(500, 400))); // TEMP
@@ -231,7 +235,7 @@ public class IngameState : BonfireGameState
         _darknessParticles = new ParticleGenerator(
             () =>
                 new Particle(
-                    2F,
+                    4F,
                     new(0, Utils.Random.Next(0, Game.Height)),
                     new(Utils.Random.Next(0, 20), Utils.Random.Next(-10, 10)),
                     time => 2 + time,
@@ -377,7 +381,7 @@ public class IngameState : BonfireGameState
 
         if (_deathState || _pauseState)
             return;
-        if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 500)
+        if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 250)
         {
             SpawnRandomTwig(
                 Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,

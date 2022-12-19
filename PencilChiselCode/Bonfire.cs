@@ -63,7 +63,11 @@ public class Bonfire : Game
         Penumbra.Initialize();
         Window.Title = "Bonfire";
         base.Initialize();
-        ScreenManager.LoadScreen(new MenuState(this));
+        var menuState = new MenuState(this);
+        ScreenManager.LoadScreen(
+            menuState,
+            new FadeTransition(GraphicsDevice, menuState.BgColor)
+        );
     }
 
     protected override void LoadContent()
@@ -214,7 +218,7 @@ public class Bonfire : Game
     {
         ScreenManager.LoadScreen(
             new IngameState(this),
-            new FadeTransition(GraphicsDevice, Color.Black)
+            new FadeTransition(GraphicsDevice, Color.Black, 0.5F)
         );
         ResetPenumbra();
     }
@@ -235,7 +239,6 @@ public class Bonfire : Game
         ScreenManager.Update(gameTime);
         MouseValues.Update();
         Controls.Update();
-        ScreenManager.Update(gameTime);
         base.Update(gameTime);
     }
 

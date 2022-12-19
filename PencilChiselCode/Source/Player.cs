@@ -39,9 +39,9 @@ public class Player
     private const int PointLightScale = 300;
     private const int SpotLightScale = 400;
     private readonly float _scale = 2F;
-    private readonly float _maxSpeed = 80F;
-    private readonly float _acceleration = 1000F;
-    private readonly float _friction = 2.75F;
+    private readonly float _maxSpeed = 160F;
+    private readonly float _acceleration = 2000F;
+    private readonly float _friction = 5.5F;
     private readonly Dictionary<string, PopupButton> _popupButtons = new();
     public readonly Dictionary<PickupableTypes, uint> Inventory = new();
     private readonly ParticleGenerator _particleGenerator;
@@ -59,7 +59,7 @@ public class Player
         _particleGenerator = new ParticleGenerator(
             () =>
                 new Particle(
-                    3,
+                    6,
                     Position
                         + Vector2.UnitY * Utils.Random.NextSingle(-10, 10)
                         + Vector2.UnitX * Utils.Random.NextSingle(-10, 10),

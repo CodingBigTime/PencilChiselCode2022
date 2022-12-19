@@ -45,7 +45,7 @@ public class Companion
             .WithTextures(attributeTexture, comfyAttributeTexture)
             .WithScale(3F)
             .WithOffset(attributeTexture.Bounds.Center.ToVector2())
-            .WithChangeRate(-2F)
+            .WithChangeRate(-4F)
             .Build();
     }
 
@@ -110,18 +110,18 @@ public class Companion
 
         if (Position.X < _state.Camera.Position.X + IngameState.DarknessEndOffset)
         {
-            ComfyMeter.Value -= 24F * gameTime.GetElapsedSeconds();
+            ComfyMeter.Value -= 48F * gameTime.GetElapsedSeconds();
         }
         else if (_state.Campfires.Any(campfire => campfire.IsInRange(Position)))
         {
-            ComfyMeter.Value += 8F * gameTime.GetElapsedSeconds();
+            ComfyMeter.Value += 16F * gameTime.GetElapsedSeconds();
         }
         else if (
             Vector2.Distance(_state.Player.Position, Position)
             > IngameState.MinimumFollowerPlayerDistance
         )
         {
-            ComfyMeter.Value -= 4F * gameTime.GetElapsedSeconds();
+            ComfyMeter.Value -= 8F * gameTime.GetElapsedSeconds();
         }
     }
 
