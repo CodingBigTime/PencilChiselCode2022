@@ -51,14 +51,14 @@ public class Checkbox : UiElement
         _uncheckedElement = uncheckedElement;
     }
 
-    public override void Draw(SpriteBatch spriteBatch, Box parent) =>
+    public override void Draw(SpriteBatch spriteBatch, AbsoluteBox parent) =>
         CheckboxElement.Draw(spriteBatch, parent);
 
-    public override void Update(GameTime gameTime, Box parent)
+    public override void Update(GameTime gameTime, AbsoluteBox parent)
     {
         base.Update(gameTime, parent);
         var mouse = parent.Game.MouseValues;
-        var region = new Rectangle(parent.Position.ToPoint(), parent.Size().ToPoint());
+        var region = new Rectangle(parent.Position.ToPoint(), parent.Size.ToPoint());
         var isMouseInside = Utils.IsPointInRectangle(
             mouse.CurrentState.Position.ToVector2(),
             region
@@ -72,7 +72,7 @@ public class Checkbox : UiElement
         }
     }
 
-    public override void OnClick(Box parent, MouseButton button)
+    public override void OnClick(AbsoluteBox parent, MouseButton button)
     {
         IsChecked = !IsChecked;
         if (IsChecked)

@@ -259,7 +259,7 @@ public class Bonfire : Game
 
     public Vector2 GetScreenDimensions() => new(GetScreenWidth(), GetScreenHeight());
 
-    public Box GetRootBox() => new(this, new Vector2(0), GetWindowDimensions);
+    public AbsoluteBox GetRootBox() => new(this, new Vector2(0), GetWindowDimensions);
 
     public void SetVSync(bool enabled)
     {

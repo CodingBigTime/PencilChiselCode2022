@@ -27,7 +27,7 @@ public class UiTextElement : UiElement
         OutlineColor = outlineColor ?? Color.Black;
     }
 
-    public override void Draw(SpriteBatch spriteBatch, Box parent)
+    public override void Draw(SpriteBatch spriteBatch, AbsoluteBox parent)
     {
         if (OutlineColor.HasValue)
         {
