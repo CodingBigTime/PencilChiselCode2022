@@ -8,6 +8,8 @@ public static class Menus
     public static Box GetSettingsMenu(Bonfire game, Action onDoneClick)
     {
         var page = 0;
+        var vSync = game.IsVSyncEnabled;
+        var windowMode = game.GetWindowMode();
         const float categoriesSize = 0.25F;
         var settingsMenu = new Box(game, new Vector2(0), new Vector2(0.66F))
         {
@@ -24,7 +26,7 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16),
-                new TextButton(
+                new Button(
                     new UiTextElement(game.FontMap["32"], () => "Video", Color.White, Color.Black),
                     new UiTextElement(game.FontMap["32"], () => "Video", Color.Red, Color.Black),
                     new UiTextElement(game.FontMap["32"], () => "Video", Color.Green, Color.Black),
@@ -40,7 +42,7 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16, 64),
-                new TextButton(
+                new Button(
                     new UiTextElement(game.FontMap["32"], () => "Audio", Color.White, Color.Black),
                     new UiTextElement(game.FontMap["32"], () => "Audio", Color.Red, Color.Black),
                     new UiTextElement(game.FontMap["32"], () => "Audio", Color.Green, Color.Black),
@@ -56,7 +58,7 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16, 112),
-                new TextButton(
+                new Button(
                     new UiTextElement(
                         game.FontMap["32"],
                         () => "Controls",
@@ -82,14 +84,18 @@ public static class Menus
             new Box(
                 game,
                 new Vector2(16),
-                new TextButton(
+                new Button(
                     new UiTextElement(game.FontMap["32"], () => "Done", Color.White, Color.Black),
                     new UiTextElement(game.FontMap["32"], () => "Done", Color.Red, Color.Black),
                     new UiTextElement(game.FontMap["32"], () => "Done", Color.Green, Color.Black),
                     game.SoundMap["button_press"],
                     game.SoundMap["button_release"],
-                    onDoneClick
-                )
+                    () =>
+                    {
+                        game.SetVSync(vSync);
+                        game.SetWindowMode(windowMode);
+                        onDoneClick();
+                    })
             )
             {
                 IsPositionAbsolute = true,
@@ -109,6 +115,85 @@ public static class Menus
             SelfAlignment = Alignments.MiddleLeft,
             IsVisible = () => page == 0
         };
+        var vSyncCheckbox = new Box(
+            game,
+            Vector2.Zero,
+            new Checkbox(
+                new UiTextureElement(game.TextureMap["checkbox_selected"]) { Color = Color.Salmon },
+                new UiTextureElement(game.TextureMap["checkbox_empty"]) { Color = Color.Red },
+                game.SoundMap["button_release"],
+                game.SoundMap["button_press"],
+                enabled => vSync = enabled,
+                game.IsVSyncEnabled
+            )
+        )
+        {
+            IsPositionAbsolute = true,
+            IsSizeAbsolute = true,
+            BoxAlignment = Alignments.MiddleLeft,
+            SelfAlignment = Alignments.MiddleLeft
+        };
+        var vSyncText = new Box(
+            game,
+            new Vector2(vSyncCheckbox.Size().X + 4, 0),
+            new UiTextElement(
+                game.FontMap["24"],
+                () => $"VSync: {(vSync ? ": On" : ": Off")}",
+                Color.LimeGreen,
+                Color.Green
+            )
+        )
+        {
+            IsPositionAbsolute = true,
+            IsSizeAbsolute = true,
+            BoxAlignment = Alignments.MiddleLeft,
+            SelfAlignment = Alignments.MiddleLeft
+        };
+
+        var vSyncBox = new Box(
+            game,
+            new Vector2(16, 48),
+            new Vector2(vSyncText.Size().X + vSyncCheckbox.Size().X + 16, 48)
+        )
+        {
+            IsPositionAbsolute = true,
+            IsSizeAbsolute = true
+        };
+        vSyncBox.AddChild(vSyncCheckbox, vSyncText);
+
+        var fullscreenButton = new Box(
+            game,
+            new Vector2(16, 80),
+            new Button(
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"Fullscreen: {windowMode}",
+                    Color.White,
+                    Color.Black
+                ),
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"Fullscreen: {windowMode}",
+                    Color.GreenYellow,
+                    Color.Black
+                ),
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"Fullscreen: {windowMode}",
+                    Color.OliveDrab,
+                    Color.Black
+                ),
+                game.SoundMap["button_release"],
+                game.SoundMap["button_press"],
+                () => windowMode.ShiftWindowMode()
+            )
+        )
+        {
+            IsPositionAbsolute = true,
+            IsSizeAbsolute = true,
+            BoxAlignment = Alignments.MiddleLeft,
+            SelfAlignment = Alignments.MiddleLeft
+        };
         videoMenu.AddChild(
             new Box(
                 game,
@@ -124,15 +209,8 @@ public static class Menus
                 IsPositionAbsolute = true,
                 IsSizeAbsolute = true
             },
-            new Box(
-                game,
-                new Vector2(16, 48),
-                new UiTextElement(game.FontMap["24"], () => "VSync", Color.LimeGreen, Color.Green)
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            }
+            vSyncBox,
+            fullscreenButton
         );
         var soundMenu = new Box(
             game,

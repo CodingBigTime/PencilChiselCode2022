@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,6 +39,7 @@ public class Bonfire : Game
     public MouseValues MouseValues { get; set; }
 
     public int DebugMode { get; set; }
+    public bool IsVSyncEnabled => Graphics.SynchronizeWithVerticalRetrace;
 
     public Bonfire()
     {
@@ -64,10 +66,7 @@ public class Bonfire : Game
         Window.Title = "Bonfire";
         base.Initialize();
         var menuState = new MenuState(this);
-        ScreenManager.LoadScreen(
-            menuState,
-            new FadeTransition(GraphicsDevice, menuState.BgColor)
-        );
+        ScreenManager.LoadScreen(menuState, new FadeTransition(GraphicsDevice, menuState.BgColor));
     }
 
     protected override void LoadContent()
@@ -254,6 +253,57 @@ public class Bonfire : Game
     public int GetWindowHeight() => Window.ClientBounds.Height;
 
     public Vector2 GetWindowDimensions() => new(GetWindowWidth(), GetWindowHeight());
+    public int GetScreenWidth() => GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+
+    public int GetScreenHeight() => GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+    public Vector2 GetScreenDimensions() => new(GetScreenWidth(), GetScreenHeight());
 
     public Box GetRootBox() => new(this, new Vector2(0), GetWindowDimensions);
+
+    public void SetVSync(bool enabled)
+    {
+        Graphics.SynchronizeWithVerticalRetrace = enabled;
+        Graphics.ApplyChanges();
+    }
+
+    public WindowMode GetWindowMode()
+    {
+        if (Graphics.IsFullScreen)
+        {
+            return Window.IsBorderless ? WindowMode.BorderlessFullscreen : WindowMode.Fullscreen;
+        }
+        return WindowMode.Windowed;
+    }
+
+    public void SetWindowMode(WindowMode windowMode)
+    {
+        Debug.WriteLine(windowMode);
+        switch (windowMode)
+        {
+            case WindowMode.Fullscreen:
+                Graphics.PreferredBackBufferWidth = Width;
+                Graphics.PreferredBackBufferHeight = Height;
+                Graphics.IsFullScreen = true;
+                Graphics.ApplyChanges();
+                Window.IsBorderless = false;
+                break;
+            case WindowMode.Windowed:
+                Graphics.PreferredBackBufferWidth = Width;
+                Graphics.PreferredBackBufferHeight = Height;
+                Graphics.IsFullScreen = false;
+                Graphics.ApplyChanges();
+                Window.IsBorderless = false;
+                var ayo = GetScreenDimensions();
+                Window.Position = (GetScreenDimensions() / 2 - GetWindowDimensions() / 2).ToPoint();
+                break;
+            case WindowMode.BorderlessFullscreen:
+                Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+                Graphics.ApplyChanges();
+                Window.Position = new Point(0, 0);
+                Window.IsBorderless = true;
+                break;
+        }
+    }
 }

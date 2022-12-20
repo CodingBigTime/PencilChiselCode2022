@@ -104,7 +104,7 @@ public class IngameState : BonfireGameState
             );
         }
 
-        var resumeButton = new TexturedButton(
+        var resumeButton = new Button(
             Game.TextureMap["resume_button_normal"],
             Game.TextureMap["resume_button_hover"],
             Game.TextureMap["resume_button_pressed"],
@@ -112,7 +112,7 @@ public class IngameState : BonfireGameState
             Game.SoundMap["button_release"],
             () => _pauseState = false
         );
-        var menuButton = new TexturedButton(
+        var menuButton = new Button(
             Game.TextureMap["menu_button_normal"],
             Game.TextureMap["menu_button_hover"],
             Game.TextureMap["menu_button_pressed"],
@@ -124,7 +124,7 @@ public class IngameState : BonfireGameState
                     new FadeTransition(GraphicsDevice, Color.Black, 0.5F)
                 )
         );
-        var restartButton = new TexturedButton(
+        var restartButton = new Button(
             Game.TextureMap["restart_button_normal"],
             Game.TextureMap["restart_button_hover"],
             Game.TextureMap["restart_button_pressed"],

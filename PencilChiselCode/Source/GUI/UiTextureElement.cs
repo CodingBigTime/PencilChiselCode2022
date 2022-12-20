@@ -5,16 +5,17 @@ namespace PencilChiselCode.Source.GUI;
 
 public class UiTextureElement : UiElement
 {
-    public override Vector2 Size() => new(_texture.Width, _texture.Height);
+    public override Vector2 Size() => new(Texture.Width, Texture.Height);
 
-    private readonly Texture2D _texture;
+    public Texture2D Texture { get; protected set; }
+
     public Color Color { get; set; } = Color.White;
 
-    public UiTextureElement(Texture2D texture) => _texture = texture;
+    public UiTextureElement(Texture2D texture) => Texture = texture;
 
     public override void Draw(SpriteBatch spriteBatch, Box parent) =>
         spriteBatch.Draw(
-            _texture,
+            Texture,
             parent.Position,
             null,
             Color,
