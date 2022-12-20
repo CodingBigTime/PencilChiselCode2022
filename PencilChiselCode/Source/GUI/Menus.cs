@@ -5,249 +5,177 @@ namespace PencilChiselCode.Source.GUI;
 
 public static class Menus
 {
-    public static Box GetSettingsMenu(Bonfire game, Action onDoneClick)
+    public static RelativeBox GetSettingsMenu(Bonfire game, Action onDoneClick)
     {
         var page = 0;
         const float categoriesSize = 0.25F;
-        var settingsMenu = new Box(game, new Vector2(0), new Vector2(0.66F))
+        var settingsMenu = new RelativeBox(game, 0, 0.66F)
         {
-            IsPositionAbsolute = true,
             BoxAlignment = Alignments.MiddleCenter,
             SelfAlignment = Alignments.MiddleCenter
         };
-        var menuCategories = new Box(game, new Vector2(0), new Vector2(categoriesSize, 1F))
+        var menuCategories = new RelativeBox(game, 0, (categoriesSize, 1F))
         {
             BoxAlignment = Alignments.MiddleLeft,
             SelfAlignment = Alignments.MiddleLeft
         };
+        var videoElement = new TextButton(
+            new UiTextElement(game.FontMap["32"], () => "Video", Color.White, Color.Black),
+            new UiTextElement(game.FontMap["32"], () => "Video", Color.Red, Color.Black),
+            new UiTextElement(game.FontMap["32"], () => "Video", Color.Green, Color.Black),
+            game.SoundMap["button_press"],
+            game.SoundMap["button_release"],
+            () => page = 0
+        );
+        var audioElement = new TextButton(
+            new UiTextElement(game.FontMap["32"], () => "Audio", Color.White, Color.Black),
+            new UiTextElement(game.FontMap["32"], () => "Audio", Color.Red, Color.Black),
+            new UiTextElement(game.FontMap["32"], () => "Audio", Color.Green, Color.Black),
+            game.SoundMap["button_press"],
+            game.SoundMap["button_release"],
+            () => page = 1
+        );
+        var controlsElement = new TextButton(
+            new UiTextElement(game.FontMap["32"], () => "Controls", Color.White, Color.Black),
+            new UiTextElement(game.FontMap["32"], () => "Controls", Color.Red, Color.Black),
+            new UiTextElement(game.FontMap["32"], () => "Controls", Color.Green, Color.Black),
+            game.SoundMap["button_press"],
+            game.SoundMap["button_release"],
+            () => page = 2
+        );
+        var doneElement = new TextButton(
+            new UiTextElement(game.FontMap["32"], () => "Done", Color.White, Color.Black),
+            new UiTextElement(game.FontMap["32"], () => "Done", Color.Red, Color.Black),
+            new UiTextElement(game.FontMap["32"], () => "Done", Color.Green, Color.Black),
+            game.SoundMap["button_press"],
+            game.SoundMap["button_release"],
+            onDoneClick
+        );
         menuCategories.AddChild(
-            new Box(
-                game,
-                new Vector2(16),
-                new TextButton(
-                    new UiTextElement(game.FontMap["32"], () => "Video", Color.White, Color.Black),
-                    new UiTextElement(game.FontMap["32"], () => "Video", Color.Red, Color.Black),
-                    new UiTextElement(game.FontMap["32"], () => "Video", Color.Green, Color.Black),
-                    game.SoundMap["button_press"],
-                    game.SoundMap["button_release"],
-                    () => page = 0
-                )
-            )
+            new RelativeBox(game, 16, videoElement.Size()) { DrawableElement = videoElement },
+            new RelativeBox(game, (16, 64), audioElement.Size()) { DrawableElement = audioElement },
+            new RelativeBox(game, (16, 112), controlsElement.Size())
             {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
+                DrawableElement = controlsElement
             },
-            new Box(
-                game,
-                new Vector2(16, 64),
-                new TextButton(
-                    new UiTextElement(game.FontMap["32"], () => "Audio", Color.White, Color.Black),
-                    new UiTextElement(game.FontMap["32"], () => "Audio", Color.Red, Color.Black),
-                    new UiTextElement(game.FontMap["32"], () => "Audio", Color.Green, Color.Black),
-                    game.SoundMap["button_press"],
-                    game.SoundMap["button_release"],
-                    () => page = 1
-                )
-            )
+            new RelativeBox(game, 16, doneElement.Size())
             {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            },
-            new Box(
-                game,
-                new Vector2(16, 112),
-                new TextButton(
-                    new UiTextElement(
-                        game.FontMap["32"],
-                        () => "Controls",
-                        Color.White,
-                        Color.Black
-                    ),
-                    new UiTextElement(game.FontMap["32"], () => "Controls", Color.Red, Color.Black),
-                    new UiTextElement(
-                        game.FontMap["32"],
-                        () => "Controls",
-                        Color.Green,
-                        Color.Black
-                    ),
-                    game.SoundMap["button_press"],
-                    game.SoundMap["button_release"],
-                    () => page = 2
-                )
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            },
-            new Box(
-                game,
-                new Vector2(16),
-                new TextButton(
-                    new UiTextElement(game.FontMap["32"], () => "Done", Color.White, Color.Black),
-                    new UiTextElement(game.FontMap["32"], () => "Done", Color.Red, Color.Black),
-                    new UiTextElement(game.FontMap["32"], () => "Done", Color.Green, Color.Black),
-                    game.SoundMap["button_press"],
-                    game.SoundMap["button_release"],
-                    onDoneClick
-                )
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true,
                 BoxAlignment = Alignments.BottomLeft,
-                SelfAlignment = Alignments.BottomLeft
+                SelfAlignment = Alignments.BottomLeft,
+                DrawableElement = doneElement
             }
         );
         settingsMenu.AddChild(menuCategories);
-        var videoMenu = new Box(
-            game,
-            new Vector2(categoriesSize, 0F),
-            new Vector2(1 - categoriesSize, 1F)
-        )
+        var videoMenu = new RelativeBox(game, (categoriesSize, 0F), (1F - categoriesSize, 1F))
         {
             BoxAlignment = Alignments.MiddleLeft,
             SelfAlignment = Alignments.MiddleLeft,
             IsVisible = () => page == 0
         };
-        videoMenu.AddChild(
-            new Box(
-                game,
-                new Vector2(16),
-                new UiTextElement(
-                    game.FontMap["24"],
-                    () => "Resolution",
-                    Color.LimeGreen,
-                    Color.Green
-                )
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            },
-            new Box(
-                game,
-                new Vector2(16, 48),
-                new UiTextElement(game.FontMap["24"], () => "VSync", Color.LimeGreen, Color.Green)
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            }
+        var resolutionElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "Resolution",
+            Color.LimeGreen,
+            Color.Green
         );
-        var soundMenu = new Box(
-            game,
-            new Vector2(categoriesSize, 0F),
-            new Vector2(1 - categoriesSize, 1F)
-        )
+        var vsyncElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "VSync",
+            Color.LimeGreen,
+            Color.Green
+        );
+        videoMenu.AddChild(
+            new RelativeBox(game, 16, resolutionElement.Size())
+            {
+                DrawableElement = resolutionElement
+            },
+            new RelativeBox(game, (16, 48), vsyncElement.Size()) { DrawableElement = vsyncElement }
+        );
+        var soundMenu = new RelativeBox(game, (categoriesSize, 0F), (1 - categoriesSize, 1F))
         {
             BoxAlignment = Alignments.MiddleLeft,
             SelfAlignment = Alignments.MiddleLeft,
             IsVisible = () => page == 1
         };
-        soundMenu.AddChild(
-            new Box(
-                game,
-                new Vector2(16),
-                new UiTextElement(
-                    game.FontMap["24"],
-                    () => "Master Volume",
-                    Color.LimeGreen,
-                    Color.Green
-                )
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            },
-            new Box(
-                game,
-                new Vector2(16, 48),
-                new UiTextElement(game.FontMap["24"], () => "Music", Color.LimeGreen, Color.Green)
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            },
-            new Box(
-                game,
-                new Vector2(16, 80),
-                new UiTextElement(game.FontMap["24"], () => "SFX", Color.LimeGreen, Color.Green)
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            }
+        var masterVolumeElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "Master Volume",
+            Color.LimeGreen,
+            Color.Green
         );
-        var controlsMenu = new Box(
-            game,
-            new Vector2(categoriesSize, 0F),
-            new Vector2(1 - categoriesSize, 1F)
-        )
+        var musicElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "Music",
+            Color.LimeGreen,
+            Color.Green
+        );
+        var sfxElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "SFX",
+            Color.LimeGreen,
+            Color.Green
+        );
+        soundMenu.AddChild(
+            new RelativeBox(game, 16, masterVolumeElement.Size())
+            {
+                DrawableElement = masterVolumeElement
+            },
+            new RelativeBox(game, (16, 48), musicElement.Size()) { DrawableElement = musicElement },
+            new RelativeBox(game, (16, 80), sfxElement.Size()) { DrawableElement = sfxElement }
+        );
+        var controlsMenu = new RelativeBox(game, (categoriesSize, 0F), (1 - categoriesSize, 1F))
         {
             BoxAlignment = Alignments.MiddleLeft,
             SelfAlignment = Alignments.MiddleLeft,
             IsVisible = () => page == 2
         };
+        var collectElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "Collect",
+            Color.LimeGreen,
+            Color.Green
+        );
+        var moveUpElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "Move Up",
+            Color.LimeGreen,
+            Color.Green
+        );
+        var moveDownElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "Move Down",
+            Color.LimeGreen,
+            Color.Green
+        );
+        var moveLeftElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "Move Left",
+            Color.LimeGreen,
+            Color.Green
+        );
+        var moveRightElement = new UiTextElement(
+            game.FontMap["24"],
+            () => "Move Right",
+            Color.LimeGreen,
+            Color.Green
+        );
         controlsMenu.AddChild(
-            new Box(
-                game,
-                new Vector2(16),
-                new UiTextElement(game.FontMap["24"], () => "Collect", Color.LimeGreen, Color.Green)
-            )
+            new RelativeBox(game, 16, collectElement.Size()) { DrawableElement = collectElement },
+            new RelativeBox(game, (16, 48), moveUpElement.Size())
             {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
+                DrawableElement = moveUpElement
             },
-            new Box(
-                game,
-                new Vector2(16, 48),
-                new UiTextElement(game.FontMap["24"], () => "Move Up", Color.LimeGreen, Color.Green)
-            )
+            new RelativeBox(game, (16, 80), moveDownElement.Size())
             {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
+                DrawableElement = moveDownElement
             },
-            new Box(
-                game,
-                new Vector2(16, 80),
-                new UiTextElement(
-                    game.FontMap["24"],
-                    () => "Move Down",
-                    Color.LimeGreen,
-                    Color.Green
-                )
-            )
+            new RelativeBox(game, (16, 112), moveLeftElement.Size())
             {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
+                DrawableElement = moveLeftElement
             },
-            new Box(
-                game,
-                new Vector2(16, 112),
-                new UiTextElement(
-                    game.FontMap["24"],
-                    () => "Move Left",
-                    Color.LimeGreen,
-                    Color.Green
-                )
-            )
+            new RelativeBox(game, (16, 144), moveRightElement.Size())
             {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
-            },
-            new Box(
-                game,
-                new Vector2(16, 144),
-                new UiTextElement(
-                    game.FontMap["24"],
-                    () => "Move Right",
-                    Color.LimeGreen,
-                    Color.Green
-                )
-            )
-            {
-                IsPositionAbsolute = true,
-                IsSizeAbsolute = true
+                DrawableElement = moveRightElement
             }
         );
         settingsMenu.AddChild(videoMenu, soundMenu, controlsMenu);

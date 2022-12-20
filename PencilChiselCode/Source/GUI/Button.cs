@@ -19,10 +19,10 @@ public abstract class Button : UiElement
         ReleaseSound = releaseSound;
     }
 
-    public override void Update(GameTime gameTime, Box parent)
+    public override void Update(GameTime gameTime, AbsoluteBox parent)
     {
         var mouse = parent.Game.MouseValues;
-        var region = new Rectangle(parent.Position.ToPoint(), parent.Size().ToPoint());
+        var region = new Rectangle(parent.Position.ToPoint(), parent.Size.ToPoint());
         IsHighlighted = Utils.IsPointInRectangle(mouse.CurrentState.Position.ToVector2(), region);
         if (mouse.JustExited(region))
         {
@@ -43,14 +43,14 @@ public abstract class Button : UiElement
         }
     }
 
-    public override void OnUnhovered(Box parent)
+    public override void OnUnhovered(AbsoluteBox parent)
     {
         if (IsPressed)
             ReleaseSound.Play();
         IsPressed = false;
     }
 
-    public override void OnClick(Box parent, MouseButton button)
+    public override void OnClick(AbsoluteBox parent, MouseButton button)
     {
         if (button != MouseButton.Left || !IsHighlighted)
             return;
@@ -58,7 +58,7 @@ public abstract class Button : UiElement
         IsPressed = true;
     }
 
-    public override void OnRelease(Box parent, MouseButton button)
+    public override void OnRelease(AbsoluteBox parent, MouseButton button)
     {
         if (button != MouseButton.Left || !IsPressed || !IsHighlighted)
             return;

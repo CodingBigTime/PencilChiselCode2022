@@ -6,15 +6,15 @@ namespace PencilChiselCode.Source.GUI;
 public abstract class UiElement
 {
     public abstract Vector2 Size();
-    public abstract void Draw(SpriteBatch spriteBatch, Box parent);
+    public abstract void Draw(SpriteBatch spriteBatch, AbsoluteBox parent);
 
-    public virtual void Update(GameTime gameTime, Box parent) { }
+    public virtual void Update(GameTime gameTime, AbsoluteBox parent) { }
 
-    public virtual void OnClick(Box parent, MouseButton button) { }
+    public virtual void OnClick(AbsoluteBox parent, MouseButton button) { }
 
-    public virtual void OnRelease(Box parent, MouseButton button) { }
+    public virtual void OnRelease(AbsoluteBox parent, MouseButton button) { }
 
-    public virtual void OnHovered(Box parent) { }
+    public virtual void OnHovered(AbsoluteBox parent) { }
 
-    public virtual void OnUnhovered(Box parent) { }
+    public virtual void OnUnhovered(AbsoluteBox parent) { }
 }
