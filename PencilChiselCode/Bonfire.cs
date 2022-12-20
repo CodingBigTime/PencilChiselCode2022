@@ -255,5 +255,5 @@ public class Bonfire : Game
 
     public Vector2 GetWindowDimensions() => new(GetWindowWidth(), GetWindowHeight());
 
-    public Box GetRootBox() => new(this, new Vector2(0), GetWindowDimensions);
+    public AbsoluteBox GetRootBox() => new(this, new Vector2(0), GetWindowDimensions);
 }

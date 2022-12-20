@@ -40,7 +40,7 @@ public class IngameState : BonfireGameState
     private const int SpawnOffset = 128;
     public const int DarknessEndOffset = 64;
     public OrthographicCamera Camera { get; private set; }
-    public Box RootBox;
+    public AbsoluteBox RootBox;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -142,40 +142,36 @@ public class IngameState : BonfireGameState
         );
 
         RootBox = Game.GetRootBox();
-        var buttonBox = new Box(Game, new Vector2(0F, 0F), new Vector2(0.5F))
+        var buttonBox = new RelativeBox(Game, 0, 0.5F)
         {
-            IsPositionAbsolute = true,
             BoxAlignment = Alignments.MiddleCenter,
             SelfAlignment = Alignments.MiddleCenter
         };
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F, 80F), resumeButton)
+            new RelativeBox(Game, (0, -80), resumeButton.Size())
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.BottomCenter,
                 SelfAlignment = Alignments.BottomCenter,
-                IsVisible = () => _pauseState
+                IsVisible = () => _pauseState,
+                DrawableElement = resumeButton
             }
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F), menuButton)
+            new RelativeBox(Game, 0, menuButton.Size())
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.BottomCenter,
                 SelfAlignment = Alignments.BottomCenter,
-                IsVisible = () => _pauseState || _deathState
+                IsVisible = () => _pauseState || _deathState,
+                DrawableElement = menuButton
             }
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F, 80F), restartButton)
+            new RelativeBox(Game, (0, -80), restartButton.Size())
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.BottomCenter,
                 SelfAlignment = Alignments.BottomCenter,
-                IsVisible = () => _deathState
+                IsVisible = () => _deathState,
+                DrawableElement = restartButton
             }
         );
         RootBox.AddChild(buttonBox);
@@ -186,20 +182,18 @@ public class IngameState : BonfireGameState
             Color.Red,
             Color.Black
         );
-        var textInfoBox = new Box(Game, new Vector2(0F, 0F), new Vector2(0.5F, 0.25F))
+        var textInfoBox = new RelativeBox(Game, 0, (0.5F, 0.25F))
         {
-            IsPositionAbsolute = true,
             BoxAlignment = Alignments.MiddleCenter,
             SelfAlignment = Alignments.MiddleCenter,
         };
         textInfoBox.AddChild(
-            new Box(Game, new Vector2(0F), gameOverText)
+            new RelativeBox(Game, 0, gameOverText.Size())
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.TopCenter,
                 SelfAlignment = Alignments.TopCenter,
-                IsVisible = () => _deathState
+                IsVisible = () => _deathState,
+                DrawableElement = gameOverText
             }
         );
         var finalScoreText = new UiTextElement(
@@ -210,13 +204,12 @@ public class IngameState : BonfireGameState
             Color.Black
         );
         textInfoBox.AddChild(
-            new Box(Game, new Vector2(0F, 50F), finalScoreText)
+            new RelativeBox(Game, (0, 50), finalScoreText.Size())
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.TopCenter,
                 SelfAlignment = Alignments.TopCenter,
-                IsVisible = () => _deathState || _pauseState
+                IsVisible = () => _deathState || _pauseState,
+                DrawableElement = finalScoreText
             }
         );
         RootBox.AddChild(textInfoBox);

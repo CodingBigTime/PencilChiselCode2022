@@ -6,7 +6,7 @@ namespace PencilChiselCode.Source.GameStates;
 
 public class MenuState : BonfireGameState
 {
-    public Box RootBox;
+    public AbsoluteBox RootBox;
 
     public MenuState(Game game) : base(game) =>
         BgColor = new Color(9F / 255F, 10F / 255F, 20F / 255F);
@@ -18,26 +18,22 @@ public class MenuState : BonfireGameState
         RootBox = Game.GetRootBox();
         var logo = new UiTextureElement(textureMap["logo"]);
         var showSettings = false;
-        var menuBox = new Box(Game, new Vector2(0F), new Vector2(0.75F))
+        var menuBox = new RelativeBox(Game, 0, 0.75F)
         {
-            IsVisible = () => !showSettings,
-            IsPositionAbsolute = true,
             BoxAlignment = Alignments.MiddleCenter,
-            SelfAlignment = Alignments.MiddleCenter
+            SelfAlignment = Alignments.MiddleCenter,
+            IsVisible = () => !showSettings
         };
         menuBox.AddChild(
-            new Box(Game, new Vector2(0F, 120F), logo)
+            new RelativeBox(Game, (0, 120), logo.Size() * 2.5F)
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.TopCenter,
                 SelfAlignment = Alignments.MiddleCenter,
-                Scale = new(2.5F)
+                DrawableElement = logo
             }
         );
-        var buttonBox = new Box(Game, new Vector2(0F), new Vector2(0.75F))
+        var buttonBox = new RelativeBox(Game, 0, 0.75F)
         {
-            IsPositionAbsolute = true,
             BoxAlignment = Alignments.BottomCenter,
             SelfAlignment = Alignments.BottomCenter
         };
@@ -50,12 +46,11 @@ public class MenuState : BonfireGameState
             Game.Start
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0), startButton)
+            new RelativeBox(Game, 0, startButton.Size())
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.MiddleCenter,
-                SelfAlignment = Alignments.MiddleCenter
+                SelfAlignment = Alignments.MiddleCenter,
+                DrawableElement = startButton
             }
         );
         var settingsButton = new TexturedButton(
@@ -67,12 +62,11 @@ public class MenuState : BonfireGameState
             () => showSettings = true
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F, -85F), settingsButton)
+            new RelativeBox(Game, (0, 85), settingsButton.Size())
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.MiddleCenter,
-                SelfAlignment = Alignments.MiddleCenter
+                SelfAlignment = Alignments.MiddleCenter,
+                DrawableElement = settingsButton
             }
         );
         var exitButton = new TexturedButton(
@@ -84,12 +78,11 @@ public class MenuState : BonfireGameState
             Game.Exit
         );
         buttonBox.AddChild(
-            new Box(Game, new Vector2(0F, -170F), exitButton)
+            new RelativeBox(Game, (0, 170), exitButton.Size())
             {
-                IsSizeAbsolute = true,
-                IsPositionAbsolute = true,
                 BoxAlignment = Alignments.MiddleCenter,
-                SelfAlignment = Alignments.MiddleCenter
+                SelfAlignment = Alignments.MiddleCenter,
+                DrawableElement = exitButton
             }
         );
         menuBox.AddChild(buttonBox);

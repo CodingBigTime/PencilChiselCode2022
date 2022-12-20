@@ -34,6 +34,6 @@ public class TextButton : Button
         _pressedTextElement = pressed;
     }
 
-    public override void Draw(SpriteBatch spriteBatch, Box parent) =>
+    public override void Draw(SpriteBatch spriteBatch, AbsoluteBox parent) =>
         TextElement.Draw(spriteBatch, parent);
 }

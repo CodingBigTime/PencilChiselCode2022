@@ -8,11 +8,13 @@ public class UiTextureElement : UiElement
     public override Vector2 Size() => new(_texture.Width, _texture.Height);
 
     private readonly Texture2D _texture;
+
     public Color Color { get; set; } = Color.White;
 
     public UiTextureElement(Texture2D texture) => _texture = texture;
 
-    public override void Draw(SpriteBatch spriteBatch, Box parent) =>
+    public override void Draw(SpriteBatch spriteBatch, AbsoluteBox parent)
+    {
         spriteBatch.Draw(
             _texture,
             parent.Position,
@@ -20,8 +22,9 @@ public class UiTextureElement : UiElement
             Color,
             0F,
             Vector2.Zero,
-            parent.Scale,
+            parent.Size / Size(),
             SpriteEffects.None,
             0F
         );
+    }
 }
