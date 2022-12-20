@@ -111,18 +111,20 @@ public static class Menus
             Color.Green
         );
         var vSyncCheckbox = new Checkbox(
-            new UiTextureElement(game.TextureMap["checkbox_selected"]) { Color = Color.Salmon },
-            new UiTextureElement(game.TextureMap["checkbox_empty"]) { Color = Color.Red },
+            new UiTextureElement(game.TextureMap["checkbox_selected"]) { Color = Color.GreenYellow },
+            new UiTextureElement(game.TextureMap["checkbox_empty"]) { Color = Color.Green },
             game.SoundMap["button_release"],
             game.SoundMap["button_press"],
             enabled => vSync = enabled,
-            game.IsVSyncEnabled
+            () => vSync
         );
-        var vSyncText = new UiTextElement(
-            game.FontMap["24"],
-            () => $"VSync: {(vSync ? "On" : "Off")}",
-            Color.LimeGreen,
-            Color.Green
+        var vSyncText = new Checkbox(
+            new UiTextElement(game.FontMap["24"], () => $"VSync: {(vSync ? "On" : "Off")}", Color.GreenYellow),
+            new UiTextElement(game.FontMap["24"], () => $"VSync: {(vSync ? "On" : "Off")}", Color.Green),
+            game.SoundMap["button_release"],
+            game.SoundMap["button_press"],
+            enabled => vSync = enabled,
+            () => vSync
         );
         var vSyncBox = new RelativeBox(
             game,

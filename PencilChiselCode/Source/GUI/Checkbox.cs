@@ -7,7 +7,8 @@ namespace PencilChiselCode.Source.GUI;
 
 public class Checkbox : UiElement
 {
-    public bool IsChecked { get; private set; }
+    public bool IsChecked => _isChecked();
+    private readonly Func<bool> _isChecked;
     protected readonly Action<bool> Action;
     private readonly UiElement _uncheckedElement;
     private readonly UiElement _checkedElement;
@@ -41,9 +42,19 @@ public class Checkbox : UiElement
         SoundEffect disableSound,
         Action<bool> action,
         bool isChecked = false
+    ) : this(checkedElement, uncheckedElement, enabledSound, disableSound, action, () => isChecked)
+    { }
+
+    public Checkbox(
+        UiElement checkedElement,
+        UiElement uncheckedElement,
+        SoundEffect enabledSound,
+        SoundEffect disableSound,
+        Action<bool> action,
+        Func<bool> isChecked
     )
     {
-        IsChecked = isChecked;
+        _isChecked = isChecked;
         Action = action;
         _enabledSound = enabledSound;
         _disabledSound = disableSound;
@@ -74,12 +85,11 @@ public class Checkbox : UiElement
 
     public override void OnClick(AbsoluteBox parent, MouseButton button)
     {
-        IsChecked = !IsChecked;
         if (IsChecked)
-            _enabledSound.Play();
-        else
             _disabledSound.Play();
+        else
+            _enabledSound.Play();
 
-        Action.Invoke(IsChecked);
+        Action.Invoke(!IsChecked);
     }
 }
