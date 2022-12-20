@@ -68,6 +68,7 @@ public class Checkbox : UiElement
     public override void Update(GameTime gameTime, AbsoluteBox parent)
     {
         base.Update(gameTime, parent);
+        CheckboxElement.Update(gameTime, parent);
         var mouse = parent.Game.MouseValues;
         var region = new Rectangle(parent.Position.ToPoint(), parent.Size.ToPoint());
         var isMouseInside = Utils.IsPointInRectangle(

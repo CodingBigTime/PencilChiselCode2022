@@ -253,6 +253,7 @@ public class Bonfire : Game
     public int GetWindowHeight() => Window.ClientBounds.Height;
 
     public Vector2 GetWindowDimensions() => new(GetWindowWidth(), GetWindowHeight());
+
     public int GetScreenWidth() => GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
 
     public int GetScreenHeight() => GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -298,8 +299,14 @@ public class Bonfire : Game
                 Window.Position = (GetScreenDimensions() / 2 - GetWindowDimensions() / 2).ToPoint();
                 break;
             case WindowMode.BorderlessFullscreen:
-                Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-                Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+                Graphics.PreferredBackBufferWidth = GraphicsAdapter
+                    .DefaultAdapter
+                    .CurrentDisplayMode
+                    .Width;
+                Graphics.PreferredBackBufferHeight = GraphicsAdapter
+                    .DefaultAdapter
+                    .CurrentDisplayMode
+                    .Height;
                 Graphics.ApplyChanges();
                 Window.Position = new Point(0, 0);
                 Window.IsBorderless = true;

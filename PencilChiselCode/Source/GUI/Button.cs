@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,9 +10,9 @@ public class Button : UiElement
 {
     public bool IsHighlighted { get; private set; }
     public bool IsPressed { get; protected set; }
-    protected readonly SoundEffect PressSound;
-    protected readonly SoundEffect ReleaseSound;
-    protected readonly Action Action;
+    protected readonly SoundEffect? PressSound;
+    protected readonly SoundEffect? ReleaseSound;
+    protected readonly Action? Action;
     private readonly UiElement _normalElement;
     private readonly UiElement _hoveredElement;
     private readonly UiElement _pressedElement;
@@ -23,22 +24,18 @@ public class Button : UiElement
             _ => _normalElement
         };
 
-    private Button(Action action, SoundEffect pressSound, SoundEffect releaseSound)
-    {
-        Action = action;
-        PressSound = pressSound;
-        ReleaseSound = releaseSound;
-    }
-
     public Button(
         UiElement normalElement,
         UiElement hoveredElement,
         UiElement pressedElement,
-        SoundEffect pressSound,
-        SoundEffect releaseSound,
-        Action action
-    ) : this(action, pressSound, releaseSound)
+        SoundEffect? pressSound = null,
+        SoundEffect? releaseSound = null,
+        Action? action = null
+    )
     {
+        Action = action;
+        PressSound = pressSound;
+        ReleaseSound = releaseSound;
         _normalElement = normalElement;
         _hoveredElement = hoveredElement;
         _pressedElement = pressedElement;
@@ -48,9 +45,9 @@ public class Button : UiElement
         Texture2D normalTexture,
         Texture2D hoveredTexture,
         Texture2D pressedTexture,
-        SoundEffect pressSound,
-        SoundEffect releaseSound,
-        Action action
+        SoundEffect? pressSound = null,
+        SoundEffect? releaseSound = null,
+        Action? action = null
     )
         : this(
             new UiTextureElement(normalTexture),
@@ -95,7 +92,7 @@ public class Button : UiElement
     public override void OnUnhovered(AbsoluteBox parent)
     {
         if (IsPressed)
-            ReleaseSound.Play();
+            ReleaseSound?.Play();
         IsPressed = false;
     }
 
@@ -103,7 +100,8 @@ public class Button : UiElement
     {
         if (button != MouseButton.Left || !IsHighlighted)
             return;
-        PressSound.Play();
+        PressSound?.Play();
+
         IsPressed = true;
     }
 
@@ -111,10 +109,11 @@ public class Button : UiElement
     {
         if (button != MouseButton.Left || !IsPressed || !IsHighlighted)
             return;
-        ReleaseSound.Play();
+        ReleaseSound?.Play();
+
         Click();
         IsPressed = false;
     }
 
-    public virtual void Click() => Action.Invoke();
+    public virtual void Click() => Action?.Invoke();
 }

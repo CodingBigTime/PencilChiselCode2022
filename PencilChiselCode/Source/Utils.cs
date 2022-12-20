@@ -68,7 +68,9 @@ public static class Utils
 
         spriteBatch.DrawString(font, text, position, frontColor);
     }
-    public static void ShiftWindowMode(ref this WindowMode windowMode) {
+
+    public static void ShiftWindowMode(ref this WindowMode windowMode)
+    {
         windowMode = windowMode switch
         {
             WindowMode.Fullscreen => WindowMode.Windowed,

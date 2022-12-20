@@ -111,16 +111,71 @@ public static class Menus
             Color.Green
         );
         var vSyncCheckbox = new Checkbox(
-            new UiTextureElement(game.TextureMap["checkbox_selected"]) { Color = Color.GreenYellow },
-            new UiTextureElement(game.TextureMap["checkbox_empty"]) { Color = Color.Green },
+            new Button(
+                new UiTextureElement(game.TextureMap["checkbox_selected"])
+                {
+                    Color = Color.LimeGreen
+                },
+                new UiTextureElement(game.TextureMap["checkbox_selected"])
+                {
+                    Color = Color.GreenYellow
+                },
+                new UiTextureElement(game.TextureMap["checkbox_selected"])
+                {
+                    Color = Color.OliveDrab
+                }
+            ),
+            new Button(
+                new UiTextureElement(game.TextureMap["checkbox_empty"])
+                {
+                    Color = Color.PaleVioletRed
+                },
+                new UiTextureElement(game.TextureMap["checkbox_empty"])
+                {
+                    Color = Color.MediumVioletRed
+                },
+                new UiTextureElement(game.TextureMap["checkbox_empty"]) { Color = Color.DarkRed }
+            ),
             game.SoundMap["button_release"],
             game.SoundMap["button_press"],
             enabled => vSync = enabled,
             () => vSync
         );
         var vSyncText = new Checkbox(
-            new UiTextElement(game.FontMap["24"], () => $"VSync: {(vSync ? "On" : "Off")}", Color.GreenYellow),
-            new UiTextElement(game.FontMap["24"], () => $"VSync: {(vSync ? "On" : "Off")}", Color.Green),
+            new Button(
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"VSync: {(vSync ? "On" : "Off")}",
+                    Color.LimeGreen
+                ),
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"VSync: {(vSync ? "On" : "Off")}",
+                    Color.GreenYellow
+                ),
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"VSync: {(vSync ? "On" : "Off")}",
+                    Color.OliveDrab
+                )
+            ),
+            new Button(
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"VSync: {(vSync ? "On" : "Off")}",
+                    Color.PaleVioletRed
+                ),
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"VSync: {(vSync ? "On" : "Off")}",
+                    Color.MediumVioletRed
+                ),
+                new UiTextElement(
+                    game.FontMap["24"],
+                    () => $"VSync: {(vSync ? "On" : "Off")}",
+                    Color.Violet
+                )
+            ),
             game.SoundMap["button_release"],
             game.SoundMap["button_press"],
             enabled => vSync = enabled,
@@ -129,7 +184,10 @@ public static class Menus
         var vSyncBox = new RelativeBox(
             game,
             (16, 48),
-            ((int)(vSyncText.Size().X + vSyncCheckbox.Size().X + 16), (int)Math.Max(vSyncText.Size().Y, vSyncCheckbox.Size().Y))
+            (
+                (int)(vSyncText.Size().X + vSyncCheckbox.Size().X + 16),
+                (int)Math.Max(vSyncText.Size().Y, vSyncCheckbox.Size().Y)
+            )
         );
         vSyncBox.AddChild(
             new RelativeBox(game, 0, vSyncCheckbox.Size() * 0.75F)
@@ -143,7 +201,6 @@ public static class Menus
                 DrawableElement = vSyncText,
                 SelfAlignment = Alignments.MiddleLeft,
                 BoxAlignment = Alignments.MiddleLeft
-
             }
         );
         videoMenu.AddChild(
@@ -152,7 +209,7 @@ public static class Menus
                 DrawableElement = resolutionElement
             },
             vSyncBox,
-        new RelativeBox(game, (16, 88), fullscreenButton.Size())
+            new RelativeBox(game, (16, 88), fullscreenButton.Size())
             {
                 DrawableElement = fullscreenButton
             }
