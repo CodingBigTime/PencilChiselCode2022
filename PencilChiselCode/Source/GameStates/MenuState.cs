@@ -6,7 +6,7 @@ namespace PencilChiselCode.Source.GameStates;
 
 public class MenuState : BonfireGameState
 {
-    public AbsoluteBox RootBox;
+    public RootBox RootBox;
 
     public MenuState(Game game) : base(game) =>
         BgColor = new Color(9F / 255F, 10F / 255F, 20F / 255F);

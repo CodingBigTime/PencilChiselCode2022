@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 
 namespace PencilChiselCode.Source.GUI;
 
@@ -15,6 +13,7 @@ public class Box
     public Alignments SelfAlignment { get; set; } = Alignments.TopLeft;
     public Func<bool> IsVisible { get; set; } = () => true;
     public Color DebugColor = Color.LightGreen;
+    public Color PaddingDebugColor = Color.LightCoral;
     public Color InvisibleDebugColor = Color.OrangeRed;
 
     public Box(Bonfire game)

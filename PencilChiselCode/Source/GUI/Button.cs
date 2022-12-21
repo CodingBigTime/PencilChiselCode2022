@@ -22,7 +22,7 @@ public abstract class Button : UiElement
     public override void Update(GameTime gameTime, AbsoluteBox parent)
     {
         var mouse = parent.Game.MouseValues;
-        var region = new Rectangle(parent.Position.ToPoint(), parent.Size.ToPoint());
+        var region = new Rectangle(parent.PaddedPosition.ToPoint(), parent.PaddedSize.ToPoint());
         IsHighlighted = Utils.IsPointInRectangle(mouse.CurrentState.Position.ToVector2(), region);
         if (mouse.JustExited(region))
         {

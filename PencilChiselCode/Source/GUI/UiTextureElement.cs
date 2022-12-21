@@ -17,12 +17,12 @@ public class UiTextureElement : UiElement
     {
         spriteBatch.Draw(
             _texture,
-            parent.Position,
+            parent.PaddedPosition,
             null,
             Color,
             0F,
             Vector2.Zero,
-            parent.Size / Size(),
+            parent.PaddedSize / Size(),
             SpriteEffects.None,
             0F
         );
