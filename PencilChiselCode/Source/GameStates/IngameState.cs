@@ -18,7 +18,6 @@ public class IngameState : BonfireGameState
     public Player Player { get; private set; }
     public Companion Companion;
     private float _cameraSpeed = 20F;
-    private Inventory _inventory;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private TimeSpan _pickupableCounterGameTime;
@@ -40,7 +39,7 @@ public class IngameState : BonfireGameState
     private const int SpawnOffset = 128;
     public const int DarknessEndOffset = 64;
     public OrthographicCamera Camera { get; private set; }
-    public AbsoluteBox RootBox;
+    public RootBox RootBox;
 
     private int MapIndex =>
         (int)Math.Abs(Math.Floor(Camera.GetViewMatrix().Translation.X / _maps[0].HeightInPixels));
@@ -236,7 +235,8 @@ public class IngameState : BonfireGameState
                 ),
             100F
         );
-        _inventory = new Inventory(this);
+        var inventoryBox = Menus.GetInventory(Game, Player);
+        RootBox.AddChild(inventoryBox);
         _song = Game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
@@ -414,7 +414,6 @@ public class IngameState : BonfireGameState
 
         Campfires.Update(gameTime);
 
-        _inventory.Update();
         _darknessParticles.Update(gameTime, true);
         _score += gameTime.ElapsedGameTime.Milliseconds;
 
@@ -505,7 +504,6 @@ public class IngameState : BonfireGameState
             new Vector2(Game.GetWindowWidth() / 2 - 350, Game.GetWindowHeight() - 100),
             Color.Orange
         );
-        _inventory.Draw(Game.SpriteBatch);
 
         if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
         {

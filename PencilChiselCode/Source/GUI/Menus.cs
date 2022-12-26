@@ -5,6 +5,250 @@ namespace PencilChiselCode.Source.GUI;
 
 public static class Menus
 {
+    public static RelativeBox GetInventory(Bonfire game, Player player)
+    {
+        var eKey = new UiTextureElement(game.TextureMap["e_key"]);
+        var twig = new UiTextureElement(game.TextureMap["twig"]);
+        var twigCount = new UiTextElement(
+            game.FontMap["32"],
+            () => player.Inventory[PickupableTypes.Twig].ToString(),
+            Color.White,
+            Color.Black
+        );
+        var berry = new UiTextureElement(game.TextureMap["berry"]);
+        var berryCount = new UiTextElement(
+            game.FontMap["32"],
+            () => player.Inventory[PickupableTypes.BerryBush].ToString(),
+            Color.White,
+            Color.Black
+        );
+        var xKey = new UiTextureElement(game.TextureMap["x_key"]);
+        var campfire = new UiTextureElement(game.TextureMap["campfire"]);
+        var equals = new UiTextElement(game.FontMap["32"], () => "=", Color.White, Color.Black);
+        var campfireTwigCost = new UiTextElement(
+            game.FontMap["32"],
+            () => "10 x",
+            Color.White,
+            Color.Black
+        );
+        var fKey = new UiTextureElement(game.TextureMap["f_key"]);
+        var plus = new UiTextElement(game.FontMap["32"], () => "+", Color.White, Color.Black);
+        var campfireRefuelCost = new UiTextElement(
+            game.FontMap["32"],
+            () => "2 x",
+            Color.White,
+            Color.Black
+        );
+        var qKey = new UiTextureElement(game.TextureMap["q_key"]);
+        var companion = new UiTextureElement(game.TextureMap["follower"]);
+        var spaceKey = new UiTextureElement(game.TextureMap["space_key"]);
+        var followStop = new UiTextElement(
+            game.FontMap["32"],
+            () => "follow/stop",
+            Color.White,
+            Color.Black
+        );
+
+        var inventoryBox = new RelativeBox(game, (0, 50), (300, 300))
+        {
+            BoxAlignment = Alignments.TopRight,
+            SelfAlignment = Alignments.TopRight
+        };
+        var twigCountBox = new RelativeBox(game, 0, (300, 50))
+        {
+            BoxAlignment = Alignments.TopRight,
+            SelfAlignment = Alignments.TopRight
+        }.WithChild(
+            new RelativeBox(game, 0, (new Ratio(2F), 1F))
+            {
+                BoxAlignment = Alignments.MiddleRight,
+                SelfAlignment = Alignments.MiddleRight,
+                DrawableElement = eKey,
+                Padding = (0.65F, 0.3F)
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = twig,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new Ratio(0.5F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+            },
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = twigCount,
+                Padding = 0.3F
+            }
+        );
+        var berryCountBox = new RelativeBox(game, 0, (300, 50))
+        {
+            BoxAlignment = Alignments.BelowOfPrevious,
+        }.WithChild(
+            new RelativeBox(game, 0, (new Ratio(2F), 1F))
+            {
+                BoxAlignment = Alignments.MiddleRight,
+                SelfAlignment = Alignments.MiddleRight,
+                DrawableElement = eKey,
+                Padding = (0.65F, 0.3F)
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = berry,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new Ratio(0.5F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+            },
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = berryCount,
+                Padding = 0.3F
+            }
+        );
+        var campfireTwigCostBox = new RelativeBox(game, 0, (300, 50))
+        {
+            BoxAlignment = Alignments.BelowOfPrevious,
+        }.WithChild(
+            new RelativeBox(game, 0, (new Ratio(2F), 1F))
+            {
+                BoxAlignment = Alignments.MiddleRight,
+                SelfAlignment = Alignments.MiddleRight,
+                DrawableElement = xKey,
+                Padding = (0.65F, 0.3F)
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = campfire,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = equals,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = twig,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = campfireTwigCost,
+                Padding = 0.3F
+            }
+        );
+        var campfireRefuelCostBox = new RelativeBox(game, 0, (300, 50))
+        {
+            BoxAlignment = Alignments.BelowOfPrevious,
+        }.WithChild(
+            new RelativeBox(game, 0, (new Ratio(2F), 1F))
+            {
+                BoxAlignment = Alignments.MiddleRight,
+                SelfAlignment = Alignments.MiddleRight,
+                DrawableElement = fKey,
+                Padding = (0.65F, 0.3F)
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = campfire,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = plus,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = twig,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = campfireRefuelCost,
+                Padding = 0.3F
+            }
+        );
+        var companionFeedBox = new RelativeBox(game, 0, (300, 50))
+        {
+            BoxAlignment = Alignments.BelowOfPrevious,
+        }.WithChild(
+            new RelativeBox(game, 0, (new Ratio(2F), 1F))
+            {
+                BoxAlignment = Alignments.MiddleRight,
+                SelfAlignment = Alignments.MiddleRight,
+                DrawableElement = qKey,
+                Padding = (0.65F, 0.3F)
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = companion,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = plus,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = berry,
+                Padding = 0.3F
+            }
+        );
+        var followStopBox = new RelativeBox(game, 0, (300, 50))
+        {
+            BoxAlignment = Alignments.BelowOfPrevious,
+        }.WithChild(
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.MiddleRight,
+                SelfAlignment = Alignments.MiddleRight,
+                DrawableElement = spaceKey,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new Ratio(1F), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = companion,
+                Padding = 0.3F
+            },
+            new RelativeBox(game, 0, (new FitElement(), 1F))
+            {
+                BoxAlignment = Alignments.LeftOfPrevious,
+                DrawableElement = followStop,
+                Padding = 0.3F
+            }
+        );
+
+        inventoryBox.AddChild(
+            twigCountBox,
+            berryCountBox,
+            campfireTwigCostBox,
+            campfireRefuelCostBox,
+            companionFeedBox,
+            followStopBox
+        );
+        return inventoryBox;
+    }
+
     public static RelativeBox GetSettingsMenu(Bonfire game, Action onDoneClick)
     {
         var page = 0;

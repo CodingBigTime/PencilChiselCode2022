@@ -27,7 +27,7 @@ public record Pixels(int Value) : Scalar
     public static Pixels operator -(Pixels pixels1, Pixels pixels2) =>
         new(pixels1.Value - pixels2.Value);
 
-    public static Percent operator /(Pixels pixels1, Pixels pixels2) =>
+    public static Ratio operator /(Pixels pixels1, Pixels pixels2) =>
         new((float)pixels1.Value / pixels2.Value);
 
     public static Pixels operator *(Pixels pixels, float value) => new((int)(pixels.Value * value));
@@ -51,6 +51,25 @@ public record Pixels(int Value) : Scalar
         new((int)(pixels.Value * ratio.Value));
 
     public static Pixels operator *(Ratio ratio, Pixels pixels) => pixels * ratio;
+
+    public static Pixels operator /(Pixels pixels, Percent percent) =>
+        new((int)(pixels.Value / percent.Value));
+
+    public static Pixels operator +(Pixels pixels, Scalar scalar) =>
+        scalar switch
+        {
+            Pixels pixels2 => pixels + pixels2,
+            Percent percent => pixels + (pixels * percent),
+            _ => throw new NotImplementedException()
+        };
+
+    public static Pixels operator -(Pixels pixels, Scalar scalar) =>
+        scalar switch
+        {
+            Pixels pixels2 => pixels - pixels2,
+            Percent percent => pixels - (pixels * percent),
+            _ => throw new NotImplementedException()
+        };
 }
 
 public record Percent(float Value) : Scalar
@@ -58,12 +77,22 @@ public record Percent(float Value) : Scalar
     public float Value { get; } = Value;
 
     public static implicit operator Percent(float value) => new(value);
+
+    public static Percent operator +(Percent percent, Percent value) =>
+        new(percent.Value + value.Value);
+
+    public static Percent operator -(Percent percent, Percent value) =>
+        new(percent.Value - value.Value);
+
+    public static Percent operator /(Percent percent, float value) => new(percent.Value / value);
 }
 
 public record Ratio(float Value) : Scalar
 {
     public float Value { get; } = Value;
 }
+
+public record FitElement : Scalar;
 
 public class ScalarVector2
 {
@@ -96,21 +125,21 @@ public class ScalarVector2
 
     public ScalarVector2((float x, int y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(int x, Ratio y) : this(new Pixels(x), y) { }
+    public ScalarVector2(int x, Scalar y) : this(new Pixels(x), y) { }
 
-    public ScalarVector2((int x, Ratio y) value) : this(value.x, value.y) { }
+    public ScalarVector2((int x, Scalar y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(Ratio x, int y) : this(x, new Pixels(y)) { }
+    public ScalarVector2(Scalar x, int y) : this(x, new Pixels(y)) { }
 
-    public ScalarVector2((Ratio x, int y) value) : this(value.x, value.y) { }
+    public ScalarVector2((Scalar x, int y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(float x, Ratio y) : this(new Percent(x), y) { }
+    public ScalarVector2(float x, Scalar y) : this(new Percent(x), y) { }
 
-    public ScalarVector2((float x, Ratio y) value) : this(value.x, value.y) { }
+    public ScalarVector2((float x, Scalar y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(Ratio x, float y) : this(x, new Percent(y)) { }
+    public ScalarVector2(Scalar x, float y) : this(x, new Percent(y)) { }
 
-    public ScalarVector2((Ratio x, float y) value) : this(value.x, value.y) { }
+    public ScalarVector2((Scalar x, float y) value) : this(value.x, value.y) { }
 
     public ScalarVector2(Scalar value) : this(value, value) { }
 
@@ -139,13 +168,13 @@ public class ScalarVector2
 
     public static implicit operator ScalarVector2((float, int) tuple) => new(tuple);
 
-    public static implicit operator ScalarVector2((int, Ratio) tuple) => new(tuple);
+    public static implicit operator ScalarVector2((int, Scalar) tuple) => new(tuple);
 
-    public static implicit operator ScalarVector2((Ratio, int) tuple) => new(tuple);
+    public static implicit operator ScalarVector2((Scalar, int) tuple) => new(tuple);
 
-    public static implicit operator ScalarVector2((float, Ratio) tuple) => new(tuple);
+    public static implicit operator ScalarVector2((float, Scalar) tuple) => new(tuple);
 
-    public static implicit operator ScalarVector2((Ratio, float) tuple) => new(tuple);
+    public static implicit operator ScalarVector2((Scalar, float) tuple) => new(tuple);
 
     public static ScalarVector2 operator *(ScalarVector2 scalarVector2, float scalar) =>
         scalarVector2 switch
@@ -167,31 +196,29 @@ public class ScalarVector2
     public static ScalarVector2 operator *(Percent percent, ScalarVector2 scalarVector2) =>
         scalarVector2 * percent;
 
-    public ScalarVector2 RelativeTo(ScalarVector2 parent)
-    {
-        if (!(parent.X is Pixels && parent.Y is Pixels))
+    public static ScalarVector2 operator +(ScalarVector2 scalarVector2, ScalarVector2 value) =>
+        scalarVector2 switch
         {
-            throw new InvalidOperationException("Parent must be in pixels");
-        }
-        var parentX = (Pixels)parent.X;
-        var parentY = (Pixels)parent.Y;
-        return new(
-            this switch
-            {
-                { X: Pixels x, Y: Pixels y } => (x, y),
-                { X: Percent x, Y: Percent y } => (parentX * x, parentY * y),
-                { X: Percent x, Y: Pixels y } => (parentX * x, y),
-                { X: Pixels x, Y: Percent y } => (x, parentY * y),
-                { X: Ratio x, Y: Pixels y } => (y * x, y),
-                { X: Pixels x, Y: Ratio y } => (x, x * y),
-                { X: Ratio x, Y: Percent y } => (y * parentY * x, y * parentY),
-                { X: Percent x, Y: Ratio y } => (x * parentX, x * parentX * y),
-                { X: Ratio _, Y: Ratio _ }
-                    => throw new InvalidOperationException("Cannot have 2 ratios"),
-                _ => throw new NotImplementedException()
-            }
-        );
-    }
+            { X: Pixels x, Y: Pixels y } => (x + value.X, y + value.Y),
+            _ => throw new NotImplementedException()
+        };
+
+    public static ScalarVector2 operator -(ScalarVector2 scalarVector2, ScalarVector2 value) =>
+        scalarVector2 switch
+        {
+            { X: Pixels x, Y: Pixels y } => (x - value.X, y - value.Y),
+            _ => throw new NotImplementedException()
+        };
+
+    public static ScalarVector2 operator /(ScalarVector2 scalarVector2, float scalar) =>
+        scalarVector2 switch
+        {
+            { X: Pixels x, Y: Pixels y } => (x / scalar, y / scalar),
+            { X: Percent x, Y: Percent y } => (x / scalar, y / scalar),
+            { X: Pixels x, Y: Percent y } => (x / scalar, y / scalar),
+            { X: Percent x, Y: Pixels y } => (x / scalar, y / scalar),
+            _ => throw new NotImplementedException()
+        };
 
     public Vector2 ToVector2()
     {
@@ -218,6 +245,7 @@ public class ScalarVector2
         {
             return new Vector2(x.Value, y.Value);
         }
+
         throw new InvalidOperationException("Cannot convert to absolute vector2");
     }
 }

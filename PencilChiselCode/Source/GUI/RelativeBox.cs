@@ -7,6 +7,13 @@ public class RelativeBox : Box
 {
     public ScalarVector2 Position { get; set; }
     public ScalarVector2 Size { get; set; }
+    public ScalarVector2 Padding { get; set; } = 0;
+
+    public RelativeBox(Bonfire game) : base(game)
+    {
+        Position = 0;
+        Size = 0F;
+    }
 
     public RelativeBox(Bonfire game, ScalarVector2 position, ScalarVector2 size) : base(game)
     {
@@ -14,17 +21,47 @@ public class RelativeBox : Box
         Size = size;
     }
 
-    public void Draw(SpriteBatch spriteBatch, AbsoluteBox parent)
+    public RelativeBox(RelativeBox other) : base(other.Game)
     {
-        if (!IsVisible() && Game.DebugMode != 2)
-            return;
-        parent.AbsoluteFrom(this).Draw(spriteBatch);
+        Position = other.Position;
+        Size = other.Size;
+        IsVisible = other.IsVisible;
+        DrawableElement = other.DrawableElement;
+        Children = other.Children;
+        BoxAlignment = other.BoxAlignment;
+        SelfAlignment = other.SelfAlignment;
+        Padding = other.Padding;
     }
 
-    public void Update(GameTime gameTime, AbsoluteBox parent)
+    public RelativeBox WithChild(RelativeBox child)
     {
-        if (!IsVisible())
-            return;
-        parent.AbsoluteFrom(this).Update(gameTime);
+        AddChild(child);
+        return this;
+    }
+
+    public RelativeBox WithChild(params RelativeBox[] children)
+    {
+        AddChild(children);
+        return this;
+    }
+
+    public AbsoluteBox Draw(
+        SpriteBatch spriteBatch,
+        AbsoluteBox parent,
+        AbsoluteBox previous = null
+    )
+    {
+        var absoluteSelf = parent.AbsoluteFrom(this, previous);
+        if (IsVisible() || Game.DebugMode == 2)
+            absoluteSelf.Draw(spriteBatch);
+        return absoluteSelf;
+    }
+
+    public AbsoluteBox Update(GameTime gameTime, AbsoluteBox parent, AbsoluteBox previous = null)
+    {
+        var absoluteSelf = parent.AbsoluteFrom(this, previous);
+        if (IsVisible())
+            absoluteSelf.Update(gameTime);
+        return absoluteSelf;
     }
 }
