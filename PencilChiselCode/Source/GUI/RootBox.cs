@@ -9,6 +9,7 @@ public class RootBox : AbsoluteBox
     public new void Update(GameTime gameTime)
     {
         Size = Game.GetWindowDimensions();
+        PaddedSize = Size;
         if (!IsVisible())
             return;
         DrawableElement?.Update(gameTime, this);
