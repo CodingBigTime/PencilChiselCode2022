@@ -70,7 +70,7 @@ public class Checkbox : UiElement
         base.Update(gameTime, parent);
         CheckboxElement.Update(gameTime, parent);
         var mouse = parent.Game.MouseValues;
-        var region = new Rectangle(parent.Position.ToPoint(), parent.Size.ToPoint());
+        var region = new Rectangle(parent.PaddedPosition.ToPoint(), parent.PaddedSize.ToPoint());
         var isMouseInside = Utils.IsPointInRectangle(
             mouse.CurrentState.Position.ToVector2(),
             region

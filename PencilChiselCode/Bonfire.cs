@@ -279,7 +279,6 @@ public class Bonfire : Game
 
     public void SetWindowMode(WindowMode windowMode)
     {
-        Debug.WriteLine(windowMode);
         switch (windowMode)
         {
             case WindowMode.Fullscreen:
@@ -295,7 +294,6 @@ public class Bonfire : Game
                 Graphics.IsFullScreen = false;
                 Graphics.ApplyChanges();
                 Window.IsBorderless = false;
-                var ayo = GetScreenDimensions();
                 Window.Position = (GetScreenDimensions() / 2 - GetWindowDimensions() / 2).ToPoint();
                 break;
             case WindowMode.BorderlessFullscreen:
