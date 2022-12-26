@@ -37,7 +37,7 @@ public class MenuState : BonfireGameState
             BoxAlignment = Alignments.BottomCenter,
             SelfAlignment = Alignments.BottomCenter
         };
-        var startButton = new TexturedButton(
+        var startButton = new Button(
             textureMap["start_button_normal"],
             textureMap["start_button_hover"],
             textureMap["start_button_pressed"],
@@ -53,7 +53,7 @@ public class MenuState : BonfireGameState
                 DrawableElement = startButton
             }
         );
-        var settingsButton = new TexturedButton(
+        var settingsButton = new Button(
             textureMap["settings_button_normal"],
             textureMap["settings_button_hover"],
             textureMap["settings_button_pressed"],
@@ -69,7 +69,7 @@ public class MenuState : BonfireGameState
                 DrawableElement = settingsButton
             }
         );
-        var exitButton = new TexturedButton(
+        var exitButton = new Button(
             textureMap["exit_button_normal"],
             textureMap["exit_button_hover"],
             textureMap["exit_button_pressed"],

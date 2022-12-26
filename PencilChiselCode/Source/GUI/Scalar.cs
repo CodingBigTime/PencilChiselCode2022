@@ -5,11 +5,9 @@ namespace PencilChiselCode.Source.GUI;
 
 public abstract record Scalar;
 
-public record Pixels : Scalar
+public record Pixels(int Value) : Scalar
 {
-    public int Value { get; }
-
-    public Pixels(int Value) => this.Value = Value;
+    public int Value { get; } = Value;
 
     public static implicit operator Pixels(int value) => new(value);
 
@@ -74,11 +72,9 @@ public record Pixels : Scalar
         };
 }
 
-public record Percent : Scalar
+public record Percent(float Value) : Scalar
 {
-    public float Value { get; }
-
-    public Percent(float Value) => this.Value = Value;
+    public float Value { get; } = Value;
 
     public static implicit operator Percent(float value) => new(value);
 
@@ -91,11 +87,9 @@ public record Percent : Scalar
     public static Percent operator /(Percent percent, float value) => new(percent.Value / value);
 }
 
-public record Ratio : Scalar
+public record Ratio(float Value) : Scalar
 {
-    public float Value { get; }
-
-    public Ratio(float Value) => this.Value = Value;
+    public float Value { get; } = Value;
 }
 
 public record FitElement : Scalar;
@@ -105,47 +99,47 @@ public class ScalarVector2
     public Scalar X { get; }
     public Scalar Y { get; }
 
-    public ScalarVector2(Scalar X, Scalar Y)
+    public ScalarVector2(Scalar x, Scalar y)
     {
-        this.X = X;
-        this.Y = Y;
+        X = x;
+        Y = y;
     }
 
-    public ScalarVector2(int X, int Y) : this(new Pixels(X), new Pixels(Y)) { }
+    public ScalarVector2(int x, int y) : this(new Pixels(x), new Pixels(y)) { }
 
-    public ScalarVector2((int X, int Y) value) : this(value.X, value.Y) { }
+    public ScalarVector2((int x, int y) value) : this(value.x, value.y) { }
 
     public ScalarVector2(int value) : this(new Pixels(value), new Pixels(value)) { }
 
     public ScalarVector2(float value) : this(new Percent(value), new Percent(value)) { }
 
-    public ScalarVector2(float X, float Y) : this(new Percent(X), new Percent(Y)) { }
+    public ScalarVector2(float x, float y) : this(new Percent(x), new Percent(y)) { }
 
-    public ScalarVector2((float X, float Y) value) : this(value.X, value.Y) { }
+    public ScalarVector2((float x, float y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(int X, float Y) : this(new Pixels(X), new Percent(Y)) { }
+    public ScalarVector2(int x, float y) : this(new Pixels(x), new Percent(y)) { }
 
-    public ScalarVector2((int X, float Y) value) : this(value.X, value.Y) { }
+    public ScalarVector2((int x, float y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(float X, int Y) : this(new Percent(X), new Pixels(Y)) { }
+    public ScalarVector2(float x, int y) : this(new Percent(x), new Pixels(y)) { }
 
-    public ScalarVector2((float X, int Y) value) : this(value.X, value.Y) { }
+    public ScalarVector2((float x, int y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(int X, Scalar Y) : this(new Pixels(X), Y) { }
+    public ScalarVector2(int x, Scalar y) : this(new Pixels(x), y) { }
 
-    public ScalarVector2((int X, Scalar Y) value) : this(value.X, value.Y) { }
+    public ScalarVector2((int x, Scalar y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(Scalar X, int Y) : this(X, new Pixels(Y)) { }
+    public ScalarVector2(Scalar x, int y) : this(x, new Pixels(y)) { }
 
-    public ScalarVector2((Scalar X, int Y) value) : this(value.X, value.Y) { }
+    public ScalarVector2((Scalar x, int y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(float X, Scalar Y) : this(new Percent(X), Y) { }
+    public ScalarVector2(float x, Scalar y) : this(new Percent(x), y) { }
 
-    public ScalarVector2((float X, Scalar Y) value) : this(value.X, value.Y) { }
+    public ScalarVector2((float x, Scalar y) value) : this(value.x, value.y) { }
 
-    public ScalarVector2(Scalar X, float Y) : this(X, new Percent(Y)) { }
+    public ScalarVector2(Scalar x, float y) : this(x, new Percent(y)) { }
 
-    public ScalarVector2((Scalar X, float Y) value) : this(value.X, value.Y) { }
+    public ScalarVector2((Scalar x, float y) value) : this(value.x, value.y) { }
 
     public ScalarVector2(Scalar value) : this(value, value) { }
 
@@ -242,15 +236,16 @@ public class ScalarVector2
             Ratio ratio => ratio.Value,
             _ => throw new NotImplementedException()
         };
-        return new(x, y);
+        return new Vector2(x, y);
     }
 
     public Vector2 ToAbsoluteVector2Safe()
     {
         if (X is Pixels x && Y is Pixels y)
         {
-            return new(x.Value, y.Value);
+            return new Vector2(x.Value, y.Value);
         }
+
         throw new InvalidOperationException("Cannot convert to absolute vector2");
     }
 }

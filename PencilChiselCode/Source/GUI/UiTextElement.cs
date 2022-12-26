@@ -47,7 +47,7 @@ public class UiTextElement : UiElement
                 parent.PaddedPosition,
                 Color,
                 0F,
-                Vector2.One * 200,
+                Vector2.Zero,
                 1F,
                 SpriteEffects.None,
                 0F

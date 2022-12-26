@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
 namespace PencilChiselCode.Source.GUI;
@@ -10,9 +6,10 @@ public class RootBox : AbsoluteBox
 {
     public RootBox(Bonfire game) : base(game, 0, game.GetWindowDimensions()) { }
 
-    new public void Update(GameTime gameTime)
+    public new void Update(GameTime gameTime)
     {
         Size = Game.GetWindowDimensions();
+        PaddedSize = Size;
         if (!IsVisible())
             return;
         DrawableElement?.Update(gameTime, this);
