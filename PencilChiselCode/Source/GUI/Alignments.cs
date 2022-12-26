@@ -10,5 +10,9 @@ public enum Alignments
     MiddleRight,
     BottomLeft,
     BottomCenter,
-    BottomRight
+    BottomRight,
+    LeftOfPrevious,
+    AboveOfPrevious,
+    RightOfPrevious,
+    BelowOfPrevious,
 }

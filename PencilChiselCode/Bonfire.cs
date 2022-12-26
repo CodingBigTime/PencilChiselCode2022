@@ -64,10 +64,7 @@ public class Bonfire : Game
         Window.Title = "Bonfire";
         base.Initialize();
         var menuState = new MenuState(this);
-        ScreenManager.LoadScreen(
-            menuState,
-            new FadeTransition(GraphicsDevice, menuState.BgColor)
-        );
+        ScreenManager.LoadScreen(menuState, new FadeTransition(GraphicsDevice, menuState.BgColor));
     }
 
     protected override void LoadContent()
@@ -255,5 +252,5 @@ public class Bonfire : Game
 
     public Vector2 GetWindowDimensions() => new(GetWindowWidth(), GetWindowHeight());
 
-    public AbsoluteBox GetRootBox() => new(this, new Vector2(0), GetWindowDimensions);
+    public RootBox GetRootBox() => new(this);
 }

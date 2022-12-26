@@ -34,14 +34,24 @@ public class UiTextElement : UiElement
             spriteBatch.DrawOutlinedString(
                 Font,
                 GetText(),
-                parent.Position,
+                parent.PaddedPosition,
                 Color,
                 OutlineColor.Value
             );
         }
         else
         {
-            spriteBatch.DrawString(Font, GetText(), parent.Position, Color);
+            spriteBatch.DrawString(
+                Font,
+                GetText(),
+                parent.PaddedPosition,
+                Color,
+                0F,
+                Vector2.One * 200,
+                1F,
+                SpriteEffects.None,
+                0F
+            );
         }
     }
 }
