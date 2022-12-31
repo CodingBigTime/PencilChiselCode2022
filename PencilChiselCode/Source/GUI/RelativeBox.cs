@@ -8,6 +8,7 @@ public class RelativeBox : Box
     public ScalarVector2 Position { get; set; }
     public ScalarVector2 Size { get; set; }
     public ScalarVector2 Padding { get; set; } = 0;
+    public ScalarVector2 Gap { get; set; } = 0;
 
     public RelativeBox(Bonfire game) : base(game)
     {
@@ -31,6 +32,7 @@ public class RelativeBox : Box
         BoxAlignment = other.BoxAlignment;
         SelfAlignment = other.SelfAlignment;
         Padding = other.Padding;
+        Gap = other.Gap;
     }
 
     public RelativeBox WithChild(RelativeBox child)

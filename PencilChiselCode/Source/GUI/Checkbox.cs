@@ -9,7 +9,7 @@ public class Checkbox : UiElement
 {
     public bool IsChecked => _isChecked();
     private readonly Func<bool> _isChecked;
-    protected readonly Action<bool> Action;
+    private readonly Action<bool> _action;
     private readonly UiElement _uncheckedElement;
     private readonly UiElement _checkedElement;
     private readonly SoundEffect _enabledSound;
@@ -55,7 +55,7 @@ public class Checkbox : UiElement
     )
     {
         _isChecked = isChecked;
-        Action = action;
+        _action = action;
         _enabledSound = enabledSound;
         _disabledSound = disableSound;
         _checkedElement = checkedElement;
@@ -91,6 +91,6 @@ public class Checkbox : UiElement
         else
             _enabledSound.Play();
 
-        Action.Invoke(!IsChecked);
+        _action.Invoke(!IsChecked);
     }
 }

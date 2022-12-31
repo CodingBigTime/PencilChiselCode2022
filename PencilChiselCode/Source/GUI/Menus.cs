@@ -74,7 +74,7 @@ public static class Menus
             },
             new RelativeBox(game, 0, (new Ratio(0.5F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.LeftOfPrevious
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
@@ -85,7 +85,7 @@ public static class Menus
         );
         var berryCountBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowOfPrevious,
+            BoxAlignment = Alignments.BelowPrevious,
         }.WithChild(
             new RelativeBox(game, 0, (new Ratio(2F), 1F))
             {
@@ -113,7 +113,7 @@ public static class Menus
         );
         var campfireTwigCostBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowOfPrevious,
+            BoxAlignment = Alignments.BelowPrevious,
         }.WithChild(
             new RelativeBox(game, 0, (new Ratio(2F), 1F))
             {
@@ -149,7 +149,7 @@ public static class Menus
         );
         var campfireRefuelCostBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowOfPrevious,
+            BoxAlignment = Alignments.BelowPrevious,
         }.WithChild(
             new RelativeBox(game, 0, (new Ratio(2F), 1F))
             {
@@ -185,7 +185,7 @@ public static class Menus
         );
         var companionFeedBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowOfPrevious,
+            BoxAlignment = Alignments.BelowPrevious,
         }.WithChild(
             new RelativeBox(game, 0, (new Ratio(2F), 1F))
             {
@@ -215,7 +215,7 @@ public static class Menus
         );
         var followStopBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowOfPrevious,
+            BoxAlignment = Alignments.BelowPrevious,
         }.WithChild(
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
@@ -263,7 +263,8 @@ public static class Menus
         var menuCategories = new RelativeBox(game, 0, (categoriesSize, 1F))
         {
             BoxAlignment = Alignments.MiddleLeft,
-            SelfAlignment = Alignments.MiddleLeft
+            SelfAlignment = Alignments.MiddleLeft,
+            Gap = 32
         };
         var videoElement = new Button(
             new UiTextElement(game.FontMap["32"], () => "Video", Color.White, Color.Black),
@@ -303,14 +304,25 @@ public static class Menus
             }
         );
 
-        menuCategories.AddChild(
-            new RelativeBox(game, 16, videoElement.Size()) { DrawableElement = videoElement },
-            new RelativeBox(game, (16, 64), audioElement.Size()) { DrawableElement = audioElement },
-            new RelativeBox(game, (16, 112), controlsElement.Size())
+        menuCategories.WithChild(
+            new RelativeBox(game, 16, videoElement.Size())
             {
-                DrawableElement = controlsElement
+                DrawableElement = videoElement,
+                Padding = (0, 8)
             },
-            new RelativeBox(game, (16, -16), doneElement.Size())
+            new RelativeBox(game, 0, audioElement.Size())
+            {
+                BoxAlignment = Alignments.BelowPrevious,
+                DrawableElement = audioElement,
+                Padding = (0, 8)
+            },
+            new RelativeBox(game, 0, controlsElement.Size())
+            {
+                BoxAlignment = Alignments.BelowPrevious,
+                DrawableElement = controlsElement,
+                Padding = (0, 8)
+            },
+            new RelativeBox(game, 0, doneElement.Size())
             {
                 BoxAlignment = Alignments.BottomLeft,
                 SelfAlignment = Alignments.BottomLeft,

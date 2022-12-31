@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -105,12 +106,12 @@ public class AbsoluteBox : Box
         };
 
         if (
-            (
-                child.BoxAlignment is Alignments.LeftOfPrevious
-                || child.BoxAlignment is Alignments.AboveOfPrevious
-                || child.BoxAlignment is Alignments.RightOfPrevious
-                || child.BoxAlignment is Alignments.BelowOfPrevious
-            ) && previous is null
+            child.BoxAlignment
+                is Alignments.LeftOfPrevious
+                    or Alignments.AbovePrevious
+                    or Alignments.RightOfPrevious
+                    or Alignments.BelowPrevious
+            && previous is null
         )
         {
             throw new Exception("BoxAlignment is set relative to previous but previous is null");
@@ -171,13 +172,13 @@ public class AbsoluteBox : Box
                 => previous.Position
                     + new Vector2(-absoluteChild.Size.X, 0)
                     + absoluteChild.Position,
-            Alignments.AboveOfPrevious
+            Alignments.AbovePrevious
                 => previous.Position
                     + new Vector2(0, -absoluteChild.Size.Y)
                     + absoluteChild.Position,
             Alignments.RightOfPrevious
                 => previous.Position + new Vector2(previous.Size.X, 0) + absoluteChild.Position,
-            Alignments.BelowOfPrevious
+            Alignments.BelowPrevious
                 => previous.Position + new Vector2(0, previous.Size.Y) + absoluteChild.Position,
             _ => absoluteChild.Position
         };
@@ -195,9 +196,9 @@ public class AbsoluteBox : Box
                 => new Vector2(-absoluteChild.Size.X / 2, -absoluteChild.Size.Y),
             Alignments.BottomRight => new Vector2(-absoluteChild.Size.X, -absoluteChild.Size.Y),
             Alignments.LeftOfPrevious
-                | Alignments.AboveOfPrevious
+                | Alignments.AbovePrevious
                 | Alignments.RightOfPrevious
-                | Alignments.BelowOfPrevious
+                | Alignments.BelowPrevious
                 => throw new InvalidOperationException(
                     "SelfAlignment isn't meant to use relative to previous alignments"
                 ),
@@ -207,6 +208,10 @@ public class AbsoluteBox : Box
         absoluteChild.PaddedSize = new ScalarVector2(absoluteChild.Size) - child.Padding;
         absoluteChild.PaddedPosition =
             absoluteChild.Position + (absoluteChild.Size - absoluteChild.PaddedSize) / 2;
+        if (child.BoxAlignment is Alignments.AbovePrevious or Alignments.BelowPrevious or Alignments.LeftOfPrevious or Alignments.RightOfPrevious)
+        {
+            absoluteChild.PaddedPosition = new ScalarVector2(absoluteChild.PaddedPosition) + child.Padding / 2;
+        }
         return absoluteChild;
     }
 
@@ -220,32 +225,32 @@ public class AbsoluteBox : Box
 
         if (visible || Game.DebugMode == 2)
         {
-            AbsoluteBox previousChild = null;
-            foreach (var box in Children)
-            {
-                previousChild = box.Draw(spriteBatch, this, previousChild);
-            }
+            Children.Aggregate<RelativeBox, AbsoluteBox>(
+                null,
+                (current, box) => box.Draw(spriteBatch, this, current)
+            );
         }
 
-        if (Game.DebugMode == 2 || (Game.DebugMode == 1 && visible))
+        if (Game.DebugMode != 2 && (Game.DebugMode != 1 || !visible))
+            return;
+
+        if (visible)
         {
-            if (visible)
-            {
-                spriteBatch.DrawRectangle(PaddedPosition, PaddedSize, PaddingDebugColor);
-            }
-            spriteBatch.DrawRectangle(Position, Size, visible ? DebugColor : InvisibleDebugColor);
+            spriteBatch.DrawRectangle(PaddedPosition, PaddedSize, PaddingDebugColor);
         }
+
+        spriteBatch.DrawRectangle(Position, Size, visible ? DebugColor : InvisibleDebugColor);
     }
 
     public void Update(GameTime gameTime)
     {
         if (!IsVisible())
             return;
+
         DrawableElement?.Update(gameTime, this);
-        AbsoluteBox previousChild = null;
-        foreach (var box in Children)
-        {
-            previousChild = box.Update(gameTime, this, previousChild);
-        }
+        Children.Aggregate<RelativeBox, AbsoluteBox>(
+            null,
+            (current, box) => box.Update(gameTime, this, current)
+        );
     }
 }
