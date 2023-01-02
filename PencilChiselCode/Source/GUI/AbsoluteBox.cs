@@ -208,17 +208,6 @@ public class AbsoluteBox : Box
         absoluteChild.PaddedSize = new ScalarVector2(absoluteChild.Size) - child.Padding;
         absoluteChild.PaddedPosition =
             absoluteChild.Position + (absoluteChild.Size - absoluteChild.PaddedSize) / 2;
-        if (
-            child.BoxAlignment
-            is Alignments.AbovePrevious
-                or Alignments.BelowPrevious
-                or Alignments.LeftOfPrevious
-                or Alignments.RightOfPrevious
-        )
-        {
-            absoluteChild.PaddedPosition =
-                new ScalarVector2(absoluteChild.PaddedPosition) + child.Padding / 2;
-        }
         return absoluteChild;
     }
 
