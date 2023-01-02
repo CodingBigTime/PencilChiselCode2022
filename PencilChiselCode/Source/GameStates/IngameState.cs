@@ -188,14 +188,14 @@ public class IngameState : BonfireGameState
             Color.Black
         );
         textInfoBox.AddChild(
-            new RelativeBox(Game, 0, (new FitElement(), new FitElement()))
+            new RelativeBox(Game, 0, new FitElement())
             {
                 BoxAlignment = Alignments.TopCenter,
                 SelfAlignment = Alignments.TopCenter,
                 IsVisible = () => _deathState,
                 DrawableElement = gameOverText
             },
-            new RelativeBox(Game, (0, 50), (new FitElement(), new FitElement()))
+            new RelativeBox(Game, (0, 50), new FitElement())
             {
                 BoxAlignment = Alignments.TopCenter,
                 SelfAlignment = Alignments.TopCenter,

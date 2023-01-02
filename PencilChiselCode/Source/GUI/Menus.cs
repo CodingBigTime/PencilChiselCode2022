@@ -331,22 +331,18 @@ public static class Menus
             IsVisible = () => page == 0
         };
 
+        string FullscreenButtonText() => $"Fullscreen: {windowMode}";
         var fullscreenButton = new Button(
+            new UiTextElement(game.FontMap["24"], FullscreenButtonText, Color.White, Color.Black),
             new UiTextElement(
                 game.FontMap["24"],
-                () => $"Fullscreen: {windowMode}",
-                Color.White,
-                Color.Black
-            ),
-            new UiTextElement(
-                game.FontMap["24"],
-                () => $"Fullscreen: {windowMode}",
+                FullscreenButtonText,
                 Color.GreenYellow,
                 Color.Black
             ),
             new UiTextElement(
                 game.FontMap["24"],
-                () => $"Fullscreen: {windowMode}",
+                FullscreenButtonText,
                 Color.OliveDrab,
                 Color.Black
             ),
@@ -453,13 +449,13 @@ public static class Menus
                     SelfAlignment = Alignments.MiddleLeft,
                     BoxAlignment = Alignments.MiddleLeft
                 },
-                new RelativeBox(game, (8, 0), (new FitElement(), new FitElement()))
+                new RelativeBox(game, (8, 0), new FitElement())
                 {
                     DrawableElement = vSyncText,
-                    BoxAlignment = Alignments.RightOfPrevious,
+                    BoxAlignment = Alignments.RightOfPrevious
                 }
             ),
-            new RelativeBox(game, (0, 8), fullscreenButton.Size())
+            new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = fullscreenButton,
                 BoxAlignment = Alignments.BelowPrevious
@@ -490,16 +486,13 @@ public static class Menus
             Color.Green
         );
         soundMenu.AddChild(
-            new RelativeBox(game, 16, masterVolumeElement.Size())
-            {
-                DrawableElement = masterVolumeElement
-            },
-            new RelativeBox(game, (0, 8), musicElement.Size())
+            new RelativeBox(game, 16, new FitElement()) { DrawableElement = masterVolumeElement },
+            new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = musicElement,
                 BoxAlignment = Alignments.BelowPrevious
             },
-            new RelativeBox(game, (0, 8), sfxElement.Size())
+            new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = sfxElement,
                 BoxAlignment = Alignments.BelowPrevious
@@ -542,23 +535,23 @@ public static class Menus
             Color.Green
         );
         controlsMenu.AddChild(
-            new RelativeBox(game, 16, collectElement.Size()) { DrawableElement = collectElement },
-            new RelativeBox(game, (0, 8), moveUpElement.Size())
+            new RelativeBox(game, 16, new FitElement()) { DrawableElement = collectElement },
+            new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = moveUpElement,
                 BoxAlignment = Alignments.BelowPrevious
             },
-            new RelativeBox(game, (0, 8), moveDownElement.Size())
+            new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = moveDownElement,
                 BoxAlignment = Alignments.BelowPrevious
             },
-            new RelativeBox(game, (0, 8), moveLeftElement.Size())
+            new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = moveLeftElement,
                 BoxAlignment = Alignments.BelowPrevious
             },
-            new RelativeBox(game, (0, 8), moveRightElement.Size())
+            new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = moveRightElement,
                 BoxAlignment = Alignments.BelowPrevious

@@ -176,6 +176,8 @@ public class ScalarVector2
 
     public static implicit operator ScalarVector2((Scalar, float) tuple) => new(tuple);
 
+    public static implicit operator ScalarVector2(Scalar value) => new(value);
+
     public static ScalarVector2 operator *(ScalarVector2 scalarVector2, float scalar) =>
         scalarVector2 switch
         {
