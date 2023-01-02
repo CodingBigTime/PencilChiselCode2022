@@ -305,24 +305,18 @@ public static class Menus
         );
 
         menuCategories.WithChild(
-            new RelativeBox(game, 16, videoElement.Size())
-            {
-                DrawableElement = videoElement,
-                Padding = (0, 8)
-            },
-            new RelativeBox(game, 0, audioElement.Size())
+            new RelativeBox(game, 16, videoElement.Size()) { DrawableElement = videoElement },
+            new RelativeBox(game, (0, 8), audioElement.Size())
             {
                 BoxAlignment = Alignments.BelowPrevious,
-                DrawableElement = audioElement,
-                Padding = (0, 8)
+                DrawableElement = audioElement
             },
-            new RelativeBox(game, 0, controlsElement.Size())
+            new RelativeBox(game, (0, 8), controlsElement.Size())
             {
                 BoxAlignment = Alignments.BelowPrevious,
-                DrawableElement = controlsElement,
-                Padding = (0, 8)
+                DrawableElement = controlsElement
             },
-            new RelativeBox(game, 0, doneElement.Size())
+            new RelativeBox(game, (16, -16), doneElement.Size())
             {
                 BoxAlignment = Alignments.BottomLeft,
                 SelfAlignment = Alignments.BottomLeft,
@@ -437,37 +431,38 @@ public static class Menus
             enabled => vSync = enabled,
             () => vSync
         );
-        var vSyncBox = new RelativeBox(
-            game,
-            (16, 48),
-            (
-                (int)(vSyncText.Size().X + vSyncCheckbox.Size().X + 16),
-                (int)Math.Max(vSyncText.Size().Y, vSyncCheckbox.Size().Y)
-            )
-        );
-        vSyncBox.AddChild(
-            new RelativeBox(game, 0, vSyncCheckbox.Size() * 0.75F)
-            {
-                DrawableElement = vSyncCheckbox,
-                SelfAlignment = Alignments.MiddleLeft,
-                BoxAlignment = Alignments.MiddleLeft
-            },
-            new RelativeBox(game, ((int)vSyncCheckbox.Size().X + 4, 0), vSyncText.Size())
-            {
-                DrawableElement = vSyncText,
-                SelfAlignment = Alignments.MiddleLeft,
-                BoxAlignment = Alignments.MiddleLeft
-            }
-        );
         videoMenu.AddChild(
             new RelativeBox(game, 16, resolutionElement.Size())
             {
                 DrawableElement = resolutionElement
             },
-            vSyncBox,
-            new RelativeBox(game, (16, 88), fullscreenButton.Size())
+            new RelativeBox(
+                game,
+                (0, 8),
+                (
+                    (int)(vSyncText.Size().X + vSyncCheckbox.Size().X + 16),
+                    (int)Math.Max(vSyncText.Size().Y, vSyncCheckbox.Size().Y)
+                )
+            )
             {
-                DrawableElement = fullscreenButton
+                BoxAlignment = Alignments.BelowPrevious
+            }.WithChild(
+                new RelativeBox(game, 0, vSyncCheckbox.Size() * 0.75F)
+                {
+                    DrawableElement = vSyncCheckbox,
+                    SelfAlignment = Alignments.MiddleLeft,
+                    BoxAlignment = Alignments.MiddleLeft
+                },
+                new RelativeBox(game, (8, 0), (new FitElement(), new FitElement()))
+                {
+                    DrawableElement = vSyncText,
+                    BoxAlignment = Alignments.RightOfPrevious,
+                }
+            ),
+            new RelativeBox(game, (0, 8), fullscreenButton.Size())
+            {
+                DrawableElement = fullscreenButton,
+                BoxAlignment = Alignments.BelowPrevious
             }
         );
         var soundMenu = new RelativeBox(game, (categoriesSize, 0F), (1 - categoriesSize, 1F))
@@ -499,8 +494,16 @@ public static class Menus
             {
                 DrawableElement = masterVolumeElement
             },
-            new RelativeBox(game, (16, 48), musicElement.Size()) { DrawableElement = musicElement },
-            new RelativeBox(game, (16, 80), sfxElement.Size()) { DrawableElement = sfxElement }
+            new RelativeBox(game, (0, 8), musicElement.Size())
+            {
+                DrawableElement = musicElement,
+                BoxAlignment = Alignments.BelowPrevious
+            },
+            new RelativeBox(game, (0, 8), sfxElement.Size())
+            {
+                DrawableElement = sfxElement,
+                BoxAlignment = Alignments.BelowPrevious
+            }
         );
         var controlsMenu = new RelativeBox(game, (categoriesSize, 0F), (1 - categoriesSize, 1F))
         {
@@ -540,21 +543,25 @@ public static class Menus
         );
         controlsMenu.AddChild(
             new RelativeBox(game, 16, collectElement.Size()) { DrawableElement = collectElement },
-            new RelativeBox(game, (16, 48), moveUpElement.Size())
+            new RelativeBox(game, (0, 8), moveUpElement.Size())
             {
-                DrawableElement = moveUpElement
+                DrawableElement = moveUpElement,
+                BoxAlignment = Alignments.BelowPrevious
             },
-            new RelativeBox(game, (16, 80), moveDownElement.Size())
+            new RelativeBox(game, (0, 8), moveDownElement.Size())
             {
-                DrawableElement = moveDownElement
+                DrawableElement = moveDownElement,
+                BoxAlignment = Alignments.BelowPrevious
             },
-            new RelativeBox(game, (16, 112), moveLeftElement.Size())
+            new RelativeBox(game, (0, 8), moveLeftElement.Size())
             {
-                DrawableElement = moveLeftElement
+                DrawableElement = moveLeftElement,
+                BoxAlignment = Alignments.BelowPrevious
             },
-            new RelativeBox(game, (16, 144), moveRightElement.Size())
+            new RelativeBox(game, (0, 8), moveRightElement.Size())
             {
-                DrawableElement = moveRightElement
+                DrawableElement = moveRightElement,
+                BoxAlignment = Alignments.BelowPrevious
             }
         );
         settingsMenu.AddChild(videoMenu, soundMenu, controlsMenu);
