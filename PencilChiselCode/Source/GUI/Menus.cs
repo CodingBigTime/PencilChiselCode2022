@@ -264,7 +264,6 @@ public static class Menus
         {
             BoxAlignment = Alignments.MiddleLeft,
             SelfAlignment = Alignments.MiddleLeft,
-            Gap = 32
         };
         var videoElement = new Button(
             new UiTextElement(game.FontMap["32"], () => "Video", Color.White, Color.Black),
