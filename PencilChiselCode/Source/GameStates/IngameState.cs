@@ -145,32 +145,26 @@ public class IngameState : BonfireGameState
         {
             BoxAlignment = Alignments.MiddleCenter,
             SelfAlignment = Alignments.MiddleCenter
-        };
-        buttonBox.AddChild(
+        }.WithChild(
             new RelativeBox(Game, (0, -80), resumeButton.Size())
             {
                 BoxAlignment = Alignments.BottomCenter,
                 SelfAlignment = Alignments.BottomCenter,
                 IsVisible = () => _pauseState,
                 DrawableElement = resumeButton
-            }
-        );
-        buttonBox.AddChild(
-            new RelativeBox(Game, 0, menuButton.Size())
-            {
-                BoxAlignment = Alignments.BottomCenter,
-                SelfAlignment = Alignments.BottomCenter,
-                IsVisible = () => _pauseState || _deathState,
-                DrawableElement = menuButton
-            }
-        );
-        buttonBox.AddChild(
+            },
             new RelativeBox(Game, (0, -80), restartButton.Size())
             {
                 BoxAlignment = Alignments.BottomCenter,
                 SelfAlignment = Alignments.BottomCenter,
                 IsVisible = () => _deathState,
                 DrawableElement = restartButton
+            },
+            new RelativeBox(Game, (0, 32), menuButton.Size())
+            {
+                BoxAlignment = Alignments.BelowPrevious,
+                IsVisible = () => _pauseState || _deathState,
+                DrawableElement = menuButton
             }
         );
         RootBox.AddChild(buttonBox);
@@ -184,17 +178,8 @@ public class IngameState : BonfireGameState
         var textInfoBox = new RelativeBox(Game, 0, (0.5F, 0.25F))
         {
             BoxAlignment = Alignments.MiddleCenter,
-            SelfAlignment = Alignments.MiddleCenter,
+            SelfAlignment = Alignments.MiddleCenter
         };
-        textInfoBox.AddChild(
-            new RelativeBox(Game, 0, gameOverText.Size())
-            {
-                BoxAlignment = Alignments.TopCenter,
-                SelfAlignment = Alignments.TopCenter,
-                IsVisible = () => _deathState,
-                DrawableElement = gameOverText
-            }
-        );
         var finalScoreText = new UiTextElement(
             Game.FontMap["24"],
             () =>
@@ -203,7 +188,14 @@ public class IngameState : BonfireGameState
             Color.Black
         );
         textInfoBox.AddChild(
-            new RelativeBox(Game, (0, 50), finalScoreText.Size())
+            new RelativeBox(Game, 0, new FitElement())
+            {
+                BoxAlignment = Alignments.TopCenter,
+                SelfAlignment = Alignments.TopCenter,
+                IsVisible = () => _deathState,
+                DrawableElement = gameOverText
+            },
+            new RelativeBox(Game, (0, 50), new FitElement())
             {
                 BoxAlignment = Alignments.TopCenter,
                 SelfAlignment = Alignments.TopCenter,
@@ -228,8 +220,8 @@ public class IngameState : BonfireGameState
             () =>
                 new Particle(
                     4F,
-                    new(0, Utils.Random.Next(0, Game.Height)),
-                    new(Utils.Random.Next(0, 20), Utils.Random.Next(-10, 10)),
+                    new Vector2(0, Utils.Random.Next(0, Game.Height)),
+                    new Vector2(Utils.Random.Next(0, 20), Utils.Random.Next(-10, 10)),
                     time => 2 + time,
                     _ => Color.Black
                 ),

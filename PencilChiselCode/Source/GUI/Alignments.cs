@@ -12,7 +12,7 @@ public enum Alignments
     BottomCenter,
     BottomRight,
     LeftOfPrevious,
-    AboveOfPrevious,
+    AbovePrevious,
     RightOfPrevious,
-    BelowOfPrevious,
+    BelowPrevious
 }

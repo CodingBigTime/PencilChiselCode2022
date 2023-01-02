@@ -24,14 +24,6 @@ public class MenuState : BonfireGameState
             SelfAlignment = Alignments.MiddleCenter,
             IsVisible = () => !showSettings
         };
-        menuBox.AddChild(
-            new RelativeBox(Game, (0, 120), logo.Size() * 2.5F)
-            {
-                BoxAlignment = Alignments.TopCenter,
-                SelfAlignment = Alignments.MiddleCenter,
-                DrawableElement = logo
-            }
-        );
         var buttonBox = new RelativeBox(Game, 0, 0.75F)
         {
             BoxAlignment = Alignments.BottomCenter,
@@ -45,14 +37,6 @@ public class MenuState : BonfireGameState
             Game.SoundMap["button_release"],
             Game.Start
         );
-        buttonBox.AddChild(
-            new RelativeBox(Game, 0, startButton.Size())
-            {
-                BoxAlignment = Alignments.MiddleCenter,
-                SelfAlignment = Alignments.MiddleCenter,
-                DrawableElement = startButton
-            }
-        );
         var settingsButton = new Button(
             textureMap["settings_button_normal"],
             textureMap["settings_button_hover"],
@@ -60,14 +44,6 @@ public class MenuState : BonfireGameState
             Game.SoundMap["button_press"],
             Game.SoundMap["button_release"],
             () => showSettings = true
-        );
-        buttonBox.AddChild(
-            new RelativeBox(Game, (0, 85), settingsButton.Size())
-            {
-                BoxAlignment = Alignments.MiddleCenter,
-                SelfAlignment = Alignments.MiddleCenter,
-                DrawableElement = settingsButton
-            }
         );
         var exitButton = new Button(
             textureMap["exit_button_normal"],
@@ -78,18 +54,35 @@ public class MenuState : BonfireGameState
             Game.Exit
         );
         buttonBox.AddChild(
-            new RelativeBox(Game, (0, 170), exitButton.Size())
+            new RelativeBox(Game, 0, startButton.Size())
             {
                 BoxAlignment = Alignments.MiddleCenter,
                 SelfAlignment = Alignments.MiddleCenter,
+                DrawableElement = startButton
+            },
+            new RelativeBox(Game, (0, 32), settingsButton.Size())
+            {
+                BoxAlignment = Alignments.BelowPrevious,
+                DrawableElement = settingsButton
+            },
+            new RelativeBox(Game, (0, 32), exitButton.Size())
+            {
+                BoxAlignment = Alignments.BelowPrevious,
                 DrawableElement = exitButton
             }
         );
-        menuBox.AddChild(buttonBox);
-        RootBox.AddChild(menuBox);
+        menuBox.AddChild(
+            new RelativeBox(Game, (0, 120), logo.Size() * 2.5F)
+            {
+                BoxAlignment = Alignments.TopCenter,
+                SelfAlignment = Alignments.MiddleCenter,
+                DrawableElement = logo
+            },
+            buttonBox
+        );
         var settingsBox = Menus.GetSettingsMenu(Game, () => showSettings = false);
         settingsBox.IsVisible = () => showSettings;
-        RootBox.AddChild(settingsBox);
+        RootBox.AddChild(menuBox, settingsBox);
     }
 
     public override void Draw(GameTime gameTime)
