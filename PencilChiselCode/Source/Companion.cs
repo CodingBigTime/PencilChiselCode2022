@@ -123,6 +123,11 @@ public class Companion
         {
             ComfyMeter.Value -= 8F * gameTime.GetElapsedSeconds();
         }
+
+        if (Game.DebugMode >= 1)
+        {
+            ComfyMeter.Value = 100F;
+        }
     }
 
     public bool IsAnxious() => ComfyMeter <= 0;
