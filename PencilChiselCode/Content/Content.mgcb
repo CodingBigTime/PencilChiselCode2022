@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\.nuget\packages\monogame.extended.content.pipeline\3.8.0\tools\MonoGame.Extended.Content.Pipeline.dll
+/reference:..\..\.nuget\packages\monogame.extended.content.pipeline\3.9.0-alpha0084\tools\MonoGame.Extended.Content.Pipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -38,11 +38,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Animations/player.png
 
-#begin Resources/Fonts/lunchds_12.fnt
-/importer:BitmapFontImporter
-/processor:BitmapFontProcessor
-/build:Resources/Fonts/lunchds_12.fnt
-
 #begin Resources/Fonts/lunchds_12_0.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -55,10 +50,10 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Fonts/lunchds_12_0.png
 
-#begin Resources/Fonts/lunchds_16.fnt
+#begin Resources/Fonts/lunchds_12.fnt
 /importer:BitmapFontImporter
 /processor:BitmapFontProcessor
-/build:Resources/Fonts/lunchds_16.fnt
+/build:Resources/Fonts/lunchds_12.fnt
 
 #begin Resources/Fonts/lunchds_16_0.png
 /importer:TextureImporter
@@ -72,10 +67,10 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Fonts/lunchds_16_0.png
 
-#begin Resources/Fonts/lunchds_24.fnt
+#begin Resources/Fonts/lunchds_16.fnt
 /importer:BitmapFontImporter
 /processor:BitmapFontProcessor
-/build:Resources/Fonts/lunchds_24.fnt
+/build:Resources/Fonts/lunchds_16.fnt
 
 #begin Resources/Fonts/lunchds_24_0.png
 /importer:TextureImporter
@@ -89,10 +84,10 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Fonts/lunchds_24_0.png
 
-#begin Resources/Fonts/lunchds_32.fnt
+#begin Resources/Fonts/lunchds_24.fnt
 /importer:BitmapFontImporter
 /processor:BitmapFontProcessor
-/build:Resources/Fonts/lunchds_32.fnt
+/build:Resources/Fonts/lunchds_24.fnt
 
 #begin Resources/Fonts/lunchds_32_0.png
 /importer:TextureImporter
@@ -105,6 +100,11 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Fonts/lunchds_32_0.png
+
+#begin Resources/Fonts/lunchds_32.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:Resources/Fonts/lunchds_32.fnt
 
 #begin Resources/Sounds/bonfire_song.wav
 /importer:WavImporter

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <LangVersion>latest</LangVersion>
@@ -34,12 +34,12 @@
         <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
-        <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="3.8.0" />
-        <PackageReference Include="MonoGame.Extended.Tweening" Version="3.8.0" />
-        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
-        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
-        <PackageReference Include="MonoGame.Penumbra.DesktopGL" Version="2.1.0" />
+        <PackageReference Include="MonoGame.Extended" Version="3.9.0-alpha0084" />
+        <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="3.9.0-alpha0084" />
+        <PackageReference Include="MonoGame.Extended.Tweening" Version="3.9.0-alpha0084" />
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+        <PackageReference Include="MonoGame.Penumbra.DesktopGL" Version="3.0.0" />
         <PackageReference Include="MonoGame.Extended.Animations" Version="3.7.0" />
     </ItemGroup>
 </Project>
