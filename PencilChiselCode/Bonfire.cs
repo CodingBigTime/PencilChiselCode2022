@@ -237,7 +237,7 @@ public class Bonfire : Game
 
         ScreenManager.Update(gameTime);
         MouseValues.Update();
-        Controls.Update();
+        Controls.Update(gameTime);
         base.Update(gameTime);
     }
 

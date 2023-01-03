@@ -14,18 +14,8 @@ public class Controls
     public static GamePadState GamepadState => GamePad.GetState(PlayerIndex.One);
     public readonly Dictionary<ControlKeys, Keys> KeyBindings = new();
     public readonly Dictionary<ControlKeys, Buttons> ControllerBindings = new();
-
-    public void Update()
-    {
-        PreviousPressedKeys.Clear();
-        PreviousPressedButtons.Clear();
-        PreviousPressedKeys.UnionWith(KeyState.GetPressedKeys());
-        var buttons = Enum.GetValues(typeof(Buttons)).Cast<Buttons>();
-        buttons
-            .Where(button => GamepadState.IsButtonDown(button))
-            .ToList()
-            .ForEach(button => PreviousPressedButtons.Add(button));
-    }
+    public readonly Dictionary<Keys, double> KeyHoldDuration = new();
+    public readonly Dictionary<Buttons, double> ButtonHoldDuration = new();
 
     public Controls()
     {
@@ -51,6 +41,65 @@ public class Controls
         ControllerBindings.Add(ControlKeys.Start, Buttons.A);
     }
 
+    public void Update(GameTime gameTime)
+    {
+        PreviousPressedKeys.Clear();
+        PreviousPressedButtons.Clear();
+        PreviousPressedKeys.UnionWith(KeyState.GetPressedKeys());
+        var buttons = Enum.GetValues(typeof(Buttons)).Cast<Buttons>();
+        buttons
+            .Where(button => GamepadState.IsButtonDown(button))
+            .ToList()
+            .ForEach(button => PreviousPressedButtons.Add(button));
+        foreach (var key in KeyHoldDuration.Keys)
+        {
+            if (PreviousPressedKeys.Contains(key))
+            {
+                KeyHoldDuration[key] += gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+            else
+            {
+                KeyHoldDuration.Remove(key);
+            }
+        }
+        foreach (var key in PreviousPressedKeys.Where(key => !KeyHoldDuration.ContainsKey(key)))
+        {
+            KeyHoldDuration[key] = 0;
+        }
+
+        foreach (var button in ButtonHoldDuration.Keys)
+        {
+            if (PreviousPressedButtons.Contains(button))
+            {
+                ButtonHoldDuration[button] += gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+            else
+            {
+                ButtonHoldDuration.Remove(button);
+            }
+        }
+        foreach (var button in PreviousPressedButtons.Where(button => !ButtonHoldDuration.ContainsKey(button)))
+        {
+            ButtonHoldDuration[button] = 0;
+        }
+    }
+
+    public double GetHoldDuration(ControlKeys key)
+    {
+        if (!IsPressed(key)) return 0;
+
+        if (KeyBindings.ContainsKey(key) && KeyHoldDuration.ContainsKey(KeyBindings[key]))
+        {
+            return KeyHoldDuration[KeyBindings[key]];
+        }
+
+        if (ControllerBindings.ContainsKey(key) && ButtonHoldDuration.ContainsKey(ControllerBindings[key]))
+        {
+            return ButtonHoldDuration[ControllerBindings[key]];
+        }
+
+        return 0D;
+    }
     public Vector2 GetMovement()
     {
         var left = IsPressed(ControlKeys.MoveLeft);
