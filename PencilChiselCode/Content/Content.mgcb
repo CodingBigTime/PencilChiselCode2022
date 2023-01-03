@@ -382,30 +382,6 @@
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/Buttons/minus_arrow_normal.png
 
-#begin Resources/Textures/GUI/Buttons/minus_arrow_normal.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/GUI/Buttons/minus_arrow_normal.png
-
-#begin Resources/Textures/GUI/Buttons/minus_arrow_pressed.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/GUI/Buttons/minus_arrow_pressed.png
-
 #begin Resources/Textures/GUI/Buttons/minus_arrow_pressed.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -441,30 +417,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/Buttons/plus_arrow_normal.png
-
-#begin Resources/Textures/GUI/Buttons/plus_arrow_normal.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/GUI/Buttons/plus_arrow_normal.png
-
-#begin Resources/Textures/GUI/Buttons/plus_arrow_pressed.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resources/Textures/GUI/Buttons/plus_arrow_pressed.png
 
 #begin Resources/Textures/GUI/Buttons/plus_arrow_pressed.png
 /importer:TextureImporter
@@ -741,6 +693,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Resources/Textures/GUI/slider.png
+
+#begin Resources/Textures/GUI/slider.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/slider.png
+
+#begin Resources/Textures/GUI/slider_filled.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Resources/Textures/GUI/slider_filled.png
 
 #begin Resources/Textures/GUI/slider_position.png
 /importer:TextureImporter

@@ -36,6 +36,17 @@ public class Bonfire : Game
     public Dictionary<string, Song> SongMap { get; } = new();
     public Controls Controls;
     public MouseValues MouseValues { get; set; }
+    public float MasterVolume { get; set; }
+    public float MusicVolume
+    {
+        get => MediaPlayer.Volume * MasterVolume;
+        set => MediaPlayer.Volume = value * MasterVolume;
+    }
+    public float SoundVolume
+    {
+        get => SoundEffect.MasterVolume * MasterVolume;
+        set => SoundEffect.MasterVolume = value * MasterVolume;
+    }
 
     public int DebugMode { get; set; }
     public bool IsVSyncEnabled => Graphics.SynchronizeWithVerticalRetrace;
@@ -102,6 +113,7 @@ public class Bonfire : Game
             Content.Load<Texture2D>("Textures/GUI/checkbox_selected")
         );
         TextureMap.Add("slider", Content.Load<Texture2D>("Textures/GUI/slider"));
+        TextureMap.Add("slider_filled", Content.Load<Texture2D>("Textures/GUI/slider_filled"));
         TextureMap.Add("slider_position", Content.Load<Texture2D>("Textures/GUI/slider_position"));
 
         TextureMap.Add("logo", Content.Load<Texture2D>("Textures/GUI/logo"));

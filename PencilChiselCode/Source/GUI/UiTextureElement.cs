@@ -5,7 +5,10 @@ namespace PencilChiselCode.Source.GUI;
 
 public class UiTextureElement : UiElement
 {
-    public override Vector2 Size() => new(Texture.Width, Texture.Height);
+    public override Vector2 Size() => Texture.Bounds.Size.ToVector2();
+    public Vector2 Offset { get; set; }
+    public Rectangle? SourceRectangle { get; set; }
+    public bool ScaleWithParent { get; set; } = true;
 
     public Texture2D Texture { get; protected set; }
 
@@ -17,12 +20,12 @@ public class UiTextureElement : UiElement
     {
         spriteBatch.Draw(
             Texture,
-            parent.PaddedPosition,
-            null,
+            parent.PaddedPosition + Offset,
+            SourceRectangle,
             Color,
             0F,
             Vector2.Zero,
-            parent.PaddedSize / Size(),
+            ScaleWithParent ? parent.PaddedSize / Size() : new Vector2(1F),
             SpriteEffects.None,
             0F
         );
