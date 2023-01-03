@@ -36,7 +36,7 @@ public class Bonfire : Game
     public Dictionary<string, Song> SongMap { get; } = new();
     public Controls Controls;
     public MouseValues MouseValues { get; set; }
-    public float MasterVolume { get; set; }
+    public float MasterVolume { get; set; } = 1F;
     public float MusicVolume
     {
         get => MediaPlayer.Volume * MasterVolume;
