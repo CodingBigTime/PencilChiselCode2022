@@ -43,8 +43,8 @@ public class Player
     private readonly float _maxSpeed = 160F;
     private readonly float _acceleration = 2000F;
     private readonly float _friction = 5.5F;
-    private readonly double _autoPickupStartCooldown = 500D;
-    private readonly double _autoPickupDelay = 250D;
+    private readonly double _autoPickupStartCooldown = 0.5D;
+    private readonly double _autoPickupDelay = 0.25D;
     private readonly Dictionary<string, PopupButton> _popupButtons = new();
     public readonly Dictionary<PickupableTypes, uint> Inventory = new();
     private readonly ParticleGenerator _particleGenerator;
@@ -265,9 +265,10 @@ public class Player
 
         _popupButtons.Values.ToList().ForEach(button => button?.Update(gameTime));
 
-        var currentTime = gameTime.TotalGameTime.TotalMilliseconds;
+        var currentTime = gameTime.TotalGameTime.TotalSeconds;
         var justPickedUp = Game.Controls.JustPressed(ControlKeys.Collect);
-        IsAutoPickingUp = Game.Controls.GetHoldDuration(ControlKeys.Collect) >= _autoPickupStartCooldown;
+        IsAutoPickingUp =
+            Game.Controls.GetHoldDuration(ControlKeys.Collect) >= _autoPickupStartCooldown;
 
         if (
             nearestPickupable != null

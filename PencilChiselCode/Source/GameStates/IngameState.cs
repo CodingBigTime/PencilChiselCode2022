@@ -366,7 +366,7 @@ public class IngameState : BonfireGameState
 
         if (_deathState || _pauseState)
             return;
-        if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).Milliseconds >= 250)
+        if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).TotalSeconds >= 0.25)
         {
             SpawnRandomTwig(
                 Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
@@ -497,9 +497,9 @@ public class IngameState : BonfireGameState
             Color.Orange
         );
 
-        if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).Milliseconds >= 500)
+        if (gameTime.TotalGameTime.Subtract(_fpsCounterGameTime).TotalSeconds >= 0.5)
         {
-            _fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
+            _fps = (int)(1 / gameTime.GetElapsedSeconds());
             _fpsCounterGameTime = gameTime.TotalGameTime;
             _debugData[0] = $"FPS: {_fps}";
         }

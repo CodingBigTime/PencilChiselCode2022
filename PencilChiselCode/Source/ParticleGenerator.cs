@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace PencilChiselCode.Source;
 
@@ -20,9 +21,7 @@ public class ParticleGenerator
 
     public void Update(GameTime gameTime, bool addNew)
     {
-        if (
-            addNew && Utils.Random.NextDouble() < _frequency * gameTime.ElapsedGameTime.TotalSeconds
-        )
+        if (addNew && Utils.Random.NextDouble() < _frequency * gameTime.GetElapsedSeconds())
         {
             _particles.Add(_particleGenerator());
         }

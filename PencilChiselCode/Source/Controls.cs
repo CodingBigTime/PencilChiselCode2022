@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace PencilChiselCode.Source;
 
@@ -55,7 +56,7 @@ public class Controls
         {
             if (PreviousPressedKeys.Contains(key))
             {
-                KeyHoldDuration[key] += gameTime.ElapsedGameTime.TotalMilliseconds;
+                KeyHoldDuration[key] += gameTime.GetElapsedSeconds();
             }
             else
             {
@@ -71,14 +72,18 @@ public class Controls
         {
             if (PreviousPressedButtons.Contains(button))
             {
-                ButtonHoldDuration[button] += gameTime.ElapsedGameTime.TotalMilliseconds;
+                ButtonHoldDuration[button] += gameTime.GetElapsedSeconds();
             }
             else
             {
                 ButtonHoldDuration.Remove(button);
             }
         }
-        foreach (var button in PreviousPressedButtons.Where(button => !ButtonHoldDuration.ContainsKey(button)))
+        foreach (
+            var button in PreviousPressedButtons.Where(
+                button => !ButtonHoldDuration.ContainsKey(button)
+            )
+        )
         {
             ButtonHoldDuration[button] = 0;
         }
@@ -86,20 +91,25 @@ public class Controls
 
     public double GetHoldDuration(ControlKeys key)
     {
-        if (!IsPressed(key)) return 0;
+        if (!IsPressed(key))
+            return 0;
 
         if (KeyBindings.ContainsKey(key) && KeyHoldDuration.ContainsKey(KeyBindings[key]))
         {
             return KeyHoldDuration[KeyBindings[key]];
         }
 
-        if (ControllerBindings.ContainsKey(key) && ButtonHoldDuration.ContainsKey(ControllerBindings[key]))
+        if (
+            ControllerBindings.ContainsKey(key)
+            && ButtonHoldDuration.ContainsKey(ControllerBindings[key])
+        )
         {
             return ButtonHoldDuration[ControllerBindings[key]];
         }
 
         return 0D;
     }
+
     public Vector2 GetMovement()
     {
         var left = IsPressed(ControlKeys.MoveLeft);
