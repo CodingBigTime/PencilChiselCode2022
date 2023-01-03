@@ -62,3 +62,4 @@ monodroid*.msi
 
 # NuGet
 .nuget/
+.fake

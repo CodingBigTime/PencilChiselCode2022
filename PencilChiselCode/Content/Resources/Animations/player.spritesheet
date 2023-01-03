@@ -1,6 +1,6 @@
 {
   "textureAtlas": {
-    "texture": "Animation/player",
+    "texture": "Animations/player",
     "regionWidth": 16,
     "regionHeight": 16
   },

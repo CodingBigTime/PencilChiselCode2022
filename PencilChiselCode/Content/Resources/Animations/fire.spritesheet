@@ -1,6 +1,6 @@
 {
   "textureAtlas": {
-    "texture": "Animation/fire",
+    "texture": "Animations/fire",
     "regionWidth": 16,
     "regionHeight": 16
   },
