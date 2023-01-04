@@ -480,25 +480,11 @@ public static class Menus
             Color.LimeGreen,
             Color.Green
         );
-        var masterVolumeSlider = new Slider(
-            new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
-            new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
-            new UiTextureElement(game.TextureMap["slider_position"]) { Color = Color.LimeGreen },
-            value => masterVolume = value,
-            masterVolume
-        );
         var musicElement = new UiTextElement(
             game.FontMap["24"],
             () => "Music",
             Color.LimeGreen,
             Color.Green
-        );
-        var musicVolumeSlider = new Slider(
-            new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
-            new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
-            new UiTextureElement(game.TextureMap["slider_position"]) { Color = Color.LimeGreen },
-            value => musicVolume = value,
-            musicVolume
         );
         var sfxElement = new UiTextElement(
             game.FontMap["24"],
@@ -506,18 +492,22 @@ public static class Menus
             Color.LimeGreen,
             Color.Green
         );
-        var sfxVolumeSlider = new Slider(
-            new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
-            new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
-            new UiTextureElement(game.TextureMap["slider_position"]) { Color = Color.LimeGreen },
-            value => sfxVolume = value,
-            sfxVolume
-        );
         soundMenu.AddChild(
             new RelativeBox(game, 16, new FitElement()) { DrawableElement = masterVolumeElement },
-            new RelativeBox(game, (0, 8), new FitElement())
+            new Slider(
+                game,
+                (0, 8),
+                new FitElement(2F),
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
+                new UiTextureElement(game.TextureMap["slider_position"])
+                {
+                    Color = Color.LimeGreen
+                },
+                value => masterVolume = value,
+                masterVolume
+            )
             {
-                DrawableElement = masterVolumeSlider,
                 BoxAlignment = Alignments.BelowPrevious
             },
             new RelativeBox(game, (0, 8), new FitElement())
@@ -525,9 +515,20 @@ public static class Menus
                 DrawableElement = musicElement,
                 BoxAlignment = Alignments.BelowPrevious
             },
-            new RelativeBox(game, (0, 8), new FitElement())
+            new Slider(
+                game,
+                (0, 8),
+                new FitElement(2F),
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
+                new UiTextureElement(game.TextureMap["slider_position"])
+                {
+                    Color = Color.LimeGreen
+                },
+                value => musicVolume = value,
+                musicVolume
+            )
             {
-                DrawableElement = musicVolumeSlider,
                 BoxAlignment = Alignments.BelowPrevious
             },
             new RelativeBox(game, (0, 8), new FitElement())
@@ -535,9 +536,20 @@ public static class Menus
                 DrawableElement = sfxElement,
                 BoxAlignment = Alignments.BelowPrevious
             },
-        new RelativeBox(game, (0, 8), new FitElement())
+            new Slider(
+                game,
+                (0, 8),
+                new FitElement(2F),
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
+                new UiTextureElement(game.TextureMap["slider_position"])
+                {
+                    Color = Color.LimeGreen
+                },
+                value => sfxVolume = value,
+                sfxVolume
+            )
             {
-                DrawableElement = sfxVolumeSlider,
                 BoxAlignment = Alignments.BelowPrevious
             }
         );

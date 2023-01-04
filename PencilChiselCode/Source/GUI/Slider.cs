@@ -5,31 +5,24 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PencilChiselCode.Source.GUI;
 
-public class Slider : UiElement
+public class Slider : RelativeBox
 {
-    private UiTextureElement _sliderTexture;
-    private UiTextureElement _filledSliderTexture;
-    private UiTextureElement _sliderButtonTexture;
+    private readonly UiTextureElement _sliderTexture;
+    private readonly UiTextureElement _filledSliderTexture;
+    private readonly UiTextureElement _sliderButtonTexture;
+    private readonly RelativeBox _sliderButtonBox;
     private float _value;
-    private float _minValue;
-    private float _maxValue;
+    private readonly float _minValue;
+    private readonly float _maxValue;
 
     public float Value
     {
         get => _minValue + _value * (_maxValue - _minValue);
         set
         {
-            _value = MathHelper.Clamp(value, _minValue, _maxValue);
-            _sliderButtonTexture.Offset = new Vector2(
-                _value * _sliderTexture.Size().X - _sliderButtonTexture.Size().X / 2F,
-                _sliderButtonTexture.Offset.Y
-            );
-            _filledSliderTexture.SourceRectangle = new Rectangle(
-                0,
-                0,
-                (int)(_sliderTexture.Size().X * _value),
-                (int)_sliderTexture.Size().Y
-            );
+            _value = Math.Clamp(value, 0F, 1F);
+            _sliderButtonBox.Position = (_value, 0);
+            _filledSliderTexture.SourceRectangleBox = new(null, 0F, (_value, 1F));
             _onValueChanged?.Invoke(Value);
         }
     }
@@ -38,6 +31,9 @@ public class Slider : UiElement
     public bool IsDragging { get; private set; }
 
     public Slider(
+        Bonfire game,
+        ScalarVector2 position,
+        ScalarVector2 size,
         UiTextureElement sliderTexture,
         UiTextureElement filledSliderTexture,
         UiTextureElement sliderButtonTexture,
@@ -45,7 +41,7 @@ public class Slider : UiElement
         float initialValue = 0F,
         float minValue = 0F,
         float maxValue = 1F
-    )
+    ) : base(game, position, size)
     {
         _sliderTexture = sliderTexture;
         _filledSliderTexture = filledSliderTexture;
@@ -53,35 +49,62 @@ public class Slider : UiElement
         _onValueChanged = onValueChanged;
         _minValue = minValue;
         _maxValue = maxValue;
-        _sliderTexture.ScaleWithParent = false;
-        _filledSliderTexture.ScaleWithParent = false;
-        _sliderButtonTexture.ScaleWithParent = false;
-        _filledSliderTexture.Offset = _sliderTexture.Offset = new Vector2(
-            0,
-            _sliderButtonTexture.Texture.Height / 2F - _sliderTexture.Texture.Height / 2F
+        var sliderTextureRatio = new Ratio(
+            (float)_sliderTexture.Texture.Height / _sliderTexture.Texture.Width
         );
+        var sliderButtonTextureRatio = new Ratio(
+            (float)_sliderButtonTexture.Texture.Width / _sliderButtonTexture.Texture.Height
+        );
+
+        var sliderBox = new RelativeBox(game, 0, (1F, sliderTextureRatio))
+        {
+            DrawableElement = _sliderTexture,
+            BoxAlignment = Alignments.MiddleCenter,
+            SelfAlignment = Alignments.MiddleCenter,
+        };
+        var filledSliderBox = new RelativeBox(game, 0, (1F, sliderTextureRatio))
+        {
+            DrawableElement = _filledSliderTexture,
+            BoxAlignment = Alignments.MiddleCenter,
+            SelfAlignment = Alignments.MiddleCenter,
+        };
+        _sliderButtonBox = new RelativeBox(game, 0, (sliderButtonTextureRatio, 1F))
+        {
+            DrawableElement = _sliderButtonTexture,
+            BoxAlignment = Alignments.MiddleLeft,
+            SelfAlignment = Alignments.MiddleCenter,
+        };
+        AddChild(sliderBox, filledSliderBox, _sliderButtonBox);
         Value = initialValue;
     }
 
-    public override Vector2 Size() =>
+    public override Vector2 DrawableElementSize =>
         new(
-            Math.Max(_sliderTexture.Size().X, _sliderButtonTexture.Size().X),
+            _sliderTexture.Size().X,
             Math.Max(_sliderTexture.Size().Y, _sliderButtonTexture.Size().Y)
         );
 
-    public override void Draw(SpriteBatch spriteBatch, AbsoluteBox parent)
+    public override AbsoluteBox Update(
+        GameTime gameTime,
+        AbsoluteBox parent,
+        AbsoluteBox previous = null
+    )
     {
-        _sliderTexture.Draw(spriteBatch, parent);
-        _filledSliderTexture.Draw(spriteBatch, parent);
-        _sliderButtonTexture.Draw(spriteBatch, parent);
-    }
-
-    public override void Update(GameTime gameTime, AbsoluteBox parent)
-    {
+        var absoluteSelf = parent.AbsoluteFrom(this, previous);
+        var absoluteSliderButtonBox = absoluteSelf.AbsoluteFrom(_sliderButtonBox);
         var mouseState = Mouse.GetState();
         var mousePosition = mouseState.Position.ToVector2();
 
-        var sliderButtonRect = new Rectangle(parent.Position.ToPoint(), Size().ToPoint());
+        var sliderButtonRect = new Rectangle(
+            new Vector2(
+                absoluteSelf.Position.X - absoluteSliderButtonBox.Size.X / 2,
+                absoluteSelf.Position.Y
+            ).ToPoint(),
+            new Vector2(
+                absoluteSelf.Size.X + absoluteSliderButtonBox.Size.X,
+                absoluteSelf.Size.Y
+            ).ToPoint()
+        );
 
         if (
             parent.Game.MouseValues.JustPressed(MouseButton.Left)
@@ -95,8 +118,10 @@ public class Slider : UiElement
             IsDragging = false;
         }
 
-        if (!IsDragging)
-            return;
-        Value = (mousePosition.X - parent.Position.X) / _sliderTexture.Size().X;
+        if (IsDragging)
+            Value = (mousePosition.X - absoluteSelf.Position.X) / absoluteSelf.Size.X;
+
+        absoluteSelf.Update(gameTime);
+        return absoluteSelf;
     }
 }

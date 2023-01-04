@@ -33,7 +33,7 @@ public class AbsoluteBox : Box
         Children = other.Children;
     }
 
-    public AbsoluteBox AbsoluteFrom(RelativeBox child, AbsoluteBox previous)
+    public AbsoluteBox AbsoluteFrom(RelativeBox child, AbsoluteBox previous = null)
     {
         var parentSizeX = new Pixels((int)PaddedSize.X);
         var parentSizeY = new Pixels((int)PaddedSize.Y);
@@ -43,12 +43,12 @@ public class AbsoluteBox : Box
         Ratio elementSizeYRatio = null;
         if (child.Size.X is FitElement || child.Size.Y is FitElement)
         {
-            if (child.DrawableElement is null)
+            if (child.DrawableElementSize == Vector2.Zero)
                 throw new InvalidOperationException(
                     "Cannot fit element if no drawable element is set"
                 );
-            elementSizeX = new Pixels((int)child.DrawableElement.Size().X);
-            elementSizeY = new Pixels((int)child.DrawableElement.Size().Y);
+            elementSizeX = new Pixels((int)child.DrawableElementSize.X);
+            elementSizeY = new Pixels((int)child.DrawableElementSize.Y);
             elementSizeXRatio = elementSizeX / elementSizeY;
             elementSizeYRatio = elementSizeY / elementSizeX;
         }
@@ -82,15 +82,24 @@ public class AbsoluteBox : Box
                 { X: Pixels x, Y: Ratio y } => (x, x * y),
                 { X: Ratio x, Y: Percent y } => (y * parentSizeY * x, y * parentSizeY),
                 { X: Percent x, Y: Ratio y } => (x * parentSizeX, x * parentSizeX * y),
-                { X: FitElement x, Y: FitElement y } => (elementSizeX, elementSizeY),
-                { X: FitElement x, Y: Pixels y } => (y * elementSizeXRatio, y),
-                { X: Pixels x, Y: FitElement y } => (x, x * elementSizeYRatio),
-                { X: FitElement x, Y: Percent y }
+                { X: FitElement x, Y: FitElement y } => (x * elementSizeX, y * elementSizeY),
+                { X: FitElement x, Y: Pixels y } => (y * elementSizeXRatio * x, y),
+                { X: Pixels x, Y: FitElement y } => (x, x * elementSizeYRatio * y),
+                { X: FitElement(1F) x, Y: Percent y }
                     => (parentSizeY * y * elementSizeXRatio, parentSizeY * y),
-                { X: Percent x, Y: FitElement y }
+
+                { X: FitElement, Y: Percent y }
+                    => throw new InvalidOperationException(
+                        "FitElement must have a value of 1F when paired with Percent"
+                    ),
+                { X: Percent x, Y: FitElement(1F) y }
                     => (parentSizeX * x, parentSizeX * x * elementSizeYRatio),
-                { X: FitElement x, Y: Ratio y } => (elementSizeX, elementSizeX * y),
-                { X: Ratio x, Y: FitElement y } => (elementSizeY * x, elementSizeY),
+                { X: Percent x, Y: FitElement y }
+                    => throw new InvalidOperationException(
+                        "FitElement must have a value of 1F when paired with Percent"
+                    ),
+                { X: FitElement x, Y: Ratio y } => (x * elementSizeX, x * elementSizeX * y),
+                { X: Ratio x, Y: FitElement y } => (y * elementSizeY * x, y * elementSizeY),
                 { X: Ratio, Y: Ratio }
                     => throw new InvalidOperationException("Cannot have 2 ratios"),
                 _
