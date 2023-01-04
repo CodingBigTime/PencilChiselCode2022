@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace PencilChiselCode.Source.GUI;
 
@@ -254,6 +256,9 @@ public static class Menus
         var page = 0;
         var vSync = game.IsVSyncEnabled;
         var windowMode = game.GetWindowMode();
+        var masterVolume = game.MasterVolume;
+        var sfxVolume = game.SoundVolume;
+        var musicVolume = game.MusicVolume;
         const float categoriesSize = 0.25F;
         var settingsMenu = new RelativeBox(game, 0, 0.66F)
         {
@@ -299,6 +304,9 @@ public static class Menus
             {
                 game.SetVSync(vSync);
                 game.SetWindowMode(windowMode);
+                game.MasterVolume = masterVolume;
+                game.MusicVolume = musicVolume;
+                game.SoundVolume = sfxVolume;
                 onDoneClick();
             }
         );
@@ -486,14 +494,62 @@ public static class Menus
         );
         soundMenu.AddChild(
             new RelativeBox(game, 16, new FitElement()) { DrawableElement = masterVolumeElement },
+            new Slider(
+                game,
+                (0, 8),
+                new FitElement(2F),
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
+                new UiTextureElement(game.TextureMap["slider_position"])
+                {
+                    Color = Color.LimeGreen
+                },
+                value => masterVolume = value,
+                masterVolume
+            )
+            {
+                BoxAlignment = Alignments.BelowPrevious
+            },
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = musicElement,
                 BoxAlignment = Alignments.BelowPrevious
             },
+            new Slider(
+                game,
+                (0, 8),
+                new FitElement(2F),
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
+                new UiTextureElement(game.TextureMap["slider_position"])
+                {
+                    Color = Color.LimeGreen
+                },
+                value => musicVolume = value,
+                musicVolume
+            )
+            {
+                BoxAlignment = Alignments.BelowPrevious
+            },
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = sfxElement,
+                BoxAlignment = Alignments.BelowPrevious
+            },
+            new Slider(
+                game,
+                (0, 8),
+                new FitElement(2F),
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.LimeGreen },
+                new UiTextureElement(game.TextureMap["slider"]) { Color = Color.GreenYellow },
+                new UiTextureElement(game.TextureMap["slider_position"])
+                {
+                    Color = Color.LimeGreen
+                },
+                value => sfxVolume = value,
+                sfxVolume
+            )
+            {
                 BoxAlignment = Alignments.BelowPrevious
             }
         );

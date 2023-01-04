@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,6 +36,17 @@ public class Bonfire : Game
     public Dictionary<string, Song> SongMap { get; } = new();
     public Controls Controls;
     public MouseValues MouseValues { get; set; }
+    public float MasterVolume { get; set; } = 1F;
+    public float MusicVolume
+    {
+        get => MediaPlayer.Volume * MasterVolume;
+        set => MediaPlayer.Volume = value * MasterVolume;
+    }
+    public float SoundVolume
+    {
+        get => SoundEffect.MasterVolume * MasterVolume;
+        set => SoundEffect.MasterVolume = value * MasterVolume;
+    }
 
     public int DebugMode { get; set; }
     public bool IsVSyncEnabled => Graphics.SynchronizeWithVerticalRetrace;
@@ -73,83 +83,38 @@ public class Bonfire : Game
     {
         SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-        TextureMap.Add(
-            "start_button_normal",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_normal")
+        var buttons = new List<string>
+        {
+            "start_button",
+            "exit_button",
+            "settings_button",
+            "menu_button",
+            "resume_button",
+            "restart_button",
+            "minus_arrow",
+            "plus_arrow"
+        };
+        var buttonVariants = new List<string> { "normal", "hover", "pressed" };
+
+        buttons.ForEach(
+            button =>
+                buttonVariants.ForEach(
+                    variant =>
+                        TextureMap.Add(
+                            $"{button}_{variant}",
+                            Content.Load<Texture2D>($"Textures/GUI/Buttons/{button}_{variant}")
+                        )
+                )
         );
-        TextureMap.Add(
-            "start_button_hover",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_hover")
-        );
-        TextureMap.Add(
-            "start_button_pressed",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/start_button_pressed")
-        );
-        TextureMap.Add(
-            "settings_button_normal",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/settings_button_normal")
-        );
-        TextureMap.Add(
-            "settings_button_hover",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/settings_button_hover")
-        );
-        TextureMap.Add(
-            "settings_button_pressed",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/settings_button_pressed")
-        );
-        TextureMap.Add(
-            "exit_button_normal",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_normal")
-        );
-        TextureMap.Add(
-            "exit_button_hover",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_hover")
-        );
-        TextureMap.Add(
-            "exit_button_pressed",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/exit_button_pressed")
-        );
-        TextureMap.Add(
-            "resume_button_normal",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/resume_button_normal")
-        );
-        TextureMap.Add(
-            "resume_button_hover",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/resume_button_hover")
-        );
-        TextureMap.Add(
-            "resume_button_pressed",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/resume_button_pressed")
-        );
-        TextureMap.Add(
-            "menu_button_normal",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/menu_button_normal")
-        );
-        TextureMap.Add(
-            "menu_button_hover",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/menu_button_hover")
-        );
-        TextureMap.Add(
-            "menu_button_pressed",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/menu_button_pressed")
-        );
-        TextureMap.Add(
-            "restart_button_normal",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_normal")
-        );
-        TextureMap.Add(
-            "restart_button_hover",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_hover")
-        );
-        TextureMap.Add(
-            "restart_button_pressed",
-            Content.Load<Texture2D>("Textures/GUI/Buttons/restart_button_pressed")
-        );
+
         TextureMap.Add("checkbox_empty", Content.Load<Texture2D>("Textures/GUI/checkbox_empty"));
         TextureMap.Add(
             "checkbox_selected",
             Content.Load<Texture2D>("Textures/GUI/checkbox_selected")
         );
+        TextureMap.Add("slider", Content.Load<Texture2D>("Textures/GUI/slider"));
+        TextureMap.Add("slider_filled", Content.Load<Texture2D>("Textures/GUI/slider_filled"));
+        TextureMap.Add("slider_position", Content.Load<Texture2D>("Textures/GUI/slider_position"));
 
         TextureMap.Add("logo", Content.Load<Texture2D>("Textures/GUI/logo"));
 
@@ -274,6 +239,7 @@ public class Bonfire : Game
         {
             return Window.IsBorderless ? WindowMode.BorderlessFullscreen : WindowMode.Fullscreen;
         }
+
         return WindowMode.Windowed;
     }
 

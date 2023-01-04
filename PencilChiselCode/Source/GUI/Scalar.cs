@@ -52,6 +52,9 @@ public record Pixels(int Value) : Scalar
 
     public static Pixels operator *(Ratio ratio, Pixels pixels) => pixels * ratio;
 
+    public static Pixels operator *(Pixels pixels, FitElement fitElement) =>
+        new((int)(pixels.Value * fitElement.Value));
+
     public static Pixels operator /(Pixels pixels, Percent percent) =>
         new((int)(pixels.Value / percent.Value));
 
@@ -92,7 +95,13 @@ public record Ratio(float Value) : Scalar
     public float Value { get; } = Value;
 }
 
-public record FitElement : Scalar;
+public record FitElement(float Value = 1F) : Scalar
+{
+    public float Value { get; } = Value;
+
+    public static Pixels operator *(FitElement fitElement, Pixels pixels) =>
+        new((int)(fitElement.Value * pixels.Value));
+}
 
 public class ScalarVector2
 {

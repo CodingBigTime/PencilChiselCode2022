@@ -57,7 +57,11 @@ public class RelativeBox : Box
         return absoluteSelf;
     }
 
-    public AbsoluteBox Update(GameTime gameTime, AbsoluteBox parent, AbsoluteBox previous = null)
+    public virtual AbsoluteBox Update(
+        GameTime gameTime,
+        AbsoluteBox parent,
+        AbsoluteBox previous = null
+    )
     {
         var absoluteSelf = parent.AbsoluteFrom(this, previous);
         if (IsVisible())

@@ -115,5 +115,5 @@ public class Button : UiElement
         IsPressed = false;
     }
 
-    public virtual void Click() => Action?.Invoke();
+    public void Click() => Action?.Invoke();
 }
