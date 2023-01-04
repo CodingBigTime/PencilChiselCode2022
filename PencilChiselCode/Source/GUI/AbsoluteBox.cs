@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using System.Collections.Generic;
 
 namespace PencilChiselCode.Source.GUI;
 
@@ -37,21 +38,10 @@ public class AbsoluteBox : Box
     {
         var parentSizeX = new Pixels((int)PaddedSize.X);
         var parentSizeY = new Pixels((int)PaddedSize.Y);
-        Pixels elementSizeX = null;
-        Pixels elementSizeY = null;
-        Ratio elementSizeXRatio = null;
-        Ratio elementSizeYRatio = null;
-        if (child.Size.X is FitElement || child.Size.Y is FitElement)
-        {
-            if (child.DrawableElementSize == Vector2.Zero)
-                throw new InvalidOperationException(
-                    "Cannot fit element if no drawable element is set"
-                );
-            elementSizeX = new Pixels((int)child.DrawableElementSize.X);
-            elementSizeY = new Pixels((int)child.DrawableElementSize.Y);
-            elementSizeXRatio = elementSizeX / elementSizeY;
-            elementSizeYRatio = elementSizeY / elementSizeX;
-        }
+        Pixels elementSizeX = new((int)child.DrawableElementSize.X);
+        Pixels elementSizeY = new((int)child.DrawableElementSize.Y);
+        Ratio elementSizeXRatio = elementSizeX / elementSizeY;
+        Ratio elementSizeYRatio = elementSizeY / elementSizeX;
 
         var absoluteChild = new AbsoluteBox(
             Game,
@@ -113,13 +103,17 @@ public class AbsoluteBox : Box
             DrawableElement = child.DrawableElement,
             Children = child.Children
         };
-
         if (
             child.BoxAlignment
-                is Alignments.LeftOfPrevious
-                    or Alignments.AbovePrevious
-                    or Alignments.RightOfPrevious
-                    or Alignments.BelowPrevious
+                is Alignments.TopLeftOfPrevious
+                    or Alignments.TopCenterOfPrevious
+                    or Alignments.TopRightOfPrevious
+                    or Alignments.MiddleLeftOfPrevious
+                    or Alignments.MiddleCenterOfPrevious
+                    or Alignments.MiddleRightOfPrevious
+                    or Alignments.BottomLeftOfPrevious
+                    or Alignments.BottomCenterOfPrevious
+                    or Alignments.BottomRightOfPrevious
             && previous is null
         )
         {
@@ -177,18 +171,31 @@ public class AbsoluteBox : Box
                         PaddedSize.X + absoluteChild.Position.X,
                         PaddedSize.Y + absoluteChild.Position.Y
                     ),
-            Alignments.LeftOfPrevious
+            Alignments.TopLeftOfPrevious => previous.Position + absoluteChild.Position,
+            Alignments.TopCenterOfPrevious
+                => previous.Position + absoluteChild.Position + new Vector2(previous.Size.X / 2, 0),
+            Alignments.TopRightOfPrevious
+                => previous.Position + absoluteChild.Position + new Vector2(previous.Size.X, 0),
+            Alignments.MiddleLeftOfPrevious
+                => previous.Position + absoluteChild.Position + new Vector2(0, previous.Size.Y / 2),
+            Alignments.MiddleCenterOfPrevious
                 => previous.Position
-                    + new Vector2(-absoluteChild.Size.X, 0)
-                    + absoluteChild.Position,
-            Alignments.AbovePrevious
+                    + absoluteChild.Position
+                    + new Vector2(previous.Size.X / 2, previous.Size.Y / 2),
+            Alignments.MiddleRightOfPrevious
                 => previous.Position
-                    + new Vector2(0, -absoluteChild.Size.Y)
-                    + absoluteChild.Position,
-            Alignments.RightOfPrevious
-                => previous.Position + new Vector2(previous.Size.X, 0) + absoluteChild.Position,
-            Alignments.BelowPrevious
-                => previous.Position + new Vector2(0, previous.Size.Y) + absoluteChild.Position,
+                    + absoluteChild.Position
+                    + new Vector2(previous.Size.X, previous.Size.Y / 2),
+            Alignments.BottomLeftOfPrevious
+                => previous.Position + absoluteChild.Position + new Vector2(0, previous.Size.Y),
+            Alignments.BottomCenterOfPrevious
+                => previous.Position
+                    + absoluteChild.Position
+                    + new Vector2(previous.Size.X / 2, previous.Size.Y),
+            Alignments.BottomRightOfPrevious
+                => previous.Position
+                    + absoluteChild.Position
+                    + new Vector2(previous.Size.X, previous.Size.Y),
             _ => absoluteChild.Position
         };
         absoluteChild.Position += child.SelfAlignment switch
@@ -204,10 +211,15 @@ public class AbsoluteBox : Box
             Alignments.BottomCenter
                 => new Vector2(-absoluteChild.Size.X / 2, -absoluteChild.Size.Y),
             Alignments.BottomRight => new Vector2(-absoluteChild.Size.X, -absoluteChild.Size.Y),
-            Alignments.LeftOfPrevious
-                | Alignments.AbovePrevious
-                | Alignments.RightOfPrevious
-                | Alignments.BelowPrevious
+            Alignments.TopLeftOfPrevious
+            or Alignments.TopCenterOfPrevious
+            or Alignments.TopRightOfPrevious
+            or Alignments.MiddleLeftOfPrevious
+            or Alignments.MiddleCenterOfPrevious
+            or Alignments.MiddleRightOfPrevious
+            or Alignments.BottomLeftOfPrevious
+            or Alignments.BottomCenterOfPrevious
+            or Alignments.BottomRightOfPrevious
                 => throw new InvalidOperationException(
                     "SelfAlignment isn't meant to use relative to previous alignments"
                 ),
@@ -230,10 +242,17 @@ public class AbsoluteBox : Box
 
         if (visible || Game.DebugMode == 2)
         {
-            Children.Aggregate<RelativeBox, AbsoluteBox>(
-                null,
-                (current, box) => box.Draw(spriteBatch, this, current)
-            );
+            List<AbsoluteBox> previousBoxes = new();
+            foreach (var relativeChild in Children)
+            {
+                previousBoxes.Add(
+                    relativeChild.Draw(
+                        spriteBatch,
+                        this,
+                        previousBoxes.ElementAtOrDefault(relativeChild.PreviousBoxIndex)
+                    )
+                );
+            }
         }
 
         if (Game.DebugMode != 2 && (Game.DebugMode != 1 || !visible))
@@ -253,9 +272,16 @@ public class AbsoluteBox : Box
             return;
 
         DrawableElement?.Update(gameTime, this);
-        Children.Aggregate<RelativeBox, AbsoluteBox>(
-            null,
-            (current, box) => box.Update(gameTime, this, current)
-        );
+        List<AbsoluteBox> previousBoxes = new();
+        foreach (var relativeChild in Children)
+        {
+            previousBoxes.Add(
+                relativeChild.Update(
+                    gameTime,
+                    this,
+                    previousBoxes.ElementAtOrDefault(relativeChild.PreviousBoxIndex)
+                )
+            );
+        }
     }
 }

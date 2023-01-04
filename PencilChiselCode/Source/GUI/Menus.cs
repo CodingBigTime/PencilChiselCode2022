@@ -70,24 +70,28 @@ public static class Menus
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = twig,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new Ratio(0.5F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = twigCount,
                 Padding = 0.3F
             }
         );
         var berryCountBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowPrevious,
+            BoxAlignment = Alignments.BottomRightOfPrevious,
+            SelfAlignment = Alignments.TopRight
         }.WithChild(
             new RelativeBox(game, 0, (new Ratio(2F), 1F))
             {
@@ -98,24 +102,28 @@ public static class Menus
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = berry,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new Ratio(0.5F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = berryCount,
                 Padding = 0.3F
             }
         );
         var campfireTwigCostBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowPrevious,
+            BoxAlignment = Alignments.BottomRightOfPrevious,
+            SelfAlignment = Alignments.TopRight
         }.WithChild(
             new RelativeBox(game, 0, (new Ratio(2F), 1F))
             {
@@ -126,32 +134,37 @@ public static class Menus
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = campfire,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = equals,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = twig,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = campfireTwigCost,
                 Padding = 0.3F
             }
         );
         var campfireRefuelCostBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowPrevious,
+            BoxAlignment = Alignments.BottomRightOfPrevious,
+            SelfAlignment = Alignments.TopRight
         }.WithChild(
             new RelativeBox(game, 0, (new Ratio(2F), 1F))
             {
@@ -162,32 +175,37 @@ public static class Menus
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = campfire,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = plus,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = twig,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = campfireRefuelCost,
                 Padding = 0.3F
             }
         );
         var companionFeedBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowPrevious,
+            BoxAlignment = Alignments.BottomRightOfPrevious,
+            SelfAlignment = Alignments.TopRight
         }.WithChild(
             new RelativeBox(game, 0, (new Ratio(2F), 1F))
             {
@@ -198,26 +216,30 @@ public static class Menus
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = companion,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = plus,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = berry,
                 Padding = 0.3F
             }
         );
         var followStopBox = new RelativeBox(game, 0, (300, 50))
         {
-            BoxAlignment = Alignments.BelowPrevious,
+            BoxAlignment = Alignments.BottomRightOfPrevious,
+            SelfAlignment = Alignments.TopRight
         }.WithChild(
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
@@ -228,13 +250,15 @@ public static class Menus
             },
             new RelativeBox(game, 0, (new Ratio(1F), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = companion,
                 Padding = 0.3F
             },
             new RelativeBox(game, 0, (new FitElement(), 1F))
             {
-                BoxAlignment = Alignments.LeftOfPrevious,
+                BoxAlignment = Alignments.MiddleLeftOfPrevious,
+                SelfAlignment = Alignments.MiddleRight,
                 DrawableElement = followStop,
                 Padding = 0.3F
             }
@@ -315,12 +339,14 @@ public static class Menus
             new RelativeBox(game, 16, videoElement.Size()) { DrawableElement = videoElement },
             new RelativeBox(game, (0, 8), audioElement.Size())
             {
-                BoxAlignment = Alignments.BelowPrevious,
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft,
                 DrawableElement = audioElement
             },
             new RelativeBox(game, (0, 8), controlsElement.Size())
             {
-                BoxAlignment = Alignments.BelowPrevious,
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft,
                 DrawableElement = controlsElement
             },
             new RelativeBox(game, (16, -16), doneElement.Size())
@@ -448,7 +474,8 @@ public static class Menus
                 )
             )
             {
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             }.WithChild(
                 new RelativeBox(game, 0, vSyncCheckbox.Size() * 0.75F)
                 {
@@ -459,13 +486,15 @@ public static class Menus
                 new RelativeBox(game, (8, 0), new FitElement())
                 {
                     DrawableElement = vSyncText,
-                    BoxAlignment = Alignments.RightOfPrevious
+                    BoxAlignment = Alignments.MiddleRightOfPrevious,
+                    SelfAlignment = Alignments.MiddleLeft
                 }
             ),
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = fullscreenButton,
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             }
         );
         var soundMenu = new RelativeBox(game, (categoriesSize, 0F), (1 - categoriesSize, 1F))
@@ -508,12 +537,14 @@ public static class Menus
                 masterVolume
             )
             {
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             },
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = musicElement,
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             },
             new Slider(
                 game,
@@ -529,12 +560,14 @@ public static class Menus
                 musicVolume
             )
             {
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             },
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = sfxElement,
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             },
             new Slider(
                 game,
@@ -550,7 +583,8 @@ public static class Menus
                 sfxVolume
             )
             {
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             }
         );
         var controlsMenu = new RelativeBox(game, (categoriesSize, 0F), (1 - categoriesSize, 1F))
@@ -594,22 +628,26 @@ public static class Menus
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = moveUpElement,
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             },
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = moveDownElement,
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             },
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = moveLeftElement,
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             },
             new RelativeBox(game, (0, 8), new FitElement())
             {
                 DrawableElement = moveRightElement,
-                BoxAlignment = Alignments.BelowPrevious
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft
             }
         );
         settingsMenu.AddChild(videoMenu, soundMenu, controlsMenu);

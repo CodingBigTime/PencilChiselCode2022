@@ -62,12 +62,14 @@ public class MenuState : BonfireGameState
             },
             new RelativeBox(Game, (0, 32), settingsButton.Size())
             {
-                BoxAlignment = Alignments.BelowPrevious,
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft,
                 DrawableElement = settingsButton
             },
             new RelativeBox(Game, (0, 32), exitButton.Size())
             {
-                BoxAlignment = Alignments.BelowPrevious,
+                BoxAlignment = Alignments.BottomLeftOfPrevious,
+                SelfAlignment = Alignments.TopLeft,
                 DrawableElement = exitButton
             }
         );
