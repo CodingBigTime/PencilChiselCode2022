@@ -80,7 +80,7 @@ public class Companion
         ComfyMeter.Update(gameTime);
 
         var (playerPosX, playerPosY) = playerPosition;
-        var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var delta = gameTime.GetElapsedSeconds();
         var width = Math.Abs(Position.X - playerPosX);
         var height = Math.Abs(Position.Y - playerPosY);
         var h = (float)Math.Sqrt(Math.Pow(width, 2) + Math.Pow(height, 2));
@@ -122,6 +122,11 @@ public class Companion
         )
         {
             ComfyMeter.Value -= 8F * gameTime.GetElapsedSeconds();
+        }
+
+        if (Game.DebugMode >= 1)
+        {
+            ComfyMeter.Value = 100F;
         }
     }
 

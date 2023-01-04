@@ -40,7 +40,7 @@ public class Particle
 
     public void Update(GameTime gameTime)
     {
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var deltaTime = gameTime.GetElapsedSeconds();
 
         if (_startTime < 0)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,10 +43,14 @@ public class Player
     private readonly float _maxSpeed = 160F;
     private readonly float _acceleration = 2000F;
     private readonly float _friction = 5.5F;
+    private readonly double _autoPickupStartCooldown = 0.5D;
+    private readonly double _autoPickupDelay = 0.25D;
     private readonly Dictionary<string, PopupButton> _popupButtons = new();
     public readonly Dictionary<PickupableTypes, uint> Inventory = new();
     private readonly ParticleGenerator _particleGenerator;
     private readonly IngameState _state;
+    private double _lastPickupTime;
+    public bool IsAutoPickingUp { get; set; }
     private Bonfire Game => _state.Game;
 
     public Player(IngameState state, Vector2 position)
@@ -160,7 +165,7 @@ public class Player
 
     public void Update(GameTime gameTime)
     {
-        var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var delta = gameTime.GetElapsedSeconds();
         var (mx, my) = Game.Controls.GetMovement();
 
         var angle = (float)Math.Atan2(_speed.Y, _speed.X);
@@ -260,8 +265,20 @@ public class Player
 
         _popupButtons.Values.ToList().ForEach(button => button?.Update(gameTime));
 
-        if (Game.Controls.JustPressed(ControlKeys.Collect) && nearestPickupable != null)
+        var currentTime = gameTime.TotalGameTime.TotalSeconds;
+        var justPickedUp = Game.Controls.JustPressed(ControlKeys.Collect);
+        IsAutoPickingUp =
+            Game.Controls.GetHoldDuration(ControlKeys.Collect) >= _autoPickupStartCooldown;
+
+        if (
+            nearestPickupable != null
+            && (
+                (IsAutoPickingUp && currentTime - _lastPickupTime >= _autoPickupDelay)
+                || justPickedUp
+            )
+        )
         {
+            _lastPickupTime = currentTime;
             ++Inventory[nearestPickupable.Type];
             nearestPickupable.OnPickup();
             _popupButtons.Remove("E");
