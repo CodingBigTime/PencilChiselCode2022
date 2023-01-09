@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PencilChiselCode.Source.GUI;
@@ -8,6 +9,7 @@ public class RelativeBox : Box
     public ScalarVector2 Position { get; set; }
     public ScalarVector2 Size { get; set; }
     public ScalarVector2 Padding { get; set; } = 0;
+    public Index PreviousBoxIndex = ^1;
 
     public RelativeBox(Bonfire game) : base(game)
     {

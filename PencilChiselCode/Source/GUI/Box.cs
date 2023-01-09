@@ -9,7 +9,8 @@ public class Box
     public readonly Bonfire Game;
     public List<RelativeBox> Children { get; protected set; } = new();
     public UiElement DrawableElement;
-    public virtual Vector2 DrawableElementSize => DrawableElement?.Size() ?? Vector2.Zero;
+    public virtual Vector2 DrawableElementSize =>
+        IsVisible() ? (DrawableElement?.Size() ?? Vector2.Zero) : Vector2.Zero;
     public Alignments BoxAlignment { get; set; } = Alignments.TopLeft;
     public Alignments SelfAlignment { get; set; } = Alignments.TopLeft;
     public Func<bool> IsVisible { get; set; } = () => true;

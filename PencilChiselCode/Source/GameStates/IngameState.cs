@@ -146,25 +146,27 @@ public class IngameState : BonfireGameState
             BoxAlignment = Alignments.MiddleCenter,
             SelfAlignment = Alignments.MiddleCenter
         }.WithChild(
-            new RelativeBox(Game, (0, -80), resumeButton.Size())
+            new RelativeBox(Game, (0, 0.6F), new FitElement())
             {
-                BoxAlignment = Alignments.BottomCenter,
+                BoxAlignment = Alignments.MiddleCenter,
+                SelfAlignment = Alignments.MiddleCenter,
+                IsVisible = () => _pauseState || _deathState,
+                DrawableElement = menuButton
+            },
+            new RelativeBox(Game, (0, -32), new FitElement())
+            {
+                BoxAlignment = Alignments.TopCenterOfPrevious,
                 SelfAlignment = Alignments.BottomCenter,
                 IsVisible = () => _pauseState,
                 DrawableElement = resumeButton
             },
-            new RelativeBox(Game, (0, -80), restartButton.Size())
+            new RelativeBox(Game, (0, -32), new FitElement())
             {
-                BoxAlignment = Alignments.BottomCenter,
+                BoxAlignment = Alignments.TopCenterOfPrevious,
                 SelfAlignment = Alignments.BottomCenter,
+                PreviousBoxIndex = ^2,
                 IsVisible = () => _deathState,
                 DrawableElement = restartButton
-            },
-            new RelativeBox(Game, (0, 32), menuButton.Size())
-            {
-                BoxAlignment = Alignments.BelowPrevious,
-                IsVisible = () => _pauseState || _deathState,
-                DrawableElement = menuButton
             }
         );
         RootBox.AddChild(buttonBox);
