@@ -230,6 +230,7 @@ public class IngameState : BonfireGameState
             100F
         );
         var inventoryBox = Menus.GetInventory(Game, Player);
+        inventoryBox.IsVisible = () => _pauseState;
         RootBox.AddChild(inventoryBox);
         _song = Game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
