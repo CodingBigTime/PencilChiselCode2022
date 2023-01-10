@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PencilChiselCode.Source.GUI;
@@ -10,7 +9,7 @@ public class UiTextureElement : UiElement
 
     public Vector2 Offset { get; set; }
     public RelativeBox SourceRectangleBox { get; set; }
-    public Texture2D Texture { get; protected set; }
+    public Texture2D Texture { get; set; }
 
     public Color Color { get; set; } = Color.White;
 
