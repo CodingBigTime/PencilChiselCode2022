@@ -8,6 +8,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tweening;
 using PencilChiselCode.Source.GUI;
 using PencilChiselCode.Source.Objects;
 
@@ -39,6 +40,8 @@ public class IngameState : BonfireGameState
     private const int SpawnOffset = 128;
     public const int DarknessEndOffset = 64;
     public OrthographicCamera Camera { get; private set; }
+    public Tweener DaytimeTweener { get; private set; }
+    public float Daytime { get; set; }
     public RootBox RootBox;
 
     private int MapIndex =>
@@ -227,7 +230,7 @@ public class IngameState : BonfireGameState
                     time => 2 + time,
                     _ => Color.Black
                 ),
-            100F
+            () => Daytime * 100F
         );
         var inventoryBox = Menus.GetInventory(Game, Player);
         inventoryBox.IsVisible = () => _pauseState;
@@ -235,6 +238,19 @@ public class IngameState : BonfireGameState
         _song = Game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
+
+        DaytimeTweener = new Tweener();
+        DaytimeTweener
+            .TweenTo(
+                target: this,
+                expression: state => state.Daytime,
+                toValue: 1F,
+                duration: 10F,
+                delay: 2F
+            )
+            .RepeatForever(repeatDelay: 2F)
+            .AutoReverse()
+            .Easing(EasingFunctions.SineInOut);
     }
 
     public static void TryGenerate(Func<bool> generator, double chance = 1, int attempts = 10)
@@ -389,6 +405,10 @@ public class IngameState : BonfireGameState
             );
             _pickupableCounterGameTime = gameTime.TotalGameTime;
         }
+
+        DaytimeTweener.Update(gameTime.GetElapsedSeconds());
+        var inverseDaytime = 1F - Daytime;
+        Game.Penumbra.AmbientColor = new Color(inverseDaytime, inverseDaytime, inverseDaytime);
 
         var oldMapIndex = MapIndex;
         Game.TiledMapRenderer.Update(gameTime);
