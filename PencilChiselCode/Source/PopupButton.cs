@@ -12,17 +12,26 @@ public class PopupButton
     private readonly Tweener _rotationTweener;
     public float scale = 0.75F;
     public float rotation = -0.33F;
-    public Texture2D Texture;
-    private Vector2 _size;
+    public Texture2D Texture =>
+        Game.Controls.WasControllerUsed ? ControllerTexture : KeyboardTexture;
+    public Texture2D ControllerTexture;
+    public Texture2D KeyboardTexture;
+    private Vector2 Size => new Vector2(Texture.Width, Texture.Height);
     private readonly BonfireGameState _state;
     private Bonfire Game => _state.Game;
 
-    public PopupButton(BonfireGameState state, Texture2D texture)
+    public PopupButton(BonfireGameState state, Texture2D texture) : this(state, texture, texture)
+    { }
+
+    public PopupButton(
+        BonfireGameState state,
+        Texture2D keyboardTexture,
+        Texture2D controllerTexture
+    )
     {
         _state = state;
-        Texture = texture;
-        Texture = texture;
-        _size = new Vector2(Texture.Width, Texture.Height);
+        KeyboardTexture = keyboardTexture;
+        ControllerTexture = controllerTexture;
         _scaleTweener = new Tweener();
         _scaleTweener
             .TweenTo(
@@ -57,7 +66,7 @@ public class PopupButton
             sourceRectangle: null,
             color: Color.White,
             rotation: rotation,
-            origin: _size * scale * 0.5F,
+            origin: Size * scale * 0.5F,
             scale: 2F * scale,
             effects: SpriteEffects.None,
             layerDepth: 0

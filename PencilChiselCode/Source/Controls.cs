@@ -17,6 +17,19 @@ public class Controls
     public readonly Dictionary<ControlKeys, Buttons> ControllerBindings = new();
     public readonly Dictionary<Keys, double> KeyHoldDuration = new();
     public readonly Dictionary<Buttons, double> ButtonHoldDuration = new();
+    private bool _wasControllerUsed;
+
+    public bool WasControllerUsed
+    {
+        get => _wasControllerUsed;
+        private set
+        {
+            _wasControllerUsed = value;
+            OnControllerTypeChanged?.Invoke(this, _wasControllerUsed);
+        }
+    }
+
+    public event EventHandler<bool> OnControllerTypeChanged;
 
     public Controls()
     {
@@ -63,6 +76,7 @@ public class Controls
                 KeyHoldDuration.Remove(key);
             }
         }
+
         foreach (var key in PreviousPressedKeys.Where(key => !KeyHoldDuration.ContainsKey(key)))
         {
             KeyHoldDuration[key] = 0;
@@ -79,6 +93,7 @@ public class Controls
                 ButtonHoldDuration.Remove(button);
             }
         }
+
         foreach (
             var button in PreviousPressedButtons.Where(
                 button => !ButtonHoldDuration.ContainsKey(button)
@@ -86,6 +101,15 @@ public class Controls
         )
         {
             ButtonHoldDuration[button] = 0;
+        }
+
+        if (PreviousPressedButtons.Any())
+        {
+            WasControllerUsed = true;
+        }
+        else if (PreviousPressedKeys.Any())
+        {
+            WasControllerUsed = false;
         }
     }
 

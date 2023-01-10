@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -229,7 +228,11 @@ public class Player
 
         if (nearestCampfire != null && !_popupButtons.ContainsKey("F"))
         {
-            _popupButtons["F"] = new PopupButton(_state, Game.TextureMap["f_key"]);
+            _popupButtons["F"] = new PopupButton(
+                _state,
+                Game.TextureMap["f_key"],
+                Game.TextureMap["b_button"]
+            );
         }
 
         if (nearestCampfire == null)
@@ -260,7 +263,11 @@ public class Player
 
         if (nearestPickupable != null && !_popupButtons.ContainsKey("E"))
         {
-            _popupButtons["E"] = new PopupButton(_state, Game.TextureMap["e_key"]);
+            _popupButtons["E"] = new PopupButton(
+                _state,
+                Game.TextureMap["e_key"],
+                Game.TextureMap["a_button"]
+            );
         }
 
         _popupButtons.Values.ToList().ForEach(button => button?.Update(gameTime));
