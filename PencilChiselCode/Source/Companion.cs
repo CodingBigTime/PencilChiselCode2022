@@ -70,7 +70,7 @@ public class Companion
                     return -8F * gameTime.GetElapsedSeconds();
                 }
 
-                return state.Daytime * -6F;
+                return state.Daytime * -6F * gameTime.GetElapsedSeconds();
             })
             .Build();
     }
