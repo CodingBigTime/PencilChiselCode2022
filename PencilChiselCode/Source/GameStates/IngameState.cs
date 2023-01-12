@@ -18,7 +18,7 @@ public class IngameState : BonfireGameState
 {
     public Player Player { get; private set; }
     public Companion Companion;
-    private float _cameraSpeed = 20F;
+    private float _voidSpeed = 40F;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private TimeSpan _pickupableCounterGameTime;
@@ -32,7 +32,7 @@ public class IngameState : BonfireGameState
     private const int GlowFlowerCount = 10;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
-    private readonly List<string> _debugData = new() { "", "", "" };
+    private readonly List<string> _debugData = new() { "", "", "", "" };
     public const float MinimumFollowerPlayerDistance = 100F;
     private bool _deathState;
     private Song _song;
@@ -386,19 +386,19 @@ public class IngameState : BonfireGameState
         if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).TotalSeconds >= 0.25)
         {
             SpawnRandomTwig(
-                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(5, Game.GetWindowHeight())
             );
             SpawnRandomBush(
-                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(5, Game.GetWindowHeight())
             );
             SpawnRandomTree(
-                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(5, Game.GetWindowHeight())
             );
             SpawnRandomPlant(
-                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
+                (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
                 Utils.GetRandomInt(5, Game.GetWindowHeight())
             );
             _pickupableCounterGameTime = gameTime.TotalGameTime;
@@ -417,7 +417,7 @@ public class IngameState : BonfireGameState
             return;
         }
 
-        Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+        Camera.Move(Vector2.UnitX * _voidSpeed * (float)Math.Sqrt(1 - (Daytime - 1) * (Daytime - 1)) * gameTime.GetElapsedSeconds());
         Companion.Update(gameTime, Player.Position);
         Player.Update(gameTime);
 
@@ -523,6 +523,7 @@ public class IngameState : BonfireGameState
             _fps = (int)(1 / gameTime.GetElapsedSeconds());
             _fpsCounterGameTime = gameTime.TotalGameTime;
             _debugData[0] = $"FPS: {_fps}";
+            _debugData[3] = ((Daytime * 24 + 6) % 24).ToString("0.00");
         }
 
         RootBox.Draw(Game.SpriteBatch);
