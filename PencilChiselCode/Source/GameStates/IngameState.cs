@@ -26,10 +26,10 @@ public class IngameState : BonfireGameState
     private const double TwigSpawnChance = 0.14;
     private const double BushSpawnChance = 0.14;
     private const double TreeSpawnChance = 0.24;
-    private const int TwigCount = 14;
-    private const int BushCount = 14;
-    private const int TreeCount = 36;
-    private const int GlowFlowerCount = 10;
+    private const int InitialTwigCount = 14;
+    private const int InitialBushCount = 14;
+    private const int InitialTreeCount = 36;
+    private const int InitialGlowFlowerCount = 10;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
     private readonly List<string> _debugData = new() { "", "", "", "" };
@@ -66,7 +66,7 @@ public class IngameState : BonfireGameState
         Camera = new OrthographicCamera(Game.GraphicsDevice);
         _deathState = false;
         base.LoadContent();
-        for (var i = 0; i < TwigCount; i++)
+        for (var i = 0; i < InitialTwigCount; i++)
         {
             SpawnRandomTwig(
                 Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
@@ -76,7 +76,7 @@ public class IngameState : BonfireGameState
             );
         }
 
-        for (var i = 0; i < BushCount; i++)
+        for (var i = 0; i < InitialBushCount; i++)
         {
             SpawnRandomBush(
                 Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
@@ -86,7 +86,7 @@ public class IngameState : BonfireGameState
             );
         }
 
-        for (var i = 0; i < TreeCount; i++)
+        for (var i = 0; i < InitialTreeCount; i++)
         {
             SpawnRandomTree(
                 Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
@@ -96,7 +96,7 @@ public class IngameState : BonfireGameState
             );
         }
 
-        for (var i = 0; i < GlowFlowerCount; i++)
+        for (var i = 0; i < InitialGlowFlowerCount; i++)
         {
             SpawnRandomPlant(
                 Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
@@ -383,29 +383,35 @@ public class IngameState : BonfireGameState
 
         if (_deathState || _pauseState)
             return;
+
+        var inverseDaytime = 1F - Daytime;
+
         if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).TotalSeconds >= 0.25)
         {
             SpawnRandomTwig(
                 (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
-                Utils.GetRandomInt(5, Game.GetWindowHeight())
+                Utils.GetRandomInt(5, Game.GetWindowHeight()),
+                chance: TwigSpawnChance * inverseDaytime
             );
             SpawnRandomBush(
                 (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
-                Utils.GetRandomInt(5, Game.GetWindowHeight())
+                Utils.GetRandomInt(5, Game.GetWindowHeight()),
+                chance: TwigSpawnChance * inverseDaytime
             );
             SpawnRandomTree(
                 (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
-                Utils.GetRandomInt(5, Game.GetWindowHeight())
+                Utils.GetRandomInt(5, Game.GetWindowHeight()),
+                chance: TwigSpawnChance * inverseDaytime
             );
             SpawnRandomPlant(
                 (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
-                Utils.GetRandomInt(5, Game.GetWindowHeight())
+                Utils.GetRandomInt(5, Game.GetWindowHeight()),
+                chance: TwigSpawnChance * inverseDaytime
             );
             _pickupableCounterGameTime = gameTime.TotalGameTime;
         }
 
         DaytimeTweener.Update(gameTime.GetElapsedSeconds());
-        var inverseDaytime = 1F - Daytime;
         Game.Penumbra.AmbientColor = new Color(inverseDaytime, inverseDaytime, inverseDaytime);
 
         var oldMapIndex = MapIndex;
@@ -417,7 +423,12 @@ public class IngameState : BonfireGameState
             return;
         }
 
-        Camera.Move(Vector2.UnitX * _voidSpeed * (float)Math.Sqrt(1 - (Daytime - 1) * (Daytime - 1)) * gameTime.GetElapsedSeconds());
+        Camera.Move(
+            Vector2.UnitX
+                * _voidSpeed
+                * (float)Math.Sqrt(1 - (Daytime - 1) * (Daytime - 1))
+                * gameTime.GetElapsedSeconds()
+        );
         Companion.Update(gameTime, Player.Position);
         Player.Update(gameTime);
 
