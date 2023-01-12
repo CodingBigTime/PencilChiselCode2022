@@ -188,7 +188,7 @@ public class Attribute
 
         public AttributeBuilder WithChangeRate(float changeRate)
         {
-            _changeRate = _ => changeRate;
+            _changeRate = gameTime => changeRate * gameTime.GetElapsedSeconds();
             return this;
         }
 

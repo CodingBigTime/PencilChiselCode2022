@@ -213,8 +213,6 @@ public class IngameState : BonfireGameState
         Companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 100F);
         Player = new Player(this, new Vector2(96, Game.GetWindowHeight() / 2F));
 
-        Campfires.Add(new CampFire(this, new Vector2(500, 400))); // TEMP
-
         _maps = new List<TiledMap>();
         for (var i = 0; i < 3; ++i)
         {
@@ -245,10 +243,10 @@ public class IngameState : BonfireGameState
                 target: this,
                 expression: state => state.Daytime,
                 toValue: 1F,
-                duration: 10F,
-                delay: 2F
+                duration: 100F,
+                delay: 10F
             )
-            .RepeatForever(repeatDelay: 2F)
+            .RepeatForever(repeatDelay: 10F)
             .AutoReverse()
             .Easing(EasingFunctions.SineInOut);
     }
