@@ -15,7 +15,7 @@ public class Attribute
     private Vector2 _offset;
     private Color _color;
     public float MaxValue;
-    public float ChangeRate;
+    public Func<GameTime, float> ChangeRate;
 
     public float Value
     {
@@ -35,7 +35,7 @@ public class Attribute
         Color color,
         float maxValue,
         float value,
-        float changeRate
+        Func<GameTime, float> changeRate
     )
     {
         _position = position;
@@ -66,7 +66,7 @@ public class Attribute
 
     public bool IsEmpty() => Value <= 0;
 
-    public void Update(GameTime gameTime) => Value += ChangeRate * gameTime.GetElapsedSeconds();
+    public void Update(GameTime gameTime) => Value += ChangeRate(gameTime);
 
     public void Draw(SpriteBatch spriteBatch)
     {
@@ -119,7 +119,7 @@ public class Attribute
         private Vector2 _offset;
         private float _maxValue;
         private float _value;
-        private float _changeRate;
+        private Func<GameTime, float> _changeRate;
 
         internal AttributeBuilder()
         {
@@ -127,12 +127,11 @@ public class Attribute
             _filledTexture = null;
             _size = new Vector2(100, 10);
             _color = Color.White;
-            _changeRate = 0;
+            _changeRate = _ => 0F;
             _scale = 1F;
             _offset = Vector2.Zero;
             _maxValue = 100;
             _value = 100;
-            _changeRate = 0F;
             _position = Vector2.Zero;
         }
 
@@ -181,9 +180,15 @@ public class Attribute
             return this;
         }
 
-        public AttributeBuilder WithChangeRate(float changeRate)
+        public AttributeBuilder WithChangeRate(Func<GameTime, float> changeRate)
         {
             _changeRate = changeRate;
+            return this;
+        }
+
+        public AttributeBuilder WithChangeRate(float changeRate)
+        {
+            _changeRate = gameTime => changeRate * gameTime.GetElapsedSeconds();
             return this;
         }
 

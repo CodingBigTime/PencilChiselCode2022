@@ -8,6 +8,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tweening;
 using PencilChiselCode.Source.GUI;
 using PencilChiselCode.Source.Objects;
 
@@ -17,7 +18,7 @@ public class IngameState : BonfireGameState
 {
     public Player Player { get; private set; }
     public Companion Companion;
-    private float _cameraSpeed = 20F;
+    private float _voidSpeed = 40F;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private TimeSpan _pickupableCounterGameTime;
@@ -25,13 +26,13 @@ public class IngameState : BonfireGameState
     private const double TwigSpawnChance = 0.14;
     private const double BushSpawnChance = 0.14;
     private const double TreeSpawnChance = 0.24;
-    private const int TwigCount = 14;
-    private const int BushCount = 14;
-    private const int TreeCount = 36;
-    private const int GlowFlowerCount = 10;
+    private const int InitialTwigCount = 14;
+    private const int InitialBushCount = 14;
+    private const int InitialTreeCount = 36;
+    private const int InitialGlowFlowerCount = 10;
     private List<TiledMap> _maps;
     private ParticleGenerator _darknessParticles;
-    private readonly List<string> _debugData = new() { "", "", "" };
+    private readonly List<string> _debugData = new() { "", "", "", "" };
     public const float MinimumFollowerPlayerDistance = 100F;
     private bool _deathState;
     private Song _song;
@@ -39,6 +40,8 @@ public class IngameState : BonfireGameState
     private const int SpawnOffset = 128;
     public const int DarknessEndOffset = 64;
     public OrthographicCamera Camera { get; private set; }
+    public Tweener DaytimeTweener { get; private set; }
+    public float Daytime { get; set; }
     public RootBox RootBox;
 
     private int MapIndex =>
@@ -63,7 +66,7 @@ public class IngameState : BonfireGameState
         Camera = new OrthographicCamera(Game.GraphicsDevice);
         _deathState = false;
         base.LoadContent();
-        for (var i = 0; i < TwigCount; i++)
+        for (var i = 0; i < InitialTwigCount; i++)
         {
             SpawnRandomTwig(
                 Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
@@ -73,7 +76,7 @@ public class IngameState : BonfireGameState
             );
         }
 
-        for (var i = 0; i < BushCount; i++)
+        for (var i = 0; i < InitialBushCount; i++)
         {
             SpawnRandomBush(
                 Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
@@ -83,7 +86,7 @@ public class IngameState : BonfireGameState
             );
         }
 
-        for (var i = 0; i < TreeCount; i++)
+        for (var i = 0; i < InitialTreeCount; i++)
         {
             SpawnRandomTree(
                 Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
@@ -93,7 +96,7 @@ public class IngameState : BonfireGameState
             );
         }
 
-        for (var i = 0; i < GlowFlowerCount; i++)
+        for (var i = 0; i < InitialGlowFlowerCount; i++)
         {
             SpawnRandomPlant(
                 Utils.GetRandomInt((int)Camera.Position.X, Game.GetWindowWidth() + SpawnOffset),
@@ -210,8 +213,6 @@ public class IngameState : BonfireGameState
         Companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 100F);
         Player = new Player(this, new Vector2(96, Game.GetWindowHeight() / 2F));
 
-        Campfires.Add(new CampFire(this, new Vector2(500, 400))); // TEMP
-
         _maps = new List<TiledMap>();
         for (var i = 0; i < 3; ++i)
         {
@@ -227,7 +228,7 @@ public class IngameState : BonfireGameState
                     time => 2 + time,
                     _ => Color.Black
                 ),
-            100F
+            () => Daytime * 100F
         );
         var inventoryBox = Menus.GetInventory(Game, Player);
         inventoryBox.IsVisible = () => _pauseState;
@@ -235,6 +236,19 @@ public class IngameState : BonfireGameState
         _song = Game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
+
+        DaytimeTweener = new Tweener();
+        DaytimeTweener
+            .TweenTo(
+                target: this,
+                expression: state => state.Daytime,
+                toValue: 1F,
+                duration: 100F,
+                delay: 10F
+            )
+            .RepeatForever(repeatDelay: 10F)
+            .AutoReverse()
+            .Easing(EasingFunctions.SineInOut);
     }
 
     public static void TryGenerate(Func<bool> generator, double chance = 1, int attempts = 10)
@@ -369,26 +383,36 @@ public class IngameState : BonfireGameState
 
         if (_deathState || _pauseState)
             return;
+
+        var inverseDaytime = 1F - Daytime;
+
         if (gameTime.TotalGameTime.Subtract(_pickupableCounterGameTime).TotalSeconds >= 0.25)
         {
             SpawnRandomTwig(
-                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                Utils.GetRandomInt(5, Game.GetWindowHeight())
+                (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
+                Utils.GetRandomInt(5, Game.GetWindowHeight()),
+                chance: TwigSpawnChance * inverseDaytime
             );
             SpawnRandomBush(
-                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                Utils.GetRandomInt(5, Game.GetWindowHeight())
+                (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
+                Utils.GetRandomInt(5, Game.GetWindowHeight()),
+                chance: TwigSpawnChance * inverseDaytime
             );
             SpawnRandomTree(
-                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                Utils.GetRandomInt(5, Game.GetWindowHeight())
+                (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
+                Utils.GetRandomInt(5, Game.GetWindowHeight()),
+                chance: TwigSpawnChance * inverseDaytime
             );
             SpawnRandomPlant(
-                Camera.Position.X + Game.GetWindowWidth() + SpawnOffset,
-                Utils.GetRandomInt(5, Game.GetWindowHeight())
+                (int)(Camera.Position.X + Game.GetWindowWidth() + SpawnOffset),
+                Utils.GetRandomInt(5, Game.GetWindowHeight()),
+                chance: TwigSpawnChance * inverseDaytime
             );
             _pickupableCounterGameTime = gameTime.TotalGameTime;
         }
+
+        DaytimeTweener.Update(gameTime.GetElapsedSeconds());
+        Game.Penumbra.AmbientColor = new Color(inverseDaytime, inverseDaytime, inverseDaytime);
 
         var oldMapIndex = MapIndex;
         Game.TiledMapRenderer.Update(gameTime);
@@ -399,7 +423,12 @@ public class IngameState : BonfireGameState
             return;
         }
 
-        Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+        Camera.Move(
+            Vector2.UnitX
+                * _voidSpeed
+                * (float)Math.Sqrt(1 - (Daytime - 1) * (Daytime - 1))
+                * gameTime.GetElapsedSeconds()
+        );
         Companion.Update(gameTime, Player.Position);
         Player.Update(gameTime);
 
@@ -505,6 +534,7 @@ public class IngameState : BonfireGameState
             _fps = (int)(1 / gameTime.GetElapsedSeconds());
             _fpsCounterGameTime = gameTime.TotalGameTime;
             _debugData[0] = $"FPS: {_fps}";
+            _debugData[3] = ((Daytime * 24 + 6) % 24).ToString("0.00");
         }
 
         RootBox.Draw(Game.SpriteBatch);
