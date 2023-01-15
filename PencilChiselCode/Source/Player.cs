@@ -205,7 +205,7 @@ public class Player
         if (Position.X >= _state.Camera.Center.X + Game.Width / 2F - Size.X / 2F)
         {
             _speed.X = 0;
-            Position = new(
+            Position = new Vector2(
                 Math.Min(Position.X, _state.Camera.Center.X + Game.Width / 2F - Size.X / 2F),
                 Position.Y
             );
@@ -214,7 +214,7 @@ public class Player
         if (Position.Y <= Size.Y / 2F || Position.Y >= Game.Height - Size.Y / 2F)
         {
             _speed.Y = 0;
-            Position = new(
+            Position = new Vector2(
                 Position.X,
                 Math.Clamp(Position.Y, Size.Y / 2F, Game.Height - Size.Y / 2F)
             );

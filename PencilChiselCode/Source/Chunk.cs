@@ -1,0 +1,237 @@
+﻿using System;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
+using MonoGame.Extended.Tiled;
+using PencilChiselCode.Source.GameStates;
+using PencilChiselCode.Source.Objects;
+
+namespace PencilChiselCode.Source;
+
+public class Chunk
+{
+    private TiledMap _map;
+    private IngameState _state;
+    private Bonfire Game => _state.Game;
+
+    private const double TwigSpawnChance = 0.14;
+    private const double BushSpawnChance = 0.14;
+    private const double TreeSpawnChance = 0.24;
+    private const int TwigCount = 14;
+    private const int BushCount = 14;
+    private const int TreeCount = 36;
+    private const int GlowFlowerCount = 10;
+    public EntityCollection<Pickupable> Pickupables { get; } = new();
+    public EntityCollection<GroundEntity> GroundEntities { get; } = new();
+    private const int SpawnOffset = 128;
+
+    public int MapIndex =>
+        (int)Math.Floor(Math.Abs(_state.Camera.GetViewMatrix().Translation.X / _map.WidthInPixels));
+
+    public Chunk(IngameState state, int offsetIndex)
+    {
+        _state = state;
+        _map = Game.TiledMaps[Utils.Random.Next(0, Game.TiledMaps.Count)];
+
+        for (var i = 0; i < TwigCount; i++)
+        {
+            SpawnRandomTwig(
+                Utils.GetRandomInt(
+                    (int)_state.Camera.Position.X,
+                    Game.GetWindowWidth() + SpawnOffset
+                )
+                    + offsetIndex * _map.WidthInPixels,
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
+                chance: 1,
+                attempts: 30
+            );
+        }
+
+        for (var i = 0; i < BushCount; i++)
+        {
+            SpawnRandomBush(
+                Utils.GetRandomInt(
+                    (int)_state.Camera.Position.X,
+                    Game.GetWindowWidth() + SpawnOffset
+                )
+                    + offsetIndex * _map.WidthInPixels,
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
+                chance: 1,
+                attempts: 30
+            );
+        }
+
+        for (var i = 0; i < TreeCount; i++)
+        {
+            SpawnRandomTree(
+                Utils.GetRandomInt(
+                    (int)_state.Camera.Position.X,
+                    Game.GetWindowWidth() + SpawnOffset
+                )
+                    + offsetIndex * _map.WidthInPixels,
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
+                chance: 1,
+                attempts: 64
+            );
+        }
+
+        for (var i = 0; i < GlowFlowerCount; i++)
+        {
+            SpawnRandomPlant(
+                Utils.GetRandomInt(
+                    (int)_state.Camera.Position.X,
+                    Game.GetWindowWidth() + SpawnOffset
+                )
+                    + offsetIndex * _map.WidthInPixels,
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
+                chance: 1,
+                attempts: 30
+            );
+        }
+    }
+
+    public void Draw(GameTime gameTime, Matrix transformMatrix, int index)
+    {
+        Game.TiledMapRenderer.LoadMap(_map);
+        Game.TiledMapRenderer.Draw(
+            transformMatrix
+                * Matrix.CreateTranslation(_map.WidthInPixels * (index + MapIndex), 0, 0)
+        );
+    }
+
+    public void DrawObjects(GameTime gameTime)
+    {
+        Pickupables.ForEach(pickupable => pickupable.Draw(Game.SpriteBatch));
+        GroundEntities.ForEach(groundEntity => groundEntity.Draw(Game.SpriteBatch));
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        Pickupables.Update(gameTime);
+        GroundEntities.Update(gameTime);
+    }
+
+    public static void TryGenerate(Func<bool> generator, double chance = 1, int attempts = 10)
+    {
+        if (Utils.Random.NextDouble() > chance)
+            return;
+        for (var i = 0; i < attempts; ++i)
+        {
+            if (generator())
+            {
+                break;
+            }
+        }
+    }
+
+    public void SpawnRandomBush(
+        float x,
+        float y,
+        double chance = BushSpawnChance,
+        int attempts = 10
+    ) =>
+        TryGenerate(
+            () =>
+            {
+                var position = new Vector2(x, y);
+                var size = Vector2.One * 2F;
+                if (
+                    GroundEntities.Any(entity => entity.Intersects(position, size))
+                    || Pickupables.Any(entity => entity.Intersects(position, size))
+                )
+                    return false;
+                Pickupables.Add(new BerryBush(_state, position, size));
+                return true;
+            },
+            chance,
+            attempts
+        );
+
+    public void SpawnRandomTree(
+        float x,
+        float y,
+        int treeType = 0,
+        double chance = TreeSpawnChance,
+        int attempts = 10
+    ) =>
+        TryGenerate(
+            () =>
+            {
+                if (treeType == 0)
+                    treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
+                var position = new Vector2(x, y);
+                var size = Vector2.One * 2F;
+                if (
+                    GroundEntities.Any(entity => entity.Intersects(position, size))
+                    || Pickupables.Any(entity => entity.Intersects(position, size))
+                )
+                    return false;
+                GroundEntities.Add(
+                    new Tree(_state, Game.TextureMap[$"tree_{treeType}"], position, size)
+                );
+                return true;
+            },
+            chance,
+            attempts
+        );
+
+    public void SpawnRandomPlant(
+        float x,
+        float y,
+        double chance = TreeSpawnChance,
+        int attempts = 10
+    ) =>
+        TryGenerate(
+            () =>
+            {
+                var position = new Vector2(x, y);
+                var size = Vector2.One * 1.5F;
+                if (
+                    GroundEntities.Any(entity => entity.Intersects(position, size))
+                    || Pickupables.Any(entity => entity.Intersects(position, size))
+                )
+                    return false;
+                GroundEntities.Add(
+                    new Tree(
+                        _state,
+                        Game.TextureMap["flower_lamp_1"],
+                        position,
+                        size,
+                        new Color(0F, 0.3F, 0.75F)
+                    )
+                );
+                return true;
+            },
+            chance,
+            attempts
+        );
+
+    public void SpawnRandomTwig(
+        float x,
+        float y,
+        double chance = TwigSpawnChance,
+        int attempts = 10
+    ) =>
+        TryGenerate(
+            () =>
+            {
+                var position = new Vector2(x, y);
+                var size = Vector2.One;
+                if (
+                    GroundEntities.Any(entity => entity.Intersects(position, size))
+                    || Pickupables.Any(entity => entity.Intersects(position, size))
+                )
+                    return false;
+                Pickupables.Add(new Twig(_state, position, size, Utils.Random.NextAngle()));
+                return true;
+            },
+            chance,
+            attempts
+        );
+
+    public void Cleanup()
+    {
+        Pickupables.ClearAll();
+        GroundEntities.ClearAll();
+    }
+}
