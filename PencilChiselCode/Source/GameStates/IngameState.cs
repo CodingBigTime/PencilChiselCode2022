@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens.Transitions;
+using MonoGame.Extended.Tweening;
 using PencilChiselCode.Source.GUI;
 using PencilChiselCode.Source.Objects;
 
@@ -15,18 +16,21 @@ public class IngameState : BonfireGameState
 {
     public Player Player { get; private set; }
     public Companion Companion;
-    private float _cameraSpeed = 20F;
+    private float _voidSpeed = 40F;
     private int _fps;
     private TimeSpan _fpsCounterGameTime;
     private bool _pauseState;
     private List<Chunk> _chunks;
     private ParticleGenerator _darknessParticles;
-    private readonly List<string> _debugData = new() { "", "", "" };
+    private readonly List<string> _debugData = new() { "", "", "", "" };
     private bool _deathState;
     private Song _song;
     private float _score;
     public const int DarknessEndOffset = 64;
     public OrthographicCamera Camera { get; private set; }
+    public Tweener DaytimeTweener { get; private set; }
+    public float Daytime { get; set; }
+    public float InverseDaytime => 1F - Daytime;
     public RootBox RootBox;
 
     public IngameState(Game game) : base(game) { }
@@ -192,7 +196,7 @@ public class IngameState : BonfireGameState
                     time => 2 + time,
                     _ => Color.Black
                 ),
-            100F
+            () => Daytime * 100F
         );
         var inventoryBox = Menus.GetInventory(Game, Player);
         inventoryBox.IsVisible = () => _pauseState;
@@ -200,6 +204,19 @@ public class IngameState : BonfireGameState
         _song = Game.SongMap["bonfire_song"];
         MediaPlayer.Play(_song);
         MediaPlayer.IsRepeating = true;
+
+        DaytimeTweener = new Tweener();
+        DaytimeTweener
+            .TweenTo(
+                target: this,
+                expression: state => state.Daytime,
+                toValue: 1F,
+                duration: 100F,
+                delay: 10F
+            )
+            .RepeatForever(repeatDelay: 10F)
+            .AutoReverse()
+            .Easing(EasingFunctions.SineInOut);
     }
 
     private void CreateChunk() => _chunks.Add(new Chunk(this, _chunks.Count));
@@ -217,6 +234,10 @@ public class IngameState : BonfireGameState
             return;
 
         var oldMapIndex = _chunks[0].MapIndex;
+
+        DaytimeTweener.Update(gameTime.GetElapsedSeconds());
+        Game.Penumbra.AmbientColor = new Color(InverseDaytime, InverseDaytime, InverseDaytime);
+
         Game.TiledMapRenderer.Update(gameTime);
 
         if (Companion.IsAnxious())
@@ -225,8 +246,12 @@ public class IngameState : BonfireGameState
             return;
         }
 
-        var x = Camera.GetViewMatrix().Translation.X;
-        Camera.Move(Vector2.UnitX * _cameraSpeed * gameTime.GetElapsedSeconds());
+        Camera.Move(
+            Vector2.UnitX
+                * _voidSpeed
+                * (float)Math.Sqrt(1 - (Daytime - 1) * (Daytime - 1))
+                * gameTime.GetElapsedSeconds()
+        );
         Companion.Update(gameTime, Player.Position);
         Player.Update(gameTime);
 
@@ -325,6 +350,7 @@ public class IngameState : BonfireGameState
             _fps = (int)(1 / gameTime.GetElapsedSeconds());
             _fpsCounterGameTime = gameTime.TotalGameTime;
             _debugData[0] = $"FPS: {_fps}";
+            _debugData[3] = ((Daytime * 24 + 6) % 24).ToString("0.00");
         }
 
         RootBox.Draw(Game.SpriteBatch);

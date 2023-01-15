@@ -23,7 +23,6 @@ public class Chunk
     private const int GlowFlowerCount = 10;
     public EntityCollection<Pickupable> Pickupables { get; } = new();
     public EntityCollection<GroundEntity> GroundEntities { get; } = new();
-    private const int SpawnOffset = 128;
 
     public int MapIndex =>
         (int)Math.Floor(Math.Abs(_state.Camera.GetViewMatrix().Translation.X / _map.WidthInPixels));
@@ -38,7 +37,7 @@ public class Chunk
             SpawnRandomTwig(
                 Utils.GetRandomInt(
                     (int)_state.Camera.Position.X,
-                    Game.GetWindowWidth() + SpawnOffset
+                    (int)_state.Camera.Position.X + Game.GetWindowWidth()
                 )
                     + offsetIndex * _map.WidthInPixels,
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
@@ -52,7 +51,7 @@ public class Chunk
             SpawnRandomBush(
                 Utils.GetRandomInt(
                     (int)_state.Camera.Position.X,
-                    Game.GetWindowWidth() + SpawnOffset
+                    (int)_state.Camera.Position.X + Game.GetWindowWidth()
                 )
                     + offsetIndex * _map.WidthInPixels,
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
@@ -66,7 +65,7 @@ public class Chunk
             SpawnRandomTree(
                 Utils.GetRandomInt(
                     (int)_state.Camera.Position.X,
-                    Game.GetWindowWidth() + SpawnOffset
+                    (int)_state.Camera.Position.X + Game.GetWindowWidth()
                 )
                     + offsetIndex * _map.WidthInPixels,
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
@@ -80,7 +79,7 @@ public class Chunk
             SpawnRandomPlant(
                 Utils.GetRandomInt(
                     (int)_state.Camera.Position.X,
-                    Game.GetWindowWidth() + SpawnOffset
+                    (int)_state.Camera.Position.X + Game.GetWindowWidth()
                 )
                     + offsetIndex * _map.WidthInPixels,
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),

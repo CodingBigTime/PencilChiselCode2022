@@ -46,7 +46,33 @@ public class Companion
             .WithTextures(attributeTexture, comfyAttributeTexture)
             .WithScale(3F)
             .WithOffset(attributeTexture.Bounds.Center.ToVector2())
-            .WithChangeRate(-4F)
+            .WithChangeRate(gameTime =>
+            {
+                if (Game.DebugMode >= 1 || state.Daytime <= 0.2F)
+                {
+                    return 0F;
+                }
+
+                if (Position.X < _state.Camera.Position.X + IngameState.DarknessEndOffset)
+                {
+                    return -48F * state.Daytime * gameTime.GetElapsedSeconds();
+                }
+
+                if (_state.Campfires.Any(campfire => campfire.IsInRange(Position)))
+                {
+                    return 16F * gameTime.GetElapsedSeconds();
+                }
+
+                if (
+                    Vector2.Distance(_state.Player.Position, Position)
+                    > MinimumSafetyDistanceToPlayer
+                )
+                {
+                    return -8F * gameTime.GetElapsedSeconds();
+                }
+
+                return state.Daytime * -6F * gameTime.GetElapsedSeconds();
+            })
             .Build();
     }
 
@@ -109,20 +135,7 @@ public class Companion
             Position.Y -= _movementSpeed.X * (height / h) * delta;
         }
 
-        if (Position.X < _state.Camera.Position.X + IngameState.DarknessEndOffset)
-        {
-            ComfyMeter.Value -= 48F * gameTime.GetElapsedSeconds();
-        }
-        else if (_state.Campfires.Any(campfire => campfire.IsInRange(Position)))
-        {
-            ComfyMeter.Value += 16F * gameTime.GetElapsedSeconds();
-        }
-        else if (Vector2.Distance(_state.Player.Position, Position) > MinimumSafetyDistanceToPlayer)
-        {
-            ComfyMeter.Value -= 8F * gameTime.GetElapsedSeconds();
-        }
-
-        if (Game.DebugMode >= 1)
+        if (Game.DebugMode >= 2)
         {
             ComfyMeter.Value = 100F;
         }

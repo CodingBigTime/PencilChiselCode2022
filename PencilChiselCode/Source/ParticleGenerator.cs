@@ -10,18 +10,24 @@ public class ParticleGenerator
 {
     private readonly List<Particle> _particles;
     private readonly Func<Particle> _particleGenerator;
-    private float _frequency;
+    private readonly Func<float> _frequencyFunction;
 
     public ParticleGenerator(Func<Particle> particleGenerator, float frequency)
+        : this(particleGenerator, () => frequency) { }
+
+    public ParticleGenerator(Func<Particle> particleGenerator, Func<float> frequency)
     {
         _particles = new();
         _particleGenerator = particleGenerator;
-        _frequency = frequency;
+        _frequencyFunction = frequency;
     }
 
     public void Update(GameTime gameTime, bool addNew)
     {
-        if (addNew && Utils.Random.NextDouble() < _frequency * gameTime.GetElapsedSeconds())
+        if (
+            addNew
+            && Utils.Random.NextDouble() < _frequencyFunction() * gameTime.GetElapsedSeconds()
+        )
         {
             _particles.Add(_particleGenerator());
         }
