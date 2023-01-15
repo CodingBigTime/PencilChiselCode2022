@@ -133,13 +133,15 @@ public class Chunk
             () =>
             {
                 var position = new Vector2(x, y);
-                var size = Vector2.One * 2F;
+                var texture = Game.TextureMap["bush_berry"];
+                var scale = Vector2.One * 2F;
+                var size = texture.Bounds.Size.ToVector2() * scale;
                 if (
                     GroundEntities.Any(entity => entity.Intersects(position, size))
                     || Pickupables.Any(entity => entity.Intersects(position, size))
                 )
                     return false;
-                Pickupables.Add(new BerryBush(_state, position, size));
+                Pickupables.Add(new BerryBush(_state, position, scale));
                 return true;
             },
             chance,
@@ -159,14 +161,16 @@ public class Chunk
                 if (treeType == 0)
                     treeType = Utils.GetRandomInt(1, Bonfire.TreeVariations + 1);
                 var position = new Vector2(x, y);
-                var size = Vector2.One * 2F;
+                var texture = Game.TextureMap[$"tree_{treeType}"];
+                var scale = Vector2.One * 2F;
+                var size = texture.Bounds.Size.ToVector2() * scale;
                 if (
                     GroundEntities.Any(entity => entity.Intersects(position, size))
                     || Pickupables.Any(entity => entity.Intersects(position, size))
                 )
                     return false;
                 GroundEntities.Add(
-                    new Tree(_state, Game.TextureMap[$"tree_{treeType}"], position, size)
+                    new Tree(_state, texture, position, scale)
                 );
                 return true;
             },
@@ -184,7 +188,9 @@ public class Chunk
             () =>
             {
                 var position = new Vector2(x, y);
-                var size = Vector2.One * 1.5F;
+                var texture = Game.TextureMap["flower_lamp_1"];
+                var scale = Vector2.One * 1.5F;
+                var size = texture.Bounds.Size.ToVector2() * scale;
                 if (
                     GroundEntities.Any(entity => entity.Intersects(position, size))
                     || Pickupables.Any(entity => entity.Intersects(position, size))
@@ -193,9 +199,9 @@ public class Chunk
                 GroundEntities.Add(
                     new Tree(
                         _state,
-                        Game.TextureMap["flower_lamp_1"],
+                        texture,
                         position,
-                        size,
+                        scale,
                         new Color(0F, 0.3F, 0.75F)
                     )
                 );
@@ -215,13 +221,15 @@ public class Chunk
             () =>
             {
                 var position = new Vector2(x, y);
-                var size = Vector2.One;
+                var texture = Game.TextureMap["twigs"];
+                var scale = Vector2.One;
+                var size = texture.Bounds.Size.ToVector2() * scale;
                 if (
                     GroundEntities.Any(entity => entity.Intersects(position, size))
                     || Pickupables.Any(entity => entity.Intersects(position, size))
                 )
                     return false;
-                Pickupables.Add(new Twig(_state, position, size, Utils.Random.NextAngle()));
+                Pickupables.Add(new Twig(_state, position, scale, Utils.Random.NextAngle()));
                 return true;
             },
             chance,
