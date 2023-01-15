@@ -54,7 +54,7 @@ public abstract class GroundEntity
 
     public bool Intersects(Vector2 position, Vector2 size) =>
         Utils.Intersects(
-            new Rectangle((Position).ToPoint(), (Size * Scale).ToPoint()),
+            new Rectangle(Position.ToPoint(), (Size * Scale).ToPoint()),
             new Rectangle(position.ToPoint(), size.ToPoint())
         );
 

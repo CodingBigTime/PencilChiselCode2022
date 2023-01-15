@@ -169,9 +169,7 @@ public class Chunk
                     || Pickupables.Any(entity => entity.Intersects(position, size))
                 )
                     return false;
-                GroundEntities.Add(
-                    new Tree(_state, texture, position, scale)
-                );
+                GroundEntities.Add(new Tree(_state, texture, position, scale));
                 return true;
             },
             chance,
@@ -197,13 +195,7 @@ public class Chunk
                 )
                     return false;
                 GroundEntities.Add(
-                    new Tree(
-                        _state,
-                        texture,
-                        position,
-                        scale,
-                        new Color(0F, 0.3F, 0.75F)
-                    )
+                    new Tree(_state, texture, position, scale, new Color(0F, 0.3F, 0.75F))
                 );
                 return true;
             },
