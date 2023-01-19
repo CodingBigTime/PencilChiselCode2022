@@ -34,7 +34,7 @@ public class Chunk
             SpawnRandomTwig(
                 Utils.GetRandomInt(
                     (int)_state.Camera.Position.X,
-                    (int)_state.Camera.Position.X + Game.GetWindowWidth()
+                    (int)_state.Camera.Position.X + _map.WidthInPixels
                 )
                     + offsetIndex * _map.WidthInPixels,
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)
@@ -46,7 +46,7 @@ public class Chunk
             SpawnRandomBush(
                 Utils.GetRandomInt(
                     (int)_state.Camera.Position.X,
-                    (int)_state.Camera.Position.X + Game.GetWindowWidth()
+                    (int)_state.Camera.Position.X + _map.WidthInPixels
                 )
                     + offsetIndex * _map.WidthInPixels,
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)
@@ -58,7 +58,7 @@ public class Chunk
             SpawnRandomTree(
                 Utils.GetRandomInt(
                     (int)_state.Camera.Position.X,
-                    (int)_state.Camera.Position.X + Game.GetWindowWidth()
+                    (int)_state.Camera.Position.X + _map.WidthInPixels
                 )
                     + offsetIndex * _map.WidthInPixels,
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)
@@ -70,7 +70,7 @@ public class Chunk
             SpawnRandomPlant(
                 Utils.GetRandomInt(
                     (int)_state.Camera.Position.X,
-                    (int)_state.Camera.Position.X + Game.GetWindowWidth()
+                    (int)_state.Camera.Position.X + _map.WidthInPixels
                 )
                     + offsetIndex * _map.WidthInPixels,
                 Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)
