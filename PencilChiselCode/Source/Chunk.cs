@@ -14,9 +14,6 @@ public class Chunk
     private IngameState _state;
     private Bonfire Game => _state.Game;
 
-    private const double TwigSpawnChance = 0.14;
-    private const double BushSpawnChance = 0.14;
-    private const double TreeSpawnChance = 0.24;
     private const int TwigCount = 14;
     private const int BushCount = 14;
     private const int TreeCount = 36;
@@ -40,9 +37,7 @@ public class Chunk
                     (int)_state.Camera.Position.X + Game.GetWindowWidth()
                 )
                     + offsetIndex * _map.WidthInPixels,
-                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
-                chance: 1,
-                attempts: 30
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)
             );
         }
 
@@ -54,9 +49,7 @@ public class Chunk
                     (int)_state.Camera.Position.X + Game.GetWindowWidth()
                 )
                     + offsetIndex * _map.WidthInPixels,
-                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
-                chance: 1,
-                attempts: 30
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)
             );
         }
 
@@ -68,9 +61,7 @@ public class Chunk
                     (int)_state.Camera.Position.X + Game.GetWindowWidth()
                 )
                     + offsetIndex * _map.WidthInPixels,
-                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
-                chance: 1,
-                attempts: 64
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)
             );
         }
 
@@ -82,9 +73,7 @@ public class Chunk
                     (int)_state.Camera.Position.X + Game.GetWindowWidth()
                 )
                     + offsetIndex * _map.WidthInPixels,
-                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10),
-                chance: 1,
-                attempts: 30
+                Utils.GetRandomInt(10, Game.GetWindowHeight() - 10)
             );
         }
     }
@@ -126,8 +115,8 @@ public class Chunk
     public void SpawnRandomBush(
         float x,
         float y,
-        double chance = BushSpawnChance,
-        int attempts = 10
+        double chance = 1F,
+        int attempts = 30
     ) =>
         TryGenerate(
             () =>
@@ -152,8 +141,8 @@ public class Chunk
         float x,
         float y,
         int treeType = 0,
-        double chance = TreeSpawnChance,
-        int attempts = 10
+        double chance = 1F,
+        int attempts = 30
     ) =>
         TryGenerate(
             () =>
@@ -179,8 +168,8 @@ public class Chunk
     public void SpawnRandomPlant(
         float x,
         float y,
-        double chance = TreeSpawnChance,
-        int attempts = 10
+        double chance = 1F,
+        int attempts = 30
     ) =>
         TryGenerate(
             () =>
@@ -206,8 +195,8 @@ public class Chunk
     public void SpawnRandomTwig(
         float x,
         float y,
-        double chance = TwigSpawnChance,
-        int attempts = 10
+        double chance = 1F,
+        int attempts = 30
     ) =>
         TryGenerate(
             () =>
