@@ -39,6 +39,7 @@ public class IngameState : BonfireGameState
     {
         Campfires.ClearAll();
         Player.Cleanup();
+        _chunks.ForEach(chunk => chunk.Cleanup());
     }
 
     public IEnumerable<Pickupable> Pickupables
