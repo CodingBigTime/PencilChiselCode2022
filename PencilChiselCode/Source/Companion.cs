@@ -20,6 +20,7 @@ public class Companion
     private readonly IngameState _state;
     private Bonfire Game => _state.Game;
     public readonly Attribute ComfyMeter;
+    private const float MinimumSafetyDistanceToPlayer = 100F;
 
     public Companion(IngameState state, Vector2 position, float speed)
     {
@@ -64,7 +65,7 @@ public class Companion
 
                 if (
                     Vector2.Distance(_state.Player.Position, Position)
-                    > IngameState.MinimumFollowerPlayerDistance
+                    > MinimumSafetyDistanceToPlayer
                 )
                 {
                     return -8F * gameTime.GetElapsedSeconds();

@@ -11,7 +11,8 @@ public static class Menus
         var eKeyTexture = game.TextureMap["e_key"];
         var aButtonTexture = game.TextureMap["a_button"];
         var eKey = new UiTextureElement(usingController ? aButtonTexture : eKeyTexture);
-        game.Controls.OnControllerTypeChanged += (_, value) => eKey.Texture = value ? aButtonTexture : eKeyTexture;
+        game.Controls.OnControllerTypeChanged += (_, value) =>
+            eKey.Texture = value ? aButtonTexture : eKeyTexture;
         var twig = new UiTextureElement(game.TextureMap["twig"]);
         var twigCount = new UiTextElement(
             game.FontMap["32"],
@@ -29,7 +30,8 @@ public static class Menus
         var xKeyTexture = game.TextureMap["x_key"];
         var yButtonTexture = game.TextureMap["y_button"];
         var xKey = new UiTextureElement(usingController ? yButtonTexture : xKeyTexture);
-        game.Controls.OnControllerTypeChanged += (_, value) => xKey.Texture = value ? yButtonTexture : xKeyTexture;
+        game.Controls.OnControllerTypeChanged += (_, value) =>
+            xKey.Texture = value ? yButtonTexture : xKeyTexture;
         var campfire = new UiTextureElement(game.TextureMap["campfire"]);
         var equals = new UiTextElement(game.FontMap["32"], () => "=", Color.White, Color.Black);
         var campfireTwigCost = new UiTextElement(
@@ -41,7 +43,8 @@ public static class Menus
         var fKeyTexture = game.TextureMap["f_key"];
         var bButtonTexture = game.TextureMap["b_button"];
         var fKey = new UiTextureElement(usingController ? bButtonTexture : fKeyTexture);
-        game.Controls.OnControllerTypeChanged += (_, value) => fKey.Texture = value ? bButtonTexture : fKeyTexture;
+        game.Controls.OnControllerTypeChanged += (_, value) =>
+            fKey.Texture = value ? bButtonTexture : fKeyTexture;
         var plus = new UiTextElement(game.FontMap["32"], () => "+", Color.White, Color.Black);
         var campfireRefuelCost = new UiTextElement(
             game.FontMap["32"],
@@ -52,7 +55,8 @@ public static class Menus
         var qKeyTexture = game.TextureMap["q_key"];
         var xButtonTexture = game.TextureMap["x_button"];
         var qKey = new UiTextureElement(usingController ? xButtonTexture : qKeyTexture);
-        game.Controls.OnControllerTypeChanged += (_, value) => qKey.Texture = value ? xButtonTexture : qKeyTexture;
+        game.Controls.OnControllerTypeChanged += (_, value) =>
+            qKey.Texture = value ? xButtonTexture : qKeyTexture;
         var companion = new UiTextureElement(game.TextureMap["follower"]);
         var spaceKey = new UiTextureElement(game.TextureMap["space_key"]);
         var followStop = new UiTextElement(
