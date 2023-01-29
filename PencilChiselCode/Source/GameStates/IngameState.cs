@@ -75,6 +75,7 @@ public class IngameState : BonfireGameState
         _deathState = false;
         base.LoadContent();
 
+        var showSettings = false;
         var resumeButton = new Button(
             Game.TextureMap["resume_button_normal"],
             Game.TextureMap["resume_button_hover"],
@@ -94,6 +95,14 @@ public class IngameState : BonfireGameState
                     new MenuState(Game),
                     new FadeTransition(GraphicsDevice, Color.Black, 0.5F)
                 )
+        );
+        var settingsButton = new Button(
+            Game.TextureMap["settings_button_normal"],
+            Game.TextureMap["settings_button_hover"],
+            Game.TextureMap["settings_button_pressed"],
+            Game.SoundMap["button_press"],
+            Game.SoundMap["button_release"],
+            () => showSettings = true
         );
         var restartButton = new Button(
             Game.TextureMap["restart_button_normal"],
@@ -116,7 +125,8 @@ public class IngameState : BonfireGameState
         var buttonBox = new RelativeBox(Game, 0, 0.5F)
         {
             BoxAlignment = Alignments.MiddleCenter,
-            SelfAlignment = Alignments.MiddleCenter
+            SelfAlignment = Alignments.MiddleCenter,
+            IsVisible = () => !showSettings
         }.WithChild(
             new RelativeBox(Game, (0, 0.6F), new FitElement())
             {
@@ -124,6 +134,13 @@ public class IngameState : BonfireGameState
                 SelfAlignment = Alignments.MiddleCenter,
                 IsVisible = () => _pauseState || _deathState,
                 DrawableElement = menuButton
+            },
+            new RelativeBox(Game, (0, -32), new FitElement())
+            {
+                BoxAlignment = Alignments.TopCenterOfPrevious,
+                SelfAlignment = Alignments.BottomCenter,
+                IsVisible = () => _pauseState || _deathState,
+                DrawableElement = settingsButton
             },
             new RelativeBox(Game, (0, -32), new FitElement())
             {
@@ -152,7 +169,8 @@ public class IngameState : BonfireGameState
         var textInfoBox = new RelativeBox(Game, 0, (0.5F, 0.25F))
         {
             BoxAlignment = Alignments.MiddleCenter,
-            SelfAlignment = Alignments.MiddleCenter
+            SelfAlignment = Alignments.MiddleCenter,
+            IsVisible = () => !showSettings
         };
         var finalScoreText = new UiTextElement(
             Game.FontMap["24"],
@@ -178,6 +196,9 @@ public class IngameState : BonfireGameState
             }
         );
         RootBox.AddChild(textInfoBox);
+        var settingsBox = Menus.GetSettingsMenu(Game, () => showSettings = false);
+        settingsBox.IsVisible = () => showSettings;
+        RootBox.AddChild(settingsBox);
 
         Companion = new Companion(this, new Vector2(128, Game.GetWindowHeight() / 2F), 100F);
         Player = new Player(this, new Vector2(96, Game.GetWindowHeight() / 2F));
