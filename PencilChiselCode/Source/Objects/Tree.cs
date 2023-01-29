@@ -86,7 +86,7 @@ public class Tree : GroundEntity
         {
             Scale = new(64F),
             Radius = 1,
-            ShadowType = ShadowType.Occluded
+            ShadowType = ShadowType.Solid
         };
 
     // TODO: Make the shape more dynamic

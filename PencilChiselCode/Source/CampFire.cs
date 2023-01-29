@@ -80,7 +80,7 @@ public class CampFire : GroundEntity
     public bool IsLow() => _attribute.Percent() < 0.1;
 
     public Light PointLight { get; } =
-        new PointLight { Color = Color.DarkOrange, ShadowType = ShadowType.Occluded };
+        new PointLight { Color = Color.DarkOrange, ShadowType = ShadowType.Solid };
 
     public override Vector2 Scale => new(_maxScale * _attribute.Percent());
 

@@ -94,7 +94,7 @@ public class Player
         {
             Scale = new Vector2(PointLightScale),
             Color = Color.White,
-            ShadowType = ShadowType.Occluded
+            ShadowType = ShadowType.Solid
         };
 
     public Light Spotlight { get; } =
@@ -102,7 +102,7 @@ public class Player
         {
             Scale = new Vector2(SpotLightScale),
             Color = Color.White,
-            ShadowType = ShadowType.Occluded,
+            ShadowType = ShadowType.Solid,
             ConeDecay = 2.5F
         };
 
