@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
@@ -257,7 +258,8 @@ public class IngameState : BonfireGameState
 
         var oldMapIndex = _chunks[0].MapIndex;
 
-        DaytimeTweener.Update(gameTime.GetElapsedSeconds());
+        var daytimeSpeedMultiplier = Game.DebugMode > 0 && Game.Controls.IsPressed(ControlKeys.SpeedupDebug) ? 20F : 1F;
+        DaytimeTweener.Update(gameTime.GetElapsedSeconds() * daytimeSpeedMultiplier);
         Game.Penumbra.AmbientColor = new Color(InverseDaytime, InverseDaytime, InverseDaytime);
 
         Game.TiledMapRenderer.Update(gameTime);

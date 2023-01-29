@@ -13,5 +13,6 @@ public enum ControlKeys
     MoveUp,
     MoveDown,
     Debug,
-    Start
+    Start,
+    SpeedupDebug
 }

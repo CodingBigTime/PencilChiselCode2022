@@ -45,6 +45,7 @@ public class Controls
         KeyBindings.Add(ControlKeys.Refuel, Keys.F);
         KeyBindings.Add(ControlKeys.StartFire, Keys.X);
         KeyBindings.Add(ControlKeys.Start, Keys.Space);
+        KeyBindings.Add(ControlKeys.SpeedupDebug, Keys.LeftShift);
 
         ControllerBindings.Add(ControlKeys.StopFollower, Buttons.LeftShoulder);
         ControllerBindings.Add(ControlKeys.Pause, Buttons.Start);
